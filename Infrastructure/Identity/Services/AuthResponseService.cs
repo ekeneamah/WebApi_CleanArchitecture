@@ -5,20 +5,13 @@ using Application.Interfaces.Authentication;
 using Domain.Settings;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc;
-
-using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json.Linq;
-using NuGet.Common;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
-using System.Security.Policy;
 using System.Text;
 
 namespace Infrastructure.Identity.Services
@@ -125,6 +118,8 @@ namespace Infrastructure.Identity.Services
                 LastName = model.LastName,
                 UserName = model.Username,
                 Email = model.Email
+               
+                
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);

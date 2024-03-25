@@ -3,6 +3,7 @@ using Application.Interfaces.Authentication;
 using Application.Interfaces.Content.Brands;
 using Application.Interfaces.Content.Categories;
 using Application.Interfaces.Content.Products;
+using Application.Interfaces.Content.UserProfiles;
 using Domain.Settings;
 using Infrastructure;
 using Infrastructure.Content.Data;
@@ -25,16 +26,16 @@ var connectionString2 = builder.Configuration.GetConnectionString("IdentityConne
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
-builder.Services.AddDbContext<AppIdentityContext>(options =>
+ builder.Services.AddDbContext<AppIdentityContext>(options =>
     options.UseSqlServer(connectionString2));
 
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
-    options.Password.RequireLowercase = false;
-    options.Password.RequireUppercase = false;
-    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireLowercase = true;
+    options.Password.RequireUppercase = true;
+    options.Password.RequireNonAlphanumeric = true;
     options.SignIn.RequireConfirmedEmail = true;
 })
 
@@ -44,6 +45,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 builder.Services.AddScoped<IBrand, BrandService>();
 builder.Services.AddScoped<ICategory, CategoryService>();
 builder.Services.AddScoped<IProduct, ProductService>();
+builder.Services.AddScoped<IUserProfile, UserProfileService>();
 
 builder.Services.AddScoped<IAuthResponse, AuthResponseService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
@@ -78,7 +80,22 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
-
+using (var scope = app.Services.CreateScope())
+{
+    var serviceProvider = scope.ServiceProvider;
+    try
+    {
+        var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
+        var identityDbContext = serviceProvider.GetRequiredService<AppIdentityContext>();
+        dbContext.Database.Migrate(); // This line adds any pending migrations
+        identityDbContext.Database.Migrate();
+    }
+    catch (Exception ex)
+    {
+        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while migrating the database.");
+    }
+}
 using (IServiceScope? scope = app.Services.CreateScope())
 {
     var service = scope.ServiceProvider;
@@ -88,8 +105,8 @@ using (IServiceScope? scope = app.Services.CreateScope())
         var context = service.GetRequiredService<AppIdentityContext>();
         var userManager = service.GetRequiredService<UserManager<AppUser>>();
         var roleManager = service.GetRequiredService<RoleManager<IdentityRole>>();
-        await DefaultRoles.SeedRoles(roleManager);
-        await DefaultUsers.SeedUsers(userManager);
+       // await DefaultRoles.SeedRoles(roleManager);
+        //await DefaultUsers.SeedUsers(userManager);
     }
     catch (Exception ex)
     {

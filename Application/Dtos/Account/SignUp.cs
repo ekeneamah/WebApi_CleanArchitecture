@@ -6,14 +6,14 @@ namespace Application.Dtos.Account
     {
         [Required]
         [StringLength(100)]
-        public string FirstName { get; set; }
+        public required string FirstName { get; set; }
 
         [Required]
         [StringLength(100)]
-        public string LastName { get; set; }
+        public required string LastName { get; set; }
 
         [StringLength(50)]
-        public string Username { get; set; }
+        public required string Username { get; set; }
 
         [Required]
         [EmailAddress]
@@ -23,5 +23,7 @@ namespace Application.Dtos.Account
         [Required]
         [StringLength(256)]
         public string Password { get; set; }
+
+      
     }
 }

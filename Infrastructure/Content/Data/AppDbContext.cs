@@ -13,16 +13,18 @@ namespace Infrastructure.Content.Data
         }
 
         public DbSet<Brand> Brands { get; set; }
-        public DbSet<Category> Categories { get; set; }
         public DbSet<Product> Products { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
+        public DbSet<Category> Categories { get; set; }
+
 
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.ApplyConfigurationsFromAssembly(typeof(AppDbContext).Assembly);
+            base.OnModelCreating(modelBuilder);
 
-
+            modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
         //protected override void OnModelCreating(ModelBuilder builder)

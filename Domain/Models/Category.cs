@@ -19,6 +19,9 @@ namespace Domain.Models
         [Required]
         [MaxLength(100)]
         public string? Category_Name { get; set; }
+        [Required]
+        [MaxLength(100)]
+        public string? Category_Description { get; set; }
 
 
 

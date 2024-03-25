@@ -5,7 +5,7 @@ using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CleanaArchitecture1.Controllers.Content
+namespace API.Controllers.Content
 {
     [Route("api/[controller]")]
     [ApiController]

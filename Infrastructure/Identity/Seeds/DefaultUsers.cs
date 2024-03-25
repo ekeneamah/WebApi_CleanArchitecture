@@ -17,6 +17,7 @@ namespace Infrastructure.Identity.Seeds
                 LastName = "Abass",
                 EmailConfirmed = true,
                 PhoneNumberConfirmed = true
+               
             };
 
             if (userManager.Users.All(u => u.Id != defaultUser1.Id))
@@ -40,7 +41,8 @@ namespace Infrastructure.Identity.Seeds
                 FirstName = "Maged",
                 LastName = "Sobhy",
                 EmailConfirmed = true,
-                PhoneNumberConfirmed = true
+                PhoneNumberConfirmed = true,
+               
             };
 
             if (userManager.Users.All(u => u.Id != defaultUser2.Id))
