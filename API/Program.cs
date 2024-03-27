@@ -105,8 +105,8 @@ using (IServiceScope? scope = app.Services.CreateScope())
         var context = service.GetRequiredService<AppIdentityContext>();
         var userManager = service.GetRequiredService<UserManager<AppUser>>();
         var roleManager = service.GetRequiredService<RoleManager<IdentityRole>>();
-       // await DefaultRoles.SeedRoles(roleManager);
-        //await DefaultUsers.SeedUsers(userManager);
+       await DefaultRoles.SeedRoles(roleManager);
+        await DefaultUsers.SeedUsers(userManager);
     }
     catch (Exception ex)
     {
@@ -116,11 +116,11 @@ using (IServiceScope? scope = app.Services.CreateScope())
 }
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
+//if (app.Environment.IsDevelopment())
+//{
     app.UseSwagger();
     app.UseSwaggerUI();
-}
+//}
 
 app.UseHttpsRedirection();
 
