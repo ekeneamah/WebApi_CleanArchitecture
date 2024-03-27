@@ -77,7 +77,11 @@ namespace CleanaArchitecture1.Controllers.Authentication
         #endregion
 
         #region AssignRole Endpoint
-
+/// <summary>
+/// 
+/// </summary>
+/// <param name="model"></param>
+/// <returns></returns>
         [HttpPost("AddRole")]
         public async Task<IActionResult> AddRoleAsync(AssignRolesDto model)
         {
