@@ -22,12 +22,12 @@ namespace Domain.Models
         public string? Product_Name { get; set; }
 
 
-        [ForeignKey("Brand")]
-        public int Brand_Id { get; set; }
-        public virtual Brand Brand { get; set; }
+        [ForeignKey("InsuranceCoy")]
+        public int Coy_Id { get; set; }
+        public virtual InsuranceCoy InsuranceCoy { get; set; }
 
         [ForeignKey("Category")]
-        public int? Categoty_Id { get; set; }
+        public int? Category_Id { get; set; }
         public virtual Category Category { get; set; }
 
 
@@ -39,8 +39,8 @@ namespace Domain.Models
         public int Product_Quantity { get; set; }
 
         public string Product_Code { get; set; }
-
-
+        public string Product_Group { get; set; }
+        public string Product_Description { get; set; }
     }
 
 

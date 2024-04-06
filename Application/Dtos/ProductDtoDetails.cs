@@ -8,13 +8,14 @@ namespace Application.Dtos
 {
     public class ProductDtoDetails
     {
+        public string? Product_description { get; set; }
 
         public int? Product_Id { get; set; }
 
         public string Product_Name { get; set; }
 
-        public int Brand_Id { get; set; }
-        public string Brand_Name { get; set; }
+        public int Coy_Id { get; set; }
+        public string Coy_Name { get; set; }
         public int? Category_Id { get; set; }
         public string Category_Name { get; set; }
 
@@ -23,8 +24,7 @@ namespace Application.Dtos
         public int Product_Quantity { get; set; }
 
         public string Product_Code { get; set; }
-
-
-
+        public object Product_Group { get; set; }
     }
+
 }

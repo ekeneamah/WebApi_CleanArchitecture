@@ -9,15 +9,15 @@ namespace Application.Interfaces.Content.Brands
 {
     public interface IBrandRepo
     {
-        Task<List<Brand>> GetAll();
+        Task<List<InsuranceCoy>> GetAll();
 
-        Task<Brand> GetById(int id);
+        Task<InsuranceCoy> GetById(int id);
 
-        Task<Brand> Add_Brand(Brand model);
+        Task<InsuranceCoy> Add_Brand(InsuranceCoy model);
 
-        Task<Brand> Update_Brand(Brand model);
+        Task<InsuranceCoy> Update_Brand(InsuranceCoy model);
 
-        Task<Brand> Delete_Brand(Brand model);
+        Task<InsuranceCoy> Delete_Brand(InsuranceCoy model);
 
         Task<bool> BrandIsExist(string code);
 

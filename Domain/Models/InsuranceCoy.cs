@@ -3,15 +3,15 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models
 {
-    public class Brand
+    public class InsuranceCoy
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Brand_Id { get; set; }
+        public int Coy_Id { get; set; }
 
 
         [Required]
         [MaxLength(100)]
-        public string Brand_Name { get; set; }
+        public string Coy_Name { get; set; }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Application.Dtos;
+﻿using API.helper;
+using Application.Dtos;
 using Application.Interfaces.Content.Products;
 using Domain;
 using Domain.Models;
@@ -7,11 +8,13 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Configuration;
+using System.Drawing.Printing;
 
 namespace CleanaArchitecture1.Controllers.Content
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class ProductController : ControllerBase
     {
         private readonly IProduct _productServcie;
@@ -25,19 +28,45 @@ namespace CleanaArchitecture1.Controllers.Content
         #region GetAllProducts Endpoint
         // GET: api/Products
         [HttpGet("GetAll")]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<ProductDtoDetails>> GetProducts(int pageNumber = 1, int pageSize = 10)
         {
-            return Ok(await _productServcie.GetAll());
+            var products = await _productServcie.GetAll(pageNumber, pageSize);
+            //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
+
+            return Ok(products);
         }
+        #endregion
+
+        #region GetAllProducts Endpoint
+        // GET: api/Products
+        [HttpGet("GetAllProductsByGroup")]
+        public async Task<ActionResult<ProductDtoDetails>> GetProductsByGroup(string group_name,int pageNumber = 1, int pageSize = 10)
+        {
+            var products = await _productServcie.GetAllProductsByGroup(pageNumber, pageSize,group_name);
+            //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
+
+            return Ok(products);
+        }
+        #endregion
+
+        #region GetAllProducts by category id Endpoint
+        // GET: api/Products
+        [HttpGet("GetProductsByCategoryId")]
+        public async Task<ActionResult<ProductDtoDetails>> GetProductsByCategoryId(int product_categoryId, int pageNumber = 1, int pageSize = 10)
+        {
+            var products = await _productServcie.GetAllProductsByCategory( pageNumber, pageSize, product_categoryId);
+            //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
+
+            return Ok(products);
+        }
+        #endregion
+        #region get product details
 
         // GET: api/Products/5
         [HttpGet("{code}")]
         public async Task<ActionResult<Product>> GetProduct(string code)
         {
-            if (await _productServcie.GetAll() == null)
-            {
-                return NotFound("The entity is Empty");
-            }
+            
             var product = await _productServcie.GetByCode(code);
 
             if (product == null)
@@ -61,8 +90,8 @@ namespace CleanaArchitecture1.Controllers.Content
             if (isExist is true)
             {
                 var product = _productServcie.GetProductByCode(model.Product_Code);
-                product.Product_Quantity += model.Product_Quantity;
-                _productServcie.SaveChanges();
+                //product.Product_Quantity += model.Product_Quantity;
+                //_productServcie.SaveChanges();
 
             }
             else
@@ -70,8 +99,8 @@ namespace CleanaArchitecture1.Controllers.Content
                 var product = new Product
                 {
                     Product_Name = model.Product_Name,
-                    Brand_Id = model.Brand_Id,
-                    Categoty_Id = model.Category_Id,
+                    Coy_Id = model.Brand_Id,
+                    Category_Id = model.Category_Id,
                     Product_Price = model.Product_Price,
                     Product_Quantity = model.Product_Quantity,
                     Product_Code = model.Product_Code
@@ -97,8 +126,8 @@ namespace CleanaArchitecture1.Controllers.Content
             }
 
             product.Product_Name = model.Product_Name;
-            product.Brand_Id = model.Brand_Id;
-            product.Brand_Id = model.Brand_Id;
+            product.Coy_Id = model.Brand_Id;
+            product.Coy_Id = model.Brand_Id;
             product.Product_Price = model.Product_Price;
             product.Product_Quantity = model.Product_Quantity;
 
@@ -138,8 +167,8 @@ namespace CleanaArchitecture1.Controllers.Content
 
             }
 
-            if (dto.Product_Quantity > exist.Product_Quantity)
-                return BadRequest($"Your request is bigger Than the stock , the sock has {exist.Product_Quantity} of {exist.Product_Name}");
+          //  if (dto.Product_Quantity > exist.Product_Quantity)
+               // return BadRequest($"Your request is bigger Than the stock , the sock has {exist.Product_Quantity} of {exist.Product_Name}");
 
             _productServcie.WithDraw(dto);
 

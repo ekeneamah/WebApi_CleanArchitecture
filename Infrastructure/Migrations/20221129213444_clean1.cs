@@ -11,12 +11,12 @@ namespace Infrastructure.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Brands",
+                name: "InsuranceCoys",
                 columns: table => new
                 {
-                    BrandId = table.Column<int>(name: "Brand_Id", type: "int", nullable: false)
+                    BrandId = table.Column<int>(name: "Coy_Id", type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BrandName = table.Column<string>(name: "Brand_Name", type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    BrandName = table.Column<string>(name: "Coy_Name", type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -30,7 +30,7 @@ namespace Infrastructure.Migrations
                     ProductId = table.Column<int>(name: "Product_Id", type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     ProductName = table.Column<string>(name: "Product_Name", type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    BrandId = table.Column<int>(name: "Brand_Id", type: "int", nullable: true),
+                    BrandId = table.Column<int>(name: "Coy_Id", type: "int", nullable: true),
                     ProductPrice = table.Column<double>(name: "Product_Price", type: "float", maxLength: 100, nullable: false),
                     ProductQuantity = table.Column<int>(name: "Product_Quantity", type: "int", nullable: true),
                     ProductCode = table.Column<string>(name: "Product_Code", type: "nvarchar(max)", nullable: true)
@@ -41,14 +41,14 @@ namespace Infrastructure.Migrations
                     table.ForeignKey(
                         name: "FK_Products_Brands_Brand_Id",
                         column: x => x.BrandId,
-                        principalTable: "Brands",
-                        principalColumn: "Brand_Id");
+                        principalTable: "InsuranceCoys",
+                        principalColumn: "Coy_Id");
                 });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Products_Brand_Id",
                 table: "Products",
-                column: "Brand_Id");
+                column: "Coy_Id");
         }
 
         /// <inheritdoc />
@@ -58,7 +58,7 @@ namespace Infrastructure.Migrations
                 name: "Products");
 
             migrationBuilder.DropTable(
-                name: "Brands");
+                name: "InsuranceCoys");
         }
     }
 }

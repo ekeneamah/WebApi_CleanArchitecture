@@ -13,16 +13,14 @@ namespace Application.Dtos
         public UserProfileDto() { }
        
 
-        [Required]
-        [MaxLength(50)]
-        public required string UserId { get; set; }
+        public string? UserId { get; set; }
 
        
         [MaxLength(50)]
         public required string Gender { get; set; }
        
         [MaxLength(50)]
-        public required DateTime DateofBirth { get; set; }
+        public required string DateofBirth { get; set; }
         [MaxLength(10)]
         public required string MaritalStatus { get; set; }
        
@@ -45,5 +43,8 @@ namespace Application.Dtos
         public string? BVN { get; set; }
         public string? BusinessLocation { get; set; }
         public string? SignatureUrl { get; set; }
+        public string? FirstName { get;  set; }
+        public string? LastName { get;  set; }
+        public string? Email { get;  set; }
     }
 }

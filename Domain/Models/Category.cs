@@ -20,8 +20,10 @@ namespace Domain.Models
         [MaxLength(100)]
         public string? Category_Name { get; set; }
         [Required]
-        [MaxLength(100)]
+        [MaxLength(450)]
         public string? Category_Description { get; set; }
+        [MaxLength(450)]
+        public string? Category_VideoLink { get; set; }
 
 
 

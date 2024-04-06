@@ -24,6 +24,8 @@ namespace Application.Dtos.Account
         [StringLength(256)]
         public string Password { get; set; }
 
-      
+        
+
+
     }
 }

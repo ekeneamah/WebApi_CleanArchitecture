@@ -5,20 +5,21 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Domain.Models;
+using Application.Dtos;
 
 namespace Application.Interfaces.Content.UserProfiles
 {
     public interface IUserProfile
     {
-        Task<List<UserProfile>> GetAll();
+        Task<List<UserProfileDto>> GetAll();
 
-        Task<UserProfile> GetById(string id);
+        Task<UserProfileDto> GetById(string id);
 
-        Task<UserProfile> Add(UserProfile model);
+        Task<UserProfileDto> Add(UserProfileDto model);
 
-        Task<UserProfile> Update_UserProfile(UserProfile model);
+        Task<UserProfileDto> Update_UserProfile(UserProfileDto model);
 
-        UserProfile Delete_UserProfile(UserProfile model);
+        Task<int> Delete_UserProfile(UserProfileDto model);
 
         Task<bool> UserProfileIsExist(string code);
         Task<bool> UserHasBVN(string userid);

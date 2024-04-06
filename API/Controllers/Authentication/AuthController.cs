@@ -1,5 +1,8 @@
 ﻿using Application.Dtos.Account;
 using Application.Interfaces.Authentication;
+using Infrastructure.Identity.Models;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Common;
 
@@ -10,10 +13,13 @@ namespace CleanaArchitecture1.Controllers.Authentication
     public class AuthController : ControllerBase
     {
         private readonly IAuthResponse _authService;
+        private readonly ILogger<AuthController> _logger;
+        private readonly UserManager<AppUser> _userManager;
 
-        public AuthController(IAuthResponse authService)
+        public AuthController(IAuthResponse authService, UserManager<AppUser> userManager)
         {
             _authService = authService;
+            _userManager = userManager;
         }
 
         # region SetRefreshTokenInCookies
@@ -36,7 +42,7 @@ namespace CleanaArchitecture1.Controllers.Authentication
         #region SignUp Endpoint
 
         [HttpPost("signUp")]
-        public async Task<IActionResult> SignUpAsync([FromForm] SignUp model)
+        public async Task<IActionResult> SignUpAsync(SignUp model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -132,17 +138,60 @@ namespace CleanaArchitecture1.Controllers.Authentication
             //if (!result)
             //    return BadRequest("Token is Invalid");
 
-            return Ok("Done Revoke");
+            return Ok("Done Logout");
         }
 
         #endregion
 
-        #region ConfirmEmail
-        [HttpGet("confirm-email")]
-        public async Task<IActionResult> ConfirmEmailAsync([FromQuery] string userId, [FromQuery] string code)
+        #region ConfirmOTP
+        [HttpPost("confirm-otp")]
+        [Authorize]
+        public async Task<IActionResult> ConfirmOTPAsync(OTPDto otp)
+        {
+           
+            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t=>t.Type=="UserId").Value);
+            if (user == null)
+                return BadRequest("Invalid User");
+
+            VerifyOTPDto model= new();
+            model.UserId = user.Id;
+            model.OTP = otp.OTP;
+            model.Token =  HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
+            model.Email = user.Email;
+           
+
+            return Ok(await _authService.ConfirmOTPAsync(model));
+        }
+        #endregion
+
+        #region Resend OTP
+        [HttpPost("resend-otp")]
+        [Authorize]
+        public async Task<IActionResult> ResendOTPAsync()
         {
 
-            return Ok(await _authService.ConfirmEmailAsync(userId, code));
+            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
+            if (user == null)
+                return BadRequest("Invalid User");
+
+            VerifyOTPDto model = new()
+            {
+                UserId = user.Id,
+                Token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last(),
+                Email = user.Email
+            };
+
+
+            return Ok(await _authService.ConfirmOTPAsync(model));
+        }
+        #endregion
+
+        #region signout
+        [HttpGet("signout")]
+        public async Task<IActionResult> Signout()
+        {
+
+            return Ok(await _authService.Signout());
         }
         #endregion
     }

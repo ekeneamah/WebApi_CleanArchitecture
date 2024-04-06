@@ -1,4 +1,5 @@
-﻿using Domain.Models;
+﻿using Application.Dtos;
+using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,15 +10,15 @@ namespace Application.Interfaces.Content.UserProfiles
 {
     public interface IUserProfileRepo
     {
-        Task<List<UserProfile>> GetAll();
+        Task<List<UserProfileDto>> GetAll();
 
-        Task<UserProfile> GetById(string id);
+        Task<UserProfileDto> GetById(string userid);
 
-        Task<UserProfile> Add_UserProfile(UserProfile model);
+        Task<UserProfileDto> Add_UserProfile(UserProfileDto model);
 
-        Task<UserProfile> Update_UserProfile(UserProfile model);
+        Task<UserProfileDto> Update_UserProfile(UserProfileDto model);
 
-        Task<UserProfile> Delete_UserProfile(UserProfile model);
+        Task<int> Delete_UserProfile(UserProfileDto model);
 
         Task<bool> UserProfileIsExist(string code);
         Task<bool> UserHasBVN(string userid);

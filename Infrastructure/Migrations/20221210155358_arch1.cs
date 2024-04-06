@@ -35,7 +35,7 @@ namespace Infrastructure.Migrations
                 oldNullable: true);
 
             migrationBuilder.AlterColumn<int>(
-                name: "Brand_Id",
+                name: "Coy_Id",
                 table: "Products",
                 type: "int",
                 nullable: false,
@@ -47,9 +47,9 @@ namespace Infrastructure.Migrations
             migrationBuilder.AddForeignKey(
                 name: "FK_Products_Brands_Brand_Id",
                 table: "Products",
-                column: "Brand_Id",
-                principalTable: "Brands",
-                principalColumn: "Brand_Id",
+                column: "Coy_Id",
+                principalTable: "InsuranceCoys",
+                principalColumn: "Coy_Id",
                 onDelete: ReferentialAction.Cascade);
         }
 
@@ -77,7 +77,7 @@ namespace Infrastructure.Migrations
                 oldType: "nvarchar(max)");
 
             migrationBuilder.AlterColumn<int>(
-                name: "Brand_Id",
+                name: "Coy_Id",
                 table: "Products",
                 type: "int",
                 nullable: true,
@@ -87,9 +87,9 @@ namespace Infrastructure.Migrations
             migrationBuilder.AddForeignKey(
                 name: "FK_Products_Brands_Brand_Id",
                 table: "Products",
-                column: "Brand_Id",
-                principalTable: "Brands",
-                principalColumn: "Brand_Id");
+                column: "Coy_Id",
+                principalTable: "InsuranceCoys",
+                principalColumn: "Coy_Id");
         }
     }
 }

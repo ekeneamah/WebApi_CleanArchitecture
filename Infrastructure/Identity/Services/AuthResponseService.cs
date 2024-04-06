@@ -3,8 +3,10 @@ using Application.Dtos.Email;
 using Application.Interfaces;
 using Application.Interfaces.Authentication;
 using Domain.Settings;
+using Infrastructure.Identity.Data;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
@@ -13,22 +15,27 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using static System.Net.WebRequestMethods;
 
 namespace Infrastructure.Identity.Services
 {
     public class AuthResponseService : IAuthResponse
     {
+        private readonly AppIdentityContext _appIdentityContext;
         private readonly UserManager<AppUser> _userManager;
+        private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailService _emailSender;
         private readonly JWT _Jwt;
 
-        public AuthResponseService(UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt, IEmailService emailSender)
+        public AuthResponseService(AppIdentityContext appIdentityContext, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt, IEmailService emailSender)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _Jwt = jwt.Value;
             _emailSender = emailSender;
+            _signInManager = signInManager;
+            _appIdentityContext = appIdentityContext;
         }
 
         #region create JWT
@@ -48,7 +55,7 @@ namespace Infrastructure.Identity.Services
                 new Claim(JwtRegisteredClaimNames.Sub, user.UserName),
                 new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 new Claim(JwtRegisteredClaimNames.Email, user.Email),
-                new Claim("userId", user.Id),
+                new Claim("UserId", user.Id),
             }
             .Union(userClaims)
             .Union(roleClaims);
@@ -65,7 +72,7 @@ namespace Infrastructure.Identity.Services
                 issuer: _Jwt.Issuer,
                 audience: _Jwt.Audience,
                 claims: claims,
-                expires: DateTime.Now.AddMinutes(_Jwt.DurationInDays),
+                expires: DateTime.Now.AddDays(_Jwt.DurationInDays),
                 signingCredentials: signingCredentials);
 
             return jwtSecurityToken;
@@ -117,7 +124,10 @@ namespace Infrastructure.Identity.Services
                 FirstName = model.FirstName,
                 LastName = model.LastName,
                 UserName = model.Username,
-                Email = model.Email
+                Email = model.Email,
+                OTP = GenerateAndStoreOTP(),
+                OtpTimestamp = DateTime.UtcNow,
+                IsActivated = false
                
                 
             };
@@ -141,11 +151,52 @@ namespace Infrastructure.Identity.Services
 
             #region SendVerificationEmail
 
-            var verificationUri = await SendVerificationEmail(user, orgin);
+           // var verificationUri = await SendVerificationEmail(user, orgin);
 
             await _emailSender.SendEmailAsync(new EmailRequest() 
             { 
-                ToEmail = user.Email, Body = $"Please confirm your account by visiting this URL {verificationUri}", Subject = "Confirm Registration" 
+                ToEmail = user.Email, Body = $@"
+        <html>
+        <head>
+            <style>
+                /* Define your CSS styles here */
+                .container {{
+                    width: 100%;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background-color: #f9f9f9;
+                    font-family: Arial, sans-serif;
+                }}
+                .content {{
+                    background-color: #ffffff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                }}
+                .otp-container {{
+                    background-color: #007bff;
+                    color: #ffffff;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    font-size: 24px;
+                    margin-top: 20px;
+                    text-align: center;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='content'>
+                    <h2>Email Verification</h2>
+                    <p>Please use the following One-Time Password (OTP) to verify your email:</p>
+                    <div class='otp-container'>{user.OTP}</div>
+                    <p>OTP was generated on <b> {user.OtpTimestamp}</b> and will expire on <b>{user.OtpTimestamp.AddHours(1)}</b></p>
+                    <p>If you did not request this verification, please ignore this email.</p>
+                </div>
+            </div>
+        </body>
+        </html>", Subject = "Registration OTP" 
             });
 
             #endregion SendVerificationEmail
@@ -153,13 +204,17 @@ namespace Infrastructure.Identity.Services
             var jwtSecurityToken = await CreateJwtAsync(user);
 
             auth.Email = user.Email;
+           // auth.UserId = user.Id;
             auth.Roles = new List<string> { "User" };
             auth.ISAuthenticated = true;
             auth.UserName = user.UserName;
+            auth.FirstName = user.FirstName;
+            auth.LastName = user.LastName;
+            auth.Email = user.Email;
             auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             auth.TokenExpiresOn = jwtSecurityToken.ValidTo.ToLocalTime();
-            auth.Message = "SignUp Succeeded";
-
+            auth.Message = "SignUp Succeeded! Otp sent to your email";
+            auth.IsActivated = user.IsActivated;
             // create new refresh token
             var newRefreshToken = GenerateRefreshToken();
             auth.RefreshToken = newRefreshToken.Token;
@@ -172,6 +227,14 @@ namespace Infrastructure.Identity.Services
         }
 
         #endregion SignUp Method
+
+        #region logout 
+        public async Task<string> Signout()
+        {
+            await _signInManager.SignOutAsync();
+            return  "Logged out successfully.";
+        }
+        #endregion logout
 
         #region Login Method
 
@@ -193,13 +256,18 @@ namespace Infrastructure.Identity.Services
 
             var roles = await _userManager.GetRolesAsync(user);
 
-            auth.Email = user.Email;
+
+            auth.UserName = user.UserName;
+            auth.FirstName = user.FirstName;
+            auth.LastName = user.LastName;
+            auth.IsEmailConfirmed = user.EmailConfirmed;
             auth.Roles = roles.ToList();
             auth.ISAuthenticated = true;
             auth.UserName = user.UserName;
             auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             auth.TokenExpiresOn = jwtSecurityToken.ValidTo;
             auth.Message = "Login Succeeded ";
+            auth.IsActivated = user.IsActivated;
 
             //check if the user has any active refresh token
             if (user.RefreshTokens.Any(t => t.IsActive))
@@ -334,33 +402,136 @@ namespace Infrastructure.Identity.Services
         private async Task<string> SendVerificationEmail(AppUser user, string origin)
         {
             //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            // var code = await _userManager.GenerateTwoFactorTokenAsync(user);
+            var otp = GenerateAndStoreOTP();
 
-            code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+           // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var route = "api/Auth/confirm-email/";
 
-            var _enpointUri = new Uri(string.Concat($"{origin}/", route));
-            var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "userId", user.Id);
-            verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
+           // var _enpointUri = new Uri(string.Concat($"{origin}/", route));
+           // var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "UserId", user.Id);
+           // verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
             //Email Service Call Here
-            return verificationUri;
+            return  otp;
         }
-
-        public async Task<string> ConfirmEmailAsync(string userId, string code)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
-            var result = await _userManager.ConfirmEmailAsync(user, code);
-            if (result.Succeeded)
-            {
-                return $"Account Confirmed for {user.Email}. You can now use the /api/Account/authenticate endpoint.";
-            }
-            else
-            {
-                throw new Exception($"An error occured while confirming {user.Email}.");
-            }
-        }
-
         #endregion SendVerificationEmail
+        #region generate otp 
+        private string GenerateAndStoreOTP()
+        {
+            // Generate a random 6-digit OTP
+            Random rnd = new Random();
+            int otp = rnd.Next(100000, 999999);
+
+            // Store OTP and timestamp in user-specific storage (e.g., database)
+            //user.Otp = otp.ToString();
+           // user.OtpTimestamp = DateTime.UtcNow;
+
+            // Save changes to the database
+           // await _userManager.UpdateAsync(user);
+
+            return otp.ToString();
+        }
+        #endregion
+
+        #region confirm otp
+        public async Task<string> ConfirmOTPAsync(VerifyOTPDto model)
+        {
+
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            // code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            if (user == null)
+                return "Invalid userid.";
+
+            // Check if OTP is expired (1 hour)
+            if (!user.OtpTimestamp.ToString().IsNullOrEmpty() && DateTime.UtcNow.Subtract(user.OtpTimestamp).TotalHours > 1)
+            {
+                return "OTP has expired.";
+            }
+
+            // Check if OTP matches
+            if (user.OTP != model.OTP)
+            {
+                return "Invalid OTP.";
+            }
+            user.IsActivated = true;
+            await _userManager.UpdateAsync(user);
+            
+
+            // Mark the email as confirmed
+           // code = Encoding.UTF8.GetString(code);
+            await _userManager.ConfirmEmailAsync(user, model.Token);
+            return "Email verified successfully. You can now login.";
+        }
+        #endregion confirm otp
+        #region resend otp
+        public async Task<string> ResendOTPAsync(VerifyOTPDto model)
+        {
+            var user = await _userManager.FindByIdAsync(model.UserId);
+            // code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
+            if (user == null)
+                return "Invalid userid.";
+            user.OTP = GenerateAndStoreOTP();
+            user.OtpTimestamp = DateTime.UtcNow;
+            await _userManager.UpdateAsync(user);
+
+            #region SendVerificationEmail
+
+            // var verificationUri = await SendVerificationEmail(user, orgin);
+
+            await _emailSender.SendEmailAsync(new EmailRequest()
+            {
+                ToEmail = user.Email,
+                Body = $@"
+        <html>
+        <head>
+            <style>
+                /* Define your CSS styles here */
+                .container {{
+                    width: 100%;
+                    max-width: 600px;
+                    margin: 0 auto;
+                    padding: 20px;
+                    background-color: #f9f9f9;
+                    font-family: Arial, sans-serif;
+                }}
+                .content {{
+                    background-color: #ffffff;
+                    padding: 20px;
+                    border-radius: 10px;
+                    box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+                }}
+                .otp-container {{
+                    background-color: #007bff;
+                    color: #ffffff;
+                    padding: 10px 20px;
+                    border-radius: 5px;
+                    font-size: 24px;
+                    margin-top: 20px;
+                    text-align: center;
+                }}
+            </style>
+        </head>
+        <body>
+            <div class='container'>
+                <div class='content'>
+                    <h2>Email Verification</h2>
+                    <p>Please use the following One-Time Password (OTP) to verify your email:</p>
+                    <div class='otp-container'>{user.OTP}</div>
+<p>OTP was generated on <b> {user.OtpTimestamp}</b> and will expire on <b>{user.OtpTimestamp.AddHours(1)}</b></p>
+                    <p>If you did not request this verification, please ignore this email.</p>
+                </div>
+            </div>
+        </body>
+        </html>",
+                Subject = "Registration OTP"
+            });
+
+            #endregion SendVerificationEmail
+
+            return "OTP re-sent to your e-mail";
+        }
+        #endregion
+
+
     }
 }

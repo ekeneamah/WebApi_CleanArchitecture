@@ -12,10 +12,13 @@ namespace Infrastructure.Content.Data
 
         }
 
-        public DbSet<Brand> Brands { get; set; }
+        public DbSet<InsuranceCoy> InsuranceCoys { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Claim> Claims { get; set; }
+        public DbSet<Policy> Policies { get; set; }
+        public DbSet<ClaimsForm> ClaimsForms { get; set; }
 
 
 

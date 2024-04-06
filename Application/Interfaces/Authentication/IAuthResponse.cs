@@ -20,7 +20,8 @@ namespace Application.Interfaces.Authentication
         // for revoking refreshrokens
         Task<bool> RevokeTokenAsync(string token);
 
-        Task<string> ConfirmEmailAsync(string userId, string code);
-
+        Task<string> ConfirmOTPAsync(VerifyOTPDto model);
+        Task<string> ResendOTPAsync(VerifyOTPDto model);
+        Task<string> Signout();
     }
 }

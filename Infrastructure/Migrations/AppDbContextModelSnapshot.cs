@@ -22,24 +22,6 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Models.Brand", b =>
-                {
-                    b.Property<int>("Brand_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Brand_Id"));
-
-                    b.Property<string>("Brand_Name")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.HasKey("Brand_Id");
-
-                    b.ToTable("Brands");
-                });
-
             modelBuilder.Entity("Domain.Models.Category", b =>
                 {
                     b.Property<int>("Categoty_Id")
@@ -50,17 +32,83 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Category_Description")
                         .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("Category_Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Category_VideoLink")
+                        .HasMaxLength(450)
+                        .HasColumnType("nvarchar(450)");
+
                     b.HasKey("Categoty_Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Domain.Models.Claim", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<Guid>("ClaimsId")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<string>("ClaimForm")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("InsuranceCompanyId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("LossDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("NotifyDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PolicyNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Reference")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Claims");
+                });
+
+            modelBuilder.Entity("Domain.Models.InsuranceCoy", b =>
+                {
+                    b.Property<int>("Coy_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Coy_Id"));
+
+                    b.Property<string>("Coy_Name")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.HasKey("Coy_Id");
+
+                    b.ToTable("InsuranceCoys");
                 });
 
             modelBuilder.Entity("Domain.Models.Product", b =>
@@ -71,13 +119,21 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Product_Id"));
 
-                    b.Property<int>("Brand_Id")
-                        .HasColumnType("int");
-
                     b.Property<int?>("Categoty_Id")
                         .HasColumnType("int");
 
+                    b.Property<int>("Coy_Id")
+                        .HasColumnType("int");
+
                     b.Property<string>("Product_Code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Product_Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Product_Group")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
@@ -95,9 +151,9 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Product_Id");
 
-                    b.HasIndex("Brand_Id");
-
                     b.HasIndex("Categoty_Id");
+
+                    b.HasIndex("Coy_Id");
 
                     b.ToTable("Products");
                 });
@@ -123,9 +179,22 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Country")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateofBirth")
+                    b.Property<string>("DateofBirth")
+                        .IsRequired()
                         .HasMaxLength(50)
-                        .HasColumnType("datetime2");
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Email")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FirstName")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Gender")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("LastName")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Maidenname")
                         .HasColumnType("nvarchar(max)");
@@ -177,19 +246,19 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Models.Product", b =>
                 {
-                    b.HasOne("Domain.Models.Brand", "Brand")
-                        .WithMany()
-                        .HasForeignKey("Brand_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.HasOne("Domain.Models.Category", "Category")
                         .WithMany()
                         .HasForeignKey("Categoty_Id");
 
-                    b.Navigation("Brand");
+                    b.HasOne("Domain.Models.InsuranceCoy", "InsuranceCoy")
+                        .WithMany()
+                        .HasForeignKey("Coy_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Category");
+
+                    b.Navigation("InsuranceCoy");
                 });
 #pragma warning restore 612, 618
         }

@@ -10,11 +10,13 @@ namespace Application.Interfaces.Content.Products
 {
     public interface IProduct
     {
-        Task<List<ProductDtoDetails>> GetAll();
-
+        Task<List<ProductDtoDetails>> GetAll(int pageNumber, int pageSize);
+        Task<List<ProductDtoDetails>> GetAllProductsByCategory(int pageNumber, int pageSize, int product_categoryId);
+        Task<List<ProductGroupDto>> GetAllProductsGroup();
+        Task<List<ProductDtoDetails>> GetAllProductsByGroup(int pageNumber, int pageSize, string product_groupname);
         Task<Product> GetById(int id);
         Task<ProductDtoDetails> GetByCode(string code);
-        Product GetProductByCode(string code);
+        Task<ProductDto> GetProductByCode(string code);
 
         Task<Product> Add(Product model);
 

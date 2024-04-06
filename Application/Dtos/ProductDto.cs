@@ -11,7 +11,7 @@ namespace Application.Dtos
         public string? Product_Name { get; set; }
 
         public int Brand_Id { get; set; }
-        public int Category_Id { get; set; }
+        public int? Category_Id { get; set; }
 
         public double Product_Price { get; set; }
 

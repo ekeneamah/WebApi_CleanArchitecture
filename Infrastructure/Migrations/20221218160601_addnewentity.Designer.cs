@@ -25,22 +25,22 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Brand", b =>
+            modelBuilder.Entity("Domain.InsuranceCoys", b =>
                 {
-                    b.Property<int>("Brand_Id")
+                    b.Property<int>("Coy_Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Brand_Id"));
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Coy_Id"));
 
-                    b.Property<string>("Brand_Name")
+                    b.Property<string>("Coy_Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
-                    b.HasKey("Brand_Id");
+                    b.HasKey("Coy_Id");
 
-                    b.ToTable("Brands");
+                    b.ToTable("InsuranceCoys");
                 });
 
             modelBuilder.Entity("Domain.Category", b =>
@@ -69,7 +69,7 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Product_Id"));
 
-                    b.Property<int>("Brand_Id")
+                    b.Property<int>("Coy_Id")
                         .HasColumnType("int");
 
                     b.Property<int?>("Categoty_Id")
@@ -93,7 +93,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Product_Id");
 
-                    b.HasIndex("Brand_Id");
+                    b.HasIndex("Coy_Id");
 
                     b.HasIndex("Categoty_Id");
 
@@ -102,9 +102,9 @@ namespace Infrastructure.Migrations
 
             modelBuilder.Entity("Domain.Product", b =>
                 {
-                    b.HasOne("Domain.Brand", "Brand")
+                    b.HasOne("Domain.InsuranceCoys", "InsuranceCoys")
                         .WithMany()
-                        .HasForeignKey("Brand_Id")
+                        .HasForeignKey("Coy_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
@@ -112,7 +112,7 @@ namespace Infrastructure.Migrations
                         .WithMany()
                         .HasForeignKey("Categoty_Id");
 
-                    b.Navigation("Brand");
+                    b.Navigation("InsuranceCoys");
 
                     b.Navigation("Category");
                 });

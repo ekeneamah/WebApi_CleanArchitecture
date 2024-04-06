@@ -4,6 +4,8 @@ namespace Application.Dtos.Account
 {
     public class AuthResponse
     {
+       // public  string? UserId {  get; set; }
+
         public string? Message { get; set; }
 
         //by default false
@@ -23,5 +25,9 @@ namespace Application.Dtos.Account
         public string? RefreshToken { get; set; }
 
         public DateTime RefreshTokenExpiration { get; set; }
+        public bool IsEmailConfirmed { get; set; }
+        public bool IsActivated { get; set; }
+        public string FirstName { get; set; }
+        public string LastName { get; set; }
     }
 }
