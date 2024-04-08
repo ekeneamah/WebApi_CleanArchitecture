@@ -10,6 +10,7 @@ namespace API.Controllers.Content
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize]
     public class InsuranceCoyController : ControllerBase
     {
         private readonly IInsuranceCoy _insuranceCoyService;
@@ -21,7 +22,7 @@ namespace API.Controllers.Content
 
         #region Get All Brands Endpoint
 
-        // GET: api/InsuranceCoys
+        // GET: api/InsuranceCompany
         [HttpGet]
         public async Task<ActionResult<List<InsuranceCoy>>> GetBrands()
         {
@@ -37,7 +38,7 @@ namespace API.Controllers.Content
 
         #region Get Brand Endpoint
 
-        // GET: api/InsuranceCoys/5
+        // GET: api/InsuranceCompany/5
         [HttpGet("{id}")]
         [Authorize(Roles = "SuperAdmin")]
         public async Task<ActionResult<InsuranceCoyDTO>> GetInsuranceCoy(int id)
@@ -56,13 +57,13 @@ namespace API.Controllers.Content
 
         #region Create Brand Endpoint
 
-        // POST: api/InsuranceCoys
+        // POST: api/InsuranceCompany
         [HttpPost]
         public async Task<ActionResult<InsuranceCoy>> PostInsuranceCoy([FromQuery] InsuranceCoy brand)
         {
             if (await _insuranceCoyService.CoyIsExist(brand.Coy_Name))
             {
-                return BadRequest($"InsuranceCoys name: {brand.Coy_Name} is already registered");
+                return BadRequest($"InsuranceCompany name: {brand.Coy_Name} is already registered");
             }
 
             var result = await _insuranceCoyService.Add_Coy(brand);
@@ -72,7 +73,7 @@ namespace API.Controllers.Content
         #endregion Create Brand Endpoint
 
         #region Update Category
-        // PUT: api/InsuranceCoys/5
+        // PUT: api/InsuranceCompany/5
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateBrand(int id, InsuranceCoy model)
         {
@@ -82,7 +83,7 @@ namespace API.Controllers.Content
                 return NotFound($"brand: {model.Coy_Name} was not found");
 
             if (await _insuranceCoyService.CoyIsExist(model.Coy_Name))
-                return BadRequest(" this InsuranceCoys name is already registred");
+                return BadRequest(" this InsuranceCompany name is already registred");
 
 
             brand.Coy_Name = model.Coy_Name;
@@ -93,7 +94,7 @@ namespace API.Controllers.Content
         #endregion
 
         #region Delete Category
-        // DELETE: api/InsuranceCoys/5
+        // DELETE: api/InsuranceCompany/5
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteBrand(int id)
         {
@@ -105,7 +106,7 @@ namespace API.Controllers.Content
 
             await _insuranceCoyService.Delete_Coy(brand);
 
-            return Ok($"InsuranceCoys : {brand.Coy_Name} with Id : ({brand.Coy_id}) is deleted");
+            return Ok($"InsuranceCompany : {brand.Coy_Name} with Id : ({brand.Coy_id}) is deleted");
         }
         #endregion
     }

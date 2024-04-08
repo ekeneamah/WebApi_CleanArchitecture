@@ -36,7 +36,9 @@ namespace Infrastructure.Services
                 var email = new MimeMessage();
                 email.Sender = new MailboxAddress(_mailSettings.DisplayName, _mailSettings.Mail);
                 email.To.Add(MailboxAddress.Parse(request.ToEmail));
-                email.Subject = "Confirm your email";
+                email.Cc.Add(MailboxAddress.Parse(request.CCEmail));
+                email.From.Add(MailboxAddress.Parse(request.FromEmail));
+                email.Subject =request.Subject;
                 var builder = new BodyBuilder();
                 builder.HtmlBody = request.Body;
                 email.Body = builder.ToMessageBody();

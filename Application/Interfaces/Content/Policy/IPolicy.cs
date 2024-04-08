@@ -31,5 +31,7 @@ namespace Application.Interfaces.Content.Policy
 
 
         Task<bool> POlicyIsExist(string policyName);
+
+       
     }
 }

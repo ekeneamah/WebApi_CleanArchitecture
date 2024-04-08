@@ -3,6 +3,7 @@ using Application.Interfaces.Authentication;
 using Application.Interfaces.Content.Brands;
 using Application.Interfaces.Content.Categories;
 using Application.Interfaces.Content.Claim;
+using Application.Interfaces.Content.Policy;
 using Application.Interfaces.Content.Products;
 using Application.Interfaces.Content.UserProfiles;
 using Domain.Settings;
@@ -59,7 +60,9 @@ builder.Services.AddScoped<IInsuranceCoy, InsuranceCoyService>();
 builder.Services.AddScoped<ICategory, CategoryService>();
 builder.Services.AddScoped<IProduct, ProductService>();
 builder.Services.AddScoped<IClaim, ClaimService>();
+builder.Services.AddScoped<IPolicy, PolicyService>();
 builder.Services.AddScoped<IUserProfile, UserProfileService>();
+builder.Services.AddScoped<ITransaction, TransactionService>();
 
 builder.Services.AddScoped<IAuthResponse, AuthResponseService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
@@ -133,6 +136,7 @@ using (var scope = app.Services.CreateScope())
     {
         var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
         var identityDbContext = serviceProvider.GetRequiredService<AppIdentityContext>();
+     //   dbContext.Database.EnsureDeleted();
         dbContext.Database.Migrate(); // This line adds any pending migrations
         identityDbContext.Database.Migrate();
     }

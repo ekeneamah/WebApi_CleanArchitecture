@@ -28,7 +28,12 @@ namespace Infrastructure.Identity.Services
         private readonly IEmailService _emailSender;
         private readonly JWT _Jwt;
 
-        public AuthResponseService(AppIdentityContext appIdentityContext, SignInManager<AppUser> signInManager, UserManager<AppUser> userManager, RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt, IEmailService emailSender)
+        public AuthResponseService(
+            AppIdentityContext appIdentityContext,
+            SignInManager<AppUser> signInManager,
+            UserManager<AppUser> userManager,
+            RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt,
+            IEmailService emailSender)
         {
             _userManager = userManager;
             _roleManager = roleManager;
@@ -155,6 +160,7 @@ namespace Infrastructure.Identity.Services
 
             await _emailSender.SendEmailAsync(new EmailRequest() 
             { 
+                
                 ToEmail = user.Email, Body = $@"
         <html>
         <head>

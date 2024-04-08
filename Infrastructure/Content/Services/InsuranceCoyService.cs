@@ -22,17 +22,18 @@ namespace Infrastructure
 
         public async Task<List<InsuranceCoy>> GetAll()
         {
-            return await _context.InsuranceCoys.ToListAsync();
+            return await _context.InsuranceCompany.ToListAsync();
         }
 
          
         public async Task<InsuranceCoyDTO> GetById(int id)
         {
-            InsuranceCoy i = await _context.InsuranceCoys.Where(m => m.Coy_Id == id).FirstOrDefaultAsync();
+            InsuranceCoy i = await _context.InsuranceCompany.Where(m => m.Coy_Id == id).FirstOrDefaultAsync();
             InsuranceCoyDTO insuranceCoyDTO = new()
             {
                 Coy_Name = i.Coy_Name,
                 Coy_id = i.Coy_Id,
+                Coy_Email = i.Coy_Email,
             };
             return insuranceCoyDTO;
         }
@@ -40,7 +41,7 @@ namespace Infrastructure
 
         public async Task<InsuranceCoy> Add_Coy(InsuranceCoy model)
         {
-           await _context.InsuranceCoys.AddAsync(model);
+           await _context.InsuranceCompany.AddAsync(model);
             await _context.SaveChangesAsync();
             return model;
         }
@@ -48,12 +49,27 @@ namespace Infrastructure
 
         public async Task<int> Update_Coy(InsuranceCoyDTO model)
         {
-            InsuranceCoy coy = new()
+            InsuranceCoy insuranceCoy = new()
             {
                 Coy_Id = model.Coy_id,
                 Coy_Name = model.Coy_Name,
+                Coy_Email = model.Coy_Email,
+                Coy_City = model.Coy_City,
+                Coy_CityCode = model.Coy_CityCode,
+                Coy_Country = model.Coy_Country,
+                Coy_CountryCode = model.Coy_CountryCode,
+                Coy_Description = model.Coy_Description,
+                Coy_Phone = model.Coy_Phone,
+                Coy_PostalCode = model.Coy_PostalCode,
+                Coy_State = model.Coy_State,
+                Coy_Status = model.Coy_Status,
+                Coy_Street = model.Coy_Street,
+                Coy_ZipCode = model.Coy_ZipCode,
+                
+
             };
-            _context.InsuranceCoys.Update(coy);
+            InsuranceCoy coy = insuranceCoy;
+            _context.InsuranceCompany.Update(coy);
 
             return await _context.SaveChangesAsync();
         }
@@ -65,8 +81,11 @@ namespace Infrastructure
             {
                 Coy_Id = model.Coy_id,
                 Coy_Name = model.Coy_Name,
+                Coy_Email = model.Coy_Email,
+                Coy_City = model.Coy_City,
+                
             };
-            _context.InsuranceCoys.Remove(coy);
+            _context.InsuranceCompany.Remove(coy);
             await _context.SaveChangesAsync();
             return coy;
         }
@@ -74,7 +93,7 @@ namespace Infrastructure
 
         public async Task<bool> CoyIsExist(string coy_Name)
         {
-            return await _context.InsuranceCoys.AnyAsync(b => b.Coy_Name == coy_Name);
+            return await _context.InsuranceCompany.AnyAsync(b => b.Coy_Name == coy_Name);
         }
 
 

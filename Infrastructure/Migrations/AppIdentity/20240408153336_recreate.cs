@@ -2,10 +2,10 @@
 
 #nullable disable
 
-namespace Infrastructure.Migrations
+namespace Infrastructure.Migrations.AppIdentity
 {
     /// <inheritdoc />
-    public partial class initiaDBCOntextCloud : Migration
+    public partial class recreate : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

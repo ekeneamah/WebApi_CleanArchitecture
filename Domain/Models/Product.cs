@@ -22,7 +22,7 @@ namespace Domain.Models
         public string? Product_Name { get; set; }
 
 
-        [ForeignKey("InsuranceCoy")]
+        [ForeignKey("InsuranceCompany")]
         public int Coy_Id { get; set; }
         public virtual InsuranceCoy InsuranceCoy { get; set; }
 

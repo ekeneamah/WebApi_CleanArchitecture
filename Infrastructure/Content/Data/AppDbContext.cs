@@ -12,19 +12,21 @@ namespace Infrastructure.Content.Data
 
         }
 
-        public DbSet<InsuranceCoy> InsuranceCoys { get; set; }
+        public DbSet<InsuranceCoy> InsuranceCompany { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Claim> Claims { get; set; }
         public DbSet<Policy> Policies { get; set; }
         public DbSet<ClaimsForm> ClaimsForms { get; set; }
+        public DbSet<Transaction> Transactions { get; set; }
 
 
 
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             base.OnModelCreating(modelBuilder);
 
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

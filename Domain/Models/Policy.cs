@@ -22,7 +22,7 @@ namespace Domain.Models
         [Required]
         public required string PurchasedDate {  get; set; }
         [Required]
-        public required decimal Price { get; set;}
+        public required double Price { get; set;}
         [Required]
         public required string TransactionRef { get; set; }
         [Required]

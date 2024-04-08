@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240406120104_Adddcategory vie link")]
-    partial class Adddcategoryvielink
+    [Migration("20240408151645_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -60,17 +60,16 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
-                    b.Property<Guid>("ClaimsId")
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("uniqueidentifier");
-
                     b.Property<string>("ClaimForm")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("InsuranceCompanyId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<Guid>("ClaimsId")
+                        .ValueGeneratedOnAddOrUpdate()
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("InsuranceCompanyId")
+                        .HasColumnType("int");
 
                     b.Property<DateTime>("LossDate")
                         .HasColumnType("datetime2");
@@ -96,6 +95,34 @@ namespace Infrastructure.Migrations
                     b.ToTable("Claims");
                 });
 
+            modelBuilder.Entity("Domain.Models.ClaimsForm", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("APIEndPoint")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Coy_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Coy_name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Form")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClaimsForms");
+                });
+
             modelBuilder.Entity("Domain.Models.InsuranceCoy", b =>
                 {
                     b.Property<int>("Coy_Id")
@@ -104,14 +131,123 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Coy_Id"));
 
+                    b.Property<string>("Coy_City")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Coy_CityCode")
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<string>("Coy_Country")
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.Property<string>("Coy_CountryCode")
+                        .HasMaxLength(3)
+                        .HasColumnType("nvarchar(3)");
+
+                    b.Property<string>("Coy_Description")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Coy_Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Coy_Name")
                         .IsRequired()
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
 
+                    b.Property<string>("Coy_Phone")
+                        .HasMaxLength(36)
+                        .HasColumnType("nvarchar(36)");
+
+                    b.Property<string>("Coy_PostalCode")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Coy_State")
+                        .HasMaxLength(10)
+                        .HasColumnType("nvarchar(10)");
+
+                    b.Property<string>("Coy_Status")
+                        .HasMaxLength(5)
+                        .HasColumnType("nvarchar(5)");
+
+                    b.Property<string>("Coy_Street")
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Coy_ZipCode")
+                        .HasMaxLength(6)
+                        .HasColumnType("nvarchar(6)");
+
                     b.HasKey("Coy_Id");
 
-                    b.ToTable("InsuranceCoys");
+                    b.ToTable("InsuranceCompany");
+                });
+
+            modelBuilder.Entity("Domain.Models.Policy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("Coy_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("InsuranceCoyCoy_Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PaymentRef")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PolicyNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Price")
+                        .HasColumnType("float");
+
+                    b.Property<string>("ProductCode")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("PurchasedDate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransactionRef")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransactionStatus")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserProfileProfile_Id")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("InsuranceCoyCoy_Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.HasIndex("UserProfileProfile_Id");
+
+                    b.ToTable("Policies");
                 });
 
             modelBuilder.Entity("Domain.Models.Product", b =>
@@ -122,10 +258,13 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Product_Id"));
 
-                    b.Property<int?>("Categoty_Id")
+                    b.Property<int?>("Category_Id")
                         .HasColumnType("int");
 
                     b.Property<int>("Coy_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("InsuranceCoyCoy_Id")
                         .HasColumnType("int");
 
                     b.Property<string>("Product_Code")
@@ -154,11 +293,51 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Product_Id");
 
-                    b.HasIndex("Categoty_Id");
+                    b.HasIndex("Category_Id");
 
-                    b.HasIndex("Coy_Id");
+                    b.HasIndex("InsuranceCoyCoy_Id");
 
                     b.ToTable("Products");
+                });
+
+            modelBuilder.Entity("Domain.Models.Transaction", b =>
+                {
+                    b.Property<string>("Reference")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AccessCode")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Amount")
+                        .HasColumnType("float");
+
+                    b.Property<string>("AuthorizationUrl")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("DateTime")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentRef")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("PolicyNo")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("ProductId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserEmail")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Reference");
+
+                    b.ToTable("Transactions");
                 });
 
             modelBuilder.Entity("Domain.Models.UserProfile", b =>
@@ -247,15 +426,38 @@ namespace Infrastructure.Migrations
                     b.ToTable("UserProfiles");
                 });
 
+            modelBuilder.Entity("Domain.Models.Policy", b =>
+                {
+                    b.HasOne("Domain.Models.InsuranceCoy", "InsuranceCoy")
+                        .WithMany()
+                        .HasForeignKey("InsuranceCoyCoy_Id");
+
+                    b.HasOne("Domain.Models.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Domain.Models.UserProfile", "UserProfile")
+                        .WithMany()
+                        .HasForeignKey("UserProfileProfile_Id");
+
+                    b.Navigation("InsuranceCoy");
+
+                    b.Navigation("Product");
+
+                    b.Navigation("UserProfile");
+                });
+
             modelBuilder.Entity("Domain.Models.Product", b =>
                 {
                     b.HasOne("Domain.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("Categoty_Id");
+                        .HasForeignKey("Category_Id");
 
                     b.HasOne("Domain.Models.InsuranceCoy", "InsuranceCoy")
                         .WithMany()
-                        .HasForeignKey("Coy_Id")
+                        .HasForeignKey("InsuranceCoyCoy_Id")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
