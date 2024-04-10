@@ -46,8 +46,8 @@ namespace API.Controllers.Content
         #endregion
 
         #region create profile
-        [HttpPost]
-        public async Task<ActionResult> CreateProfile( UserProfileDto u)
+        [HttpPut]
+        public async Task<ActionResult> UpdateProfile( UserProfileDto u)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -61,20 +61,7 @@ namespace API.Controllers.Content
         }
         #endregion create profile
 
-        #region update profile
-        [HttpPut]
-        public async Task<ActionResult> UpdateProfile( UserProfileDto u)
-        {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-            //var orgin = Request.Headers["origin"];
-            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
-            if (user == null)
-                return BadRequest("Invalid User");
-            u.UserId = user.Id;
-            var result = await _profileservice.Update_UserProfile(u);
-            return new JsonResult(result);
-        }
+       
+      
     }
 }
-#endregion update profile

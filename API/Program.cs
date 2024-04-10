@@ -55,6 +55,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 
     .AddEntityFrameworkStores<AppIdentityContext>()
     .AddDefaultTokenProviders();
+builder.Services.AddHttpClient(); // Add HttpClient and IHttpClientFactory
 
 builder.Services.AddScoped<IInsuranceCoy, InsuranceCoyService>();
 builder.Services.AddScoped<ICategory, CategoryService>();
@@ -63,6 +64,8 @@ builder.Services.AddScoped<IClaim, ClaimService>();
 builder.Services.AddScoped<IPolicy, PolicyService>();
 builder.Services.AddScoped<IUserProfile, UserProfileService>();
 builder.Services.AddScoped<ITransaction, TransactionService>();
+builder.Services.AddScoped<IVehiclePremiumRepository, VehiclePremiumService>();
+builder.Services.AddScoped<IMotorClaimRepository, MotorClaimService>();
 
 builder.Services.AddScoped<IAuthResponse, AuthResponseService>();
 builder.Services.AddScoped<IEmailService, EmailService>();

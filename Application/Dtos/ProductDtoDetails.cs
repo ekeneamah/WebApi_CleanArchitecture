@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Domain.Models;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,6 +26,8 @@ namespace Application.Dtos
 
         public string Product_Code { get; set; }
         public object Product_Group { get; set; }
+        public Category Product_Category { get; set;}
+        public InsuranceCoy InsuranceCoy { get; set; }
     }
 
 }

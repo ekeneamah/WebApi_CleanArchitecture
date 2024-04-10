@@ -10,11 +10,11 @@ namespace Application.Interfaces.Content.Brands
 {
     public interface IInsuranceCoy
     {
-        Task<List<InsuranceCoy>> GetAll();
+        Task<List<InsuranceCoyDTO>> GetAll();
 
         Task<InsuranceCoyDTO> GetById(int id);
 
-        Task<InsuranceCoy> Add_Coy(InsuranceCoy model);
+        Task<InsuranceCoyDTO> Add_Coy(InsuranceCoyDTO model);
 
         Task<int> Update_Coy(InsuranceCoyDTO model);
 

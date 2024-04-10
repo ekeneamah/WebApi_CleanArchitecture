@@ -9,7 +9,7 @@ namespace Domain.Models
 {
     public class Transaction
     {
-        public string? AuthorizationUrl { get; set; }
+        public string? Authorization_Url { get; set; }
         public string? AccessCode { get; set; }
         [Key]
         public required string Reference { get; set; }
@@ -19,6 +19,22 @@ namespace Domain.Models
         public string? PolicyNo { get; set; }
         public double Amount { get; set; }
         public DateTime DateTime { get; set; }=DateTime.Now;
+        public string? UserEmail { get; set; }
+        public string? PaymentRef { get; set; }
+    }
+
+    public class TransactionDTO
+    {
+        public string? Authorization_Url { get; set; }
+        public string? Access_Code { get; set; }
+        [Key]
+        public required string Reference { get; set; }
+        public string? Status { get; set; } = "Open";
+        public string? UserId { get; set; }
+        public int? ProductId { get; set; }
+        public string? PolicyNo { get; set; }
+        public double Amount { get; set; }
+        public DateTime DateTime { get; set; } = DateTime.Now;
         public string? UserEmail { get; set; }
         public string? PaymentRef { get; set; }
     }

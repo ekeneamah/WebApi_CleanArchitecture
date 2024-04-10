@@ -78,20 +78,37 @@ namespace CleanaArchitecture1.Controllers.Content
         }
         #endregion
 
+        #region get product details
+
+        // GET: api/Products/5
+        [HttpGet("GetProductDetailById")]
+        public async Task<ActionResult<Product>> GetProductDetailById(int product_id)
+        {
+
+            var product = await _productServcie.GetDetailsById(product_id);
+
+            if (product == null)
+            {
+                return NotFound($"no Product with {product_id} was found");
+            }
+
+            return Ok(product);
+        }
+        #endregion
+
+
         #region Create Product Endpoint
         // POST: api/Products
         [HttpPost]
         [Authorize]
-        public async Task<IActionResult> PostProduct([FromQuery] ProductDto model)
+        public async Task<ActionResult<int>> PostProduct( ProductDto model)
         {
 
             var isExist = await _productServcie.ProductIsExist(model.Product_Code);
 
             if (isExist is true)
             {
-                var product = _productServcie.GetProductByCode(model.Product_Code);
-                //product.Product_Quantity += model.Product_Quantity;
-                //_productServcie.SaveChanges();
+                return BadRequest("Product Code already exists");
 
             }
             else
@@ -99,17 +116,20 @@ namespace CleanaArchitecture1.Controllers.Content
                 var product = new Product
                 {
                     Product_Name = model.Product_Name,
-                    Coy_Id = model.Brand_Id,
+                    Coy_Id = model.InsuranceCoy_id,
                     Category_Id = model.Category_Id,
                     Product_Price = model.Product_Price,
                     Product_Quantity = model.Product_Quantity,
-                    Product_Code = model.Product_Code
+                    Product_Code = model.Product_Code,
+                    Product_Description = model.Product_Description,
+                    Product_Group = model.Product_Group,
+                    
                 };
 
-                await _productServcie.Add(product);
+               return Ok( await _productServcie.Add(product));
             }
-            _productServcie.SaveChanges();
-            return Ok();
+           
+            //return Ok();
         }
         #endregion
 
@@ -126,8 +146,8 @@ namespace CleanaArchitecture1.Controllers.Content
             }
 
             product.Product_Name = model.Product_Name;
-            product.Coy_Id = model.Brand_Id;
-            product.Coy_Id = model.Brand_Id;
+            product.Coy_Id = model.InsuranceCoy_id;
+            product.Coy_Id = model.InsuranceCoy_id;
             product.Product_Price = model.Product_Price;
             product.Product_Quantity = model.Product_Quantity;
 

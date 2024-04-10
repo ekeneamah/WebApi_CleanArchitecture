@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240408151645_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240409105936_removeforegnkeyfromProductsAll")]
+    partial class removeforegnkeyfromProductsAll
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -264,9 +264,6 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Coy_Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("InsuranceCoyCoy_Id")
-                        .HasColumnType("int");
-
                     b.Property<string>("Product_Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -292,10 +289,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Product_Id");
-
-                    b.HasIndex("Category_Id");
-
-                    b.HasIndex("InsuranceCoyCoy_Id");
 
                     b.ToTable("Products");
                 });
@@ -447,23 +440,6 @@ namespace Infrastructure.Migrations
                     b.Navigation("Product");
 
                     b.Navigation("UserProfile");
-                });
-
-            modelBuilder.Entity("Domain.Models.Product", b =>
-                {
-                    b.HasOne("Domain.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("Category_Id");
-
-                    b.HasOne("Domain.Models.InsuranceCoy", "InsuranceCoy")
-                        .WithMany()
-                        .HasForeignKey("InsuranceCoyCoy_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("InsuranceCoy");
                 });
 #pragma warning restore 612, 618
         }

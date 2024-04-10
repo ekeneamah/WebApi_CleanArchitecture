@@ -10,6 +10,8 @@
 	using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
     using System.Net.Http;
+    using System.Net.Http.Headers;
+    using System.Text;
     using System.Threading.Tasks;
 
 	
@@ -18,7 +20,7 @@
 	[Authorize]
 	public class TransactionController : ControllerBase
 	{
-	private readonly IHttpClientFactory _clientFactory;
+	
 	private const string ApiBaseUrl = "https://api.budpay.com/api/v2/";
 	private readonly IPolicy _policyService;
 		private readonly ITransaction _transactionService;
@@ -27,49 +29,60 @@
         private readonly HttpClient _httpClient;
 
 
-        public TransactionController(IHttpClientFactory clientFactory,
+        public TransactionController(
 		IPolicy policyService,
-		UserManager<AppUser> userManager,
+        HttpClient httpClient,
+
+        UserManager<AppUser> userManager,
 		ITransaction transactionService,
         IConfiguration configuration)
 	{
 		_policyService = policyService;
 		_userManager = userManager;
             _configuration = configuration;
-            _httpClient.BaseAddress = new Uri("https://api.budpay.com/api/v2/");
-            _httpClient.DefaultRequestHeaders.Add("Authorization", "Bearer YOUR_SECRET_KEY");
-            _transactionService = transactionService;
+            _httpClient = httpClient ?? throw new ArgumentNullException(nameof(httpClient));
+            
+
+        _transactionService = transactionService;
 		  
-			_clientFactory = clientFactory;
+			
 		}
 
 		[HttpPost("initialize")]
-		public async Task<IActionResult> InitializeTransaction([FromBody] TransactionRequest request)
+		public async Task<IActionResult> InitializeTransaction( TransactionRequest request)
 		{
-		var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
-		if (user == null)
-			return BadRequest("Invalid User");
-		var client = _clientFactory.CreateClient();
+            var payload = new
+            {
+                email = request.Email, // Provide a valid email address here
+                amount =request.Amount,             // Provide a valid amount here
+                callback =request.Callback,
+            };
+            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
+		    if (user == null)
+			    return BadRequest("Invalid User");
 			var apiUrl = ApiBaseUrl + "transaction/initialize";
 
-			var content = new StringContent(Newtonsoft.Json.JsonConvert.SerializeObject(request), System.Text.Encoding.UTF8, "application/json");
+            var jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
+            var content = new StringContent(jsonPayload, Encoding.UTF8, "application/json");
 
-			client.DefaultRequestHeaders.Add("Authorization", "Bearer sk_test_5a79p4peopxivb0eohtxpzefa7kz4eg3lxysx09");
+            _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "sk_test_5a79p4peopxivb0eohtxpzefa7kz4eg3lxysx09");
+            _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-			var response = await client.PostAsync(apiUrl, content);
 
+            var response = await _httpClient.PostAsync(apiUrl, content);
+            var responseData = await response.Content.ReadAsStringAsync();
             if (response.IsSuccessStatusCode)
             {
-                var responseData = await response.Content.ReadAsStringAsync();
+                //var responseData = await response.Content.ReadAsStringAsync();
                 var responseObj = JsonConvert.DeserializeObject<ApiResponse>(responseData);
 
                 // Save relevant data to database
                 var transactionData = new Transaction
                 {
-                    AuthorizationUrl = responseObj.Data.AuthorizationUrl,
+                    Authorization_Url = responseObj.Data.Authorization_Url,
                     AccessCode = responseObj.Data.AccessCode,
                     Reference = responseObj.Data.Reference,
-					Amount = request.Amount,
+					Amount =double.Parse(request.Amount),
 					UserId = user.Id,
 					DateTime = DateTime.UtcNow,
                 };
@@ -81,7 +94,7 @@
             }
             else
             {
-                return BadRequest("Failed to initialize transaction.");
+                return BadRequest(responseData);
             }
         }
 
@@ -93,10 +106,21 @@
                 return BadRequest("Invalid User");
             try
             {
-                var response = await _httpClient.GetAsync($"transaction/verify/{transactionResponse.Reference}");
+                
+           
+                var apiUrl = ApiBaseUrl + "transaction/initialize";
+
+
+                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "sk_test_5a79p4peopxivb0eohtxpzefa7kz4eg3lxysx09");
+                _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+
+
+                
+                
+                var response = await _httpClient.GetAsync($"transaction/verify/:{transactionResponse.Reference}");
+                var responseData = await response.Content.ReadAsStringAsync();
                 if (response.IsSuccessStatusCode)
                 {
-                    var responseData = await response.Content.ReadAsStringAsync();
                     var responseObj = JsonConvert.DeserializeObject<TransactionVerificationResponse>(responseData);
                     Transaction result = new()
                     {
@@ -136,14 +160,14 @@
 	public class TransactionRequest
 	{
 		public string Email { get; set; }
-		public double Amount { get; set; }
+		public string Amount { get; set; }
 		public string? Callback { get; set; }
 	}
     public class ApiResponse
     {
         public bool Status { get; set; }
         public string Message { get; set; }
-        public Transaction Data { get; set; }
+        public TransactionDTO Data { get; set; }
     }
 
    

@@ -26,6 +26,37 @@ namespace Infrastructure.Identity.Models
         public bool IsActivated { get;  set; }
 
         public List<RefreshToken>? RefreshTokens { get; set; }
-        
+
+        [Required]
+        [MaxLength(50)]
+        public string? UserId { get; set; }
+
+
+        [Required]
+        [MaxLength(50)]
+        public string? DateofBirth { get; set; }
+        [Required, MaxLength(10)]
+        public string? MaritalStatus { get; set; }
+        [Required]
+        public string? ResidentialAddress { get; set; }
+       
+        [MaxLength(120)]
+        public string? Town { get; set; }
+
+        [MaxLength(50)]
+        public string? City { get; set; }
+        public string? Region { get; set; }
+        public string? PostalCode { get; set; } = null;
+        public string? Country { get; set; }
+        public string? Phone { get; set; }
+        public string? ResidentPerminNo { get; set; }
+        public string? Maidenname { get; set; }
+        public string? Stateoforigin { get; set; }
+        public string? NIN { get; set; }
+        public string? BVN { get; set; }
+        public string? BusinessLocation { get; set; }
+        public string? SignatureUrl { get; set; }
+        public string? Gender { get; set; }
+
     }
 }

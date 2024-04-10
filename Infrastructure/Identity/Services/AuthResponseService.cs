@@ -28,6 +28,7 @@ namespace Infrastructure.Identity.Services
         private readonly IEmailService _emailSender;
         private readonly JWT _Jwt;
 
+
         public AuthResponseService(
             AppIdentityContext appIdentityContext,
             SignInManager<AppUser> signInManager,
@@ -156,12 +157,8 @@ namespace Infrastructure.Identity.Services
 
             #region SendVerificationEmail
 
-           // var verificationUri = await SendVerificationEmail(user, orgin);
-
-            await _emailSender.SendEmailAsync(new EmailRequest() 
-            { 
-                
-                ToEmail = user.Email, Body = $@"
+            // var verificationUri = await SendVerificationEmail(user, orgin);
+            await _emailSender.SendEmailAsync2(user.Email, "Verify Email", $@"
         <html>
         <head>
             <style>
@@ -202,8 +199,9 @@ namespace Infrastructure.Identity.Services
                 </div>
             </div>
         </body>
-        </html>", Subject = "Registration OTP" 
-            });
+        </html>");
+
+       
 
             #endregion SendVerificationEmail
 

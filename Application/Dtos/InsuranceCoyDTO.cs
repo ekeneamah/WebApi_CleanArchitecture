@@ -5,6 +5,7 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Models;
 
 namespace Application.Dtos
 {
@@ -25,6 +26,10 @@ namespace Application.Dtos
         public string? Coy_ZipCode { get; set; }
         public string? Coy_CityCode { get;set; }
         public string? Coy_CountryCode { get; set; }
+        public string? Coy_VideoLink { get; set; }
+        public string? Coy_Image { get; set; }
+        public string? Coy_Logo { get; set; }
+        public List<CoyBenefit> Coy_Benefits { get; set; }
 
     }
 }

@@ -27,10 +27,35 @@ namespace Infrastructure.Content.Services
 
         public async Task<UserProfileDto> Add(UserProfileDto u)
         {
-            _userProfilePoco = new UserProfilePoco();
-            UserProfile model = _userProfilePoco.UserProfilePocoDto(u);
-            _context.UserProfiles.Add(model);
-            await _context.SaveChangesAsync();
+           var user = await _userManager.FindByIdAsync(u.UserId);
+            AppUser au = new()
+            {
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Email = u.Email,
+                UserId = u.UserId,
+                BusinessLocation = u.BusinessLocation,
+                BVN = u.BVN,
+                City = u.City,
+                Country = u.Country,
+                DateofBirth = u.DateofBirth,
+                Gender = u.Gender,
+                Maidenname = u.Maidenname,
+                MaritalStatus = u.MaritalStatus,
+                NIN = u.NIN,
+                Phone = u.Phone,
+                ResidentialAddress = u.ResidentialAddress,
+                Stateoforigin = u.Stateoforigin,
+                PostalCode = u.PostalCode,
+                Town = u.Town,
+                SignatureUrl = u.SignatureUrl
+            };
+            if (user != null)
+            {
+                _userManager.UpdateAsync(au);
+                await _context.SaveChangesAsync();
+            } 
+           
             return u;
         }
 
@@ -52,12 +77,34 @@ namespace Infrastructure.Content.Services
         public async Task<List<UserProfileDto>> GetAll()
         {
             List<UserProfileDto> result = new();
-            List<UserProfile> uprofile =  await _context.UserProfiles.ToListAsync();
-            _userProfilePoco = new UserProfilePoco();
-            foreach (UserProfile u in uprofile)
+            List<AppUser> uprofile =  await _userManager.Users.ToListAsync();
+           
+            foreach (AppUser u in uprofile)
             {
-                
-                result.Add(_userProfilePoco.UserProfilePocoModel(u));
+                UserProfileDto au = new()
+                {
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    Email = u.Email,
+                    UserId = u.UserId,
+                    BusinessLocation = u.BusinessLocation,
+                    BVN = u.BVN,
+                    City = u.City,
+                    Country = u.Country,
+                    DateofBirth = u.DateofBirth,
+                    Gender = u.Gender,
+                    Maidenname = u.Maidenname,
+                    MaritalStatus = u.MaritalStatus,
+                    NIN = u.NIN,
+                    Phone = u.Phone,
+                    ResidentialAddress = u.ResidentialAddress,
+                    Stateoforigin = u.Stateoforigin,
+                    PostalCode = u.PostalCode,
+                    Town = u.Town,
+                    SignatureUrl = u.SignatureUrl
+                };
+
+                result.Add(au);
                 
             }
             return result;
@@ -65,12 +112,31 @@ namespace Infrastructure.Content.Services
 
         public async Task<UserProfileDto> GetById(string id)
         {
-            _userProfilePoco = new UserProfilePoco();
-            UserProfile u = await _context.UserProfiles.FirstOrDefaultAsync(u => u.UserId == id);
-            AppUser user = await _userManager.FindByIdAsync(id);
-            if (u == null || user ==null)
-                return _userProfilePoco.UserProfilePocoModelNull();
-            return _userProfilePoco.UserProfilePocoModel(u);
+            
+            AppUser u = await _userManager.FindByIdAsync(id);
+            UserProfileDto au = new()
+            {
+                FirstName = u.FirstName,
+                LastName = u.LastName,
+                Email = u.Email,
+                BusinessLocation = u.BusinessLocation,
+                BVN = u.BVN,
+                City = u.City,
+                Country = u.Country,
+                DateofBirth = u.DateofBirth,
+                Gender = u.Gender,
+                Maidenname = u.Maidenname,
+                MaritalStatus = u.MaritalStatus,
+                NIN = u.NIN,
+                Phone = u.Phone,
+                ResidentialAddress = u.ResidentialAddress,
+                Stateoforigin = u.Stateoforigin,
+                PostalCode = u.PostalCode,
+                Town = u.Town,
+                SignatureUrl = u.SignatureUrl
+            };
+
+            return au;
         }
 
         public async Task<UserProfileDto> Update_UserProfile(UserProfileDto model)

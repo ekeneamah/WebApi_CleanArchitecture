@@ -47,7 +47,7 @@ namespace API.Controllers.Content
 
             if (brand == null)
             {
-                return NotFound($"No brand has found with this {id} ");
+                return NotFound($"No insurenceCoy has found with this {id} ");
             }
 
             return brand;
@@ -59,14 +59,14 @@ namespace API.Controllers.Content
 
         // POST: api/InsuranceCompany
         [HttpPost]
-        public async Task<ActionResult<InsuranceCoy>> PostInsuranceCoy([FromQuery] InsuranceCoy brand)
+        public async Task<ActionResult<InsuranceCoy>> PostInsuranceCoy( InsuranceCoyDTO insurenceCoy)
         {
-            if (await _insuranceCoyService.CoyIsExist(brand.Coy_Name))
+            if (await _insuranceCoyService.CoyIsExist(insurenceCoy.Coy_Name))
             {
-                return BadRequest($"InsuranceCompany name: {brand.Coy_Name} is already registered");
+                return BadRequest($"InsuranceCompany name: {insurenceCoy.Coy_Name} is already registered");
             }
 
-            var result = await _insuranceCoyService.Add_Coy(brand);
+            var result = await _insuranceCoyService.Add_Coy(insurenceCoy);
             return Ok(await _insuranceCoyService.GetAll());
         }
 
@@ -80,7 +80,7 @@ namespace API.Controllers.Content
             var brand = await _insuranceCoyService.GetById(id);
 
             if (brand == null)
-                return NotFound($"brand: {model.Coy_Name} was not found");
+                return NotFound($"insurenceCoy: {model.Coy_Name} was not found");
 
             if (await _insuranceCoyService.CoyIsExist(model.Coy_Name))
                 return BadRequest(" this InsuranceCompany name is already registred");
@@ -101,7 +101,7 @@ namespace API.Controllers.Content
             var brand = await _insuranceCoyService.GetById(id);
             if (brand == null)
             {
-                return NotFound($"brand:{brand.Coy_Name}  has not found");
+                return NotFound($"insurenceCoy:{brand.Coy_Name}  has not found");
             }
 
             await _insuranceCoyService.Delete_Coy(brand);

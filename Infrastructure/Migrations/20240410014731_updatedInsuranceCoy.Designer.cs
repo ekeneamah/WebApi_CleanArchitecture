@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240408151645_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240410014731_updatedInsuranceCoy")]
+    partial class updatedInsuranceCoy
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,8 +35,10 @@ namespace Infrastructure.Migrations
 
                     b.Property<string>("Category_Description")
                         .IsRequired()
-                        .HasMaxLength(450)
-                        .HasColumnType("nvarchar(450)");
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Category_Image")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Category_Name")
                         .IsRequired()
@@ -50,6 +52,32 @@ namespace Infrastructure.Migrations
                     b.HasKey("Categoty_Id");
 
                     b.ToTable("Categories");
+                });
+
+            modelBuilder.Entity("Domain.Models.CategoryBenefit", b =>
+                {
+                    b.Property<int>("Benefit_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Benefit_Id"));
+
+                    b.Property<string>("Benefits_Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("CategoryCategoty_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Category_id")
+                        .HasColumnType("int");
+
+                    b.HasKey("Benefit_Id");
+
+                    b.HasIndex("CategoryCategoty_Id");
+
+                    b.ToTable("Benefits");
                 });
 
             modelBuilder.Entity("Domain.Models.Claim", b =>
@@ -123,6 +151,27 @@ namespace Infrastructure.Migrations
                     b.ToTable("ClaimsForms");
                 });
 
+            modelBuilder.Entity("Domain.Models.CoyBenefit", b =>
+                {
+                    b.Property<int>("Benefit_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Benefit_Id"));
+
+                    b.Property<string>("Benefits_Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int>("Coy_id")
+                        .HasColumnType("int");
+
+                    b.HasKey("Benefit_Id");
+
+                    b.ToTable("CoyBenefits");
+                });
+
             modelBuilder.Entity("Domain.Models.InsuranceCoy", b =>
                 {
                     b.Property<int>("Coy_Id")
@@ -154,6 +203,12 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Coy_Image")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Coy_Logo")
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("Coy_Name")
                         .IsRequired()
                         .HasMaxLength(100)
@@ -178,6 +233,9 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Coy_Street")
                         .HasMaxLength(100)
                         .HasColumnType("nvarchar(100)");
+
+                    b.Property<string>("Coy_VideoLink")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Coy_ZipCode")
                         .HasMaxLength(6)
@@ -264,9 +322,6 @@ namespace Infrastructure.Migrations
                     b.Property<int>("Coy_Id")
                         .HasColumnType("int");
 
-                    b.Property<int>("InsuranceCoyCoy_Id")
-                        .HasColumnType("int");
-
                     b.Property<string>("Product_Code")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -292,10 +347,6 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Product_Id");
-
-                    b.HasIndex("Category_Id");
-
-                    b.HasIndex("InsuranceCoyCoy_Id");
 
                     b.ToTable("Products");
                 });
@@ -426,6 +477,38 @@ namespace Infrastructure.Migrations
                     b.ToTable("UserProfiles");
                 });
 
+            modelBuilder.Entity("Domain.Models.VehiclePremium", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<double>("Premium")
+                        .HasColumnType("float");
+
+                    b.Property<string>("VehicleClass")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("nvarchar(50)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("VehiclePremiums");
+                });
+
+            modelBuilder.Entity("Domain.Models.CategoryBenefit", b =>
+                {
+                    b.HasOne("Domain.Models.Category", null)
+                        .WithMany("Category_Benefits")
+                        .HasForeignKey("CategoryCategoty_Id");
+                });
+
             modelBuilder.Entity("Domain.Models.Policy", b =>
                 {
                     b.HasOne("Domain.Models.InsuranceCoy", "InsuranceCoy")
@@ -449,21 +532,9 @@ namespace Infrastructure.Migrations
                     b.Navigation("UserProfile");
                 });
 
-            modelBuilder.Entity("Domain.Models.Product", b =>
+            modelBuilder.Entity("Domain.Models.Category", b =>
                 {
-                    b.HasOne("Domain.Models.Category", "Category")
-                        .WithMany()
-                        .HasForeignKey("Category_Id");
-
-                    b.HasOne("Domain.Models.InsuranceCoy", "InsuranceCoy")
-                        .WithMany()
-                        .HasForeignKey("InsuranceCoyCoy_Id")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Category");
-
-                    b.Navigation("InsuranceCoy");
+                    b.Navigation("Category_Benefits");
                 });
 #pragma warning restore 612, 618
         }

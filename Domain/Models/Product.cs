@@ -24,11 +24,11 @@ namespace Domain.Models
 
         [ForeignKey("InsuranceCompany")]
         public int Coy_Id { get; set; }
-        public virtual InsuranceCoy InsuranceCoy { get; set; }
+       
 
         [ForeignKey("Category")]
         public int? Category_Id { get; set; }
-        public virtual Category Category { get; set; }
+       
 
 
 

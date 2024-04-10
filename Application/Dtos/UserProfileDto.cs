@@ -17,17 +17,17 @@ namespace Application.Dtos
 
        
         [MaxLength(50)]
-        public required string Gender { get; set; }
+        public string? Gender { get; set; }
        
         [MaxLength(50)]
-        public required string DateofBirth { get; set; }
+        public  string? DateofBirth { get; set; }
         [MaxLength(10)]
-        public required string MaritalStatus { get; set; }
+        public  string? MaritalStatus { get; set; }
        
-        public required string ResidentialAddress { get; set; }
+        public  string? ResidentialAddress { get; set; }
         
         [MaxLength(120)]
-        public required string Town { get; set; }
+        public string? Town { get; set; }
 
         [MaxLength(50)]
         public string? City { get; set; }

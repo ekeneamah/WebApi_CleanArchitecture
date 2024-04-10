@@ -20,6 +20,10 @@ namespace Infrastructure.Content.Data
         public DbSet<Policy> Policies { get; set; }
         public DbSet<ClaimsForm> ClaimsForms { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<CategoryBenefit> Benefits { get; set; }
+        public DbSet<VehiclePremium> VehiclePremiums { get; set; }
+        public DbSet<CoyBenefit> CoyBenefits { get; set; }
+        public DbSet<MotorClaim> MotorClaims { get; set; }
 
 
 

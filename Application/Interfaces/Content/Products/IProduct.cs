@@ -15,6 +15,7 @@ namespace Application.Interfaces.Content.Products
         Task<List<ProductGroupDto>> GetAllProductsGroup();
         Task<List<ProductDtoDetails>> GetAllProductsByGroup(int pageNumber, int pageSize, string product_groupname);
         Task<Product> GetById(int id);
+        Task<ProductDtoDetails> GetDetailsById(int id);
         Task<ProductDtoDetails> GetByCode(string code);
         Task<ProductDto> GetProductByCode(string code);
 
@@ -25,7 +26,7 @@ namespace Application.Interfaces.Content.Products
         Product Delete(Product model);
 
         Task<bool> ProductIsExist(string code);
-        void SaveChanges();
+        Task<int> SaveChanges();
         void WithDraw(WithDrawProducts dto);
     }
 }

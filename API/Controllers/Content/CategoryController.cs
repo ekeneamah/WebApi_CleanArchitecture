@@ -48,6 +48,7 @@ namespace CleanaArchitecture1.Controllers.Content
         [HttpPost("Add_NewCategory")]
         public async Task<IActionResult> CreateCategory([FromQuery] Category model)
         {
+            model.Category_Description = model.Category_Description.Replace("\n", "\\n");
             if (ModelState.IsValid is false)
             {
                 return BadRequest("Invalid Inputs");
@@ -59,6 +60,10 @@ namespace CleanaArchitecture1.Controllers.Content
             var categy = new Category
             {
                 Category_Name = model.Category_Name,
+                Category_Description = model.Category_Description,
+                Category_VideoLink = model.Category_VideoLink,
+                Category_Benefits = model.Category_Benefits,
+                Category_Image = model.Category_Image
             };
 
             _categoryService.AddCategory(categy);
@@ -74,14 +79,17 @@ namespace CleanaArchitecture1.Controllers.Content
         {
             var category = await _categoryService.GetById(id);
 
+
             if (category == null)
                 return NotFound($"No Category was found with ID {id}");
 
-            if (await _categoryService.CategoryIsExist(model.Category_Name))
-                return BadRequest(" this Category name is already registred");
+           
 
             category.Category_Name = model.Category_Name;
-
+            category.Category_Description = model.Category_Description.Replace("\n", "\\n");
+            category.Category_VideoLink = model.Category_VideoLink;
+            category.Category_Benefits = model.Category_Benefits;
+            category.Category_Image = model.Category_Image;
             _categoryService.UpdateCategory(category);
 
             return Ok(category);

@@ -6,9 +6,9 @@ namespace Application.Dtos.Account
     {
         [Required]
         [EmailAddress]
-        public string Email { get; set; }
+        public string Email { get; set; } = "ekene.amahxs.ea@gmail.com";
 
         [Required]
-        public string Password { get; set; }
+        public string Password { get; set; } = "5212@Abc";
     }
 }

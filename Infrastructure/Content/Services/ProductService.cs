@@ -19,29 +19,37 @@ namespace Infrastructure.Content.Services
         #region GetAll
         public async Task<List<ProductDtoDetails>> GetAll(int pageNumber, int pageSize)
         {
-            var product = await _context.Products
-                 .Include(r => r.InsuranceCoy)
-                 .Include(r => r.Category)
+            List<ProductDtoDetails> result = new List<ProductDtoDetails>();
+            var p = await _context.Products
+                 
+                 
                   .Skip((pageNumber - 1) * pageSize)
                   .Take(pageSize)
-                 .Select(x => new ProductDtoDetails
-                 {
-                     Product_Id = x.Product_Id,
-                     Product_Name = x.Product_Name,
-                     Coy_Name = x.InsuranceCoy.Coy_Name,
-                     Coy_Id = x.Coy_Id,
-                     Category_Name = x.Category.Category_Name,
-                     Category_Id = x.Category_Id,
-                     Product_Price = x.Product_Price,
-                     Product_Quantity = x.Product_Quantity,
-                     Product_Code = x.Product_Code,
-                     Product_Group = x.Product_Group
-                 })
+              
                  .OrderBy(x => x.Product_Name)
                  .AsNoTracking()
                  .ToListAsync();
 
-            return product;
+            foreach (Product x in p)
+            {
+                ProductDtoDetails pd = new()
+                {
+                    Product_Id = x.Product_Id,
+                    Product_Name = x.Product_Name,
+                    Coy_Name = await _context.InsuranceCompany.Where(i => i.Coy_Id == x.Coy_Id).Select(n => n.Coy_Name).FirstOrDefaultAsync(),
+                    Coy_Id = x.Coy_Id,
+                    Category_Name = await _context.Categories.Where(i => i.Categoty_Id == x.Category_Id).Select(n => n.Category_Name).FirstOrDefaultAsync(),
+
+                    Category_Id = x.Category_Id,
+                    Product_Price = x.Product_Price,
+                    Product_Quantity = x.Product_Quantity,
+                    Product_Code = x.Product_Code,
+                    Product_Group = x.Product_Group
+                };
+                result.Add(pd);
+            }
+
+            return result;
         }
 
         #endregion
@@ -50,26 +58,26 @@ namespace Infrastructure.Content.Services
         //return Dto : (ProductDtoDetails)
         public async Task<ProductDtoDetails> GetByCode(string code)
         {
-            var product = await _context.Products
-                .Where(c => c.Product_Code == code)
-                 .Include(r => r.InsuranceCoy)
-                 .Select(x => new ProductDtoDetails
-                 {
-                     Product_Id = x.Product_Id,
-                     Product_Name = x.Product_Name,
-                     Coy_Name = x.InsuranceCoy.Coy_Name,
-                     Coy_Id = x.Coy_Id,
-                     Category_Name = x.Category.Category_Name,
-                     Category_Id = x.Category_Id,
-                     Product_Price = x.Product_Price,
-                     Product_Quantity = x.Product_Quantity,
-                     Product_Code = x.Product_Code,
-                     Product_description = x.Product_Description
-                 })
+            var x = await _context.Products
+                .Where(c => c.Product_Code == code)               
                  .AsNoTracking()
                  .FirstOrDefaultAsync();
 
-            return product;
+            ProductDtoDetails pd =  new() 
+              {
+                  Product_Id = x.Product_Id,
+                  Product_Name = x.Product_Name,
+                  Coy_Name = await _context.InsuranceCompany.Where(i => i.Coy_Id == x.Coy_Id).Select(n => n.Coy_Name).FirstOrDefaultAsync(),
+                  Coy_Id = x.Coy_Id,
+                  Category_Name = await _context.Categories.Where(i => i.Categoty_Id == x.Category_Id).Select(n => n.Category_Name).FirstOrDefaultAsync(),
+                  Category_Id = x.Category_Id,
+                  Product_Price = x.Product_Price,
+                  Product_Quantity = x.Product_Quantity,
+                  Product_Code = x.Product_Code,
+                  Product_description = x.Product_Description
+              };
+
+            return pd;
         }
         #endregion
 
@@ -80,7 +88,7 @@ namespace Infrastructure.Content.Services
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Product_Code == code);
             ProductDto pd = new ProductDto()
             {
-                Brand_Id = product.Coy_Id,
+                InsuranceCoy_id = product.Coy_Id,
                 Product_Name = product.Product_Name,
                 Product_Code = product.Product_Code,
                 Category_Id = product.Category_Id,
@@ -93,10 +101,34 @@ namespace Infrastructure.Content.Services
         }
         #endregion
 
+        #region GetDetailsById
+        public async Task<ProductDtoDetails> GetDetailsById(int id)
+        {
+            Product x = await _context.Products.FindAsync(id);
+            ProductDtoDetails pd = new()
+            {
+                Product_Id = x.Product_Id,
+                Product_Name = x.Product_Name,
+                InsuranceCoy = await _context.InsuranceCompany.Where(i => i.Coy_Id == x.Coy_Id).FirstOrDefaultAsync(),
+                Coy_Id = x.Coy_Id,
+                Product_Category = await _context.Categories.Where(i => i.Categoty_Id == x.Category_Id).FirstOrDefaultAsync(),
+
+                Category_Id = x.Category_Id,
+                Product_Price = x.Product_Price,
+                Product_Quantity = x.Product_Quantity,
+                Product_Code = x.Product_Code,
+                Product_Group = x.Product_Group
+            };
+            return pd;
+        }
+        #endregion
+
         #region GetById
         public async Task<Product> GetById(int id)
         {
-            return await _context.Products.FindAsync(id);
+            Product x =  await _context.Products.FindAsync(id);
+           
+            return x;
         }
         #endregion
 
@@ -147,37 +179,43 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region SaveChanges
-        public void SaveChanges()
+        public async Task<int> SaveChanges()
         {
-            _context.SaveChanges();
+           return await _context.SaveChangesAsync();
         }
         #endregion
         #region GetAllProductsByCategory
         public async Task<List<ProductDtoDetails>> GetAllProductsByCategory(int pageNumber, int pageSize, int product_categoryId)
         {
-            var product = await _context.Products.Where(g => g.Category_Id == product_categoryId)
-                 .Include(r => r.InsuranceCoy)
-            .Include(r => r.Category)
+            var p = await _context.Products.Where(g => g.Category_Id == product_categoryId)
+                 
                   .Skip((pageNumber - 1) * pageSize)
-                  .Take(pageSize)
-                 .Select(x => new ProductDtoDetails
-                 {
-                     Product_Id = x.Product_Id,
-                     Product_Name = x.Product_Name,
-                     Coy_Name = x.InsuranceCoy.Coy_Name,
-                     Coy_Id = x.Coy_Id,
-                     Category_Name = x.Category.Category_Name,
-                     Category_Id = x.Category_Id,
-                     Product_Price = x.Product_Price,
-                     Product_Quantity = x.Product_Quantity,
-                     Product_Code = x.Product_Code,
-                     Product_Group = x.Product_Group
-                 })
+                  .Take(pageSize)                 
                  .OrderBy(x => x.Product_Name)
                  .AsNoTracking()
                  .ToListAsync();
+            List<ProductDtoDetails> result = new List<ProductDtoDetails>(); 
 
-            return product;
+            foreach (Product x in p)
+            {
+                ProductDtoDetails pd = new()
+                {
+                    Product_Id = x.Product_Id,
+                    Product_Name = x.Product_Name,
+                    InsuranceCoy = await _context.InsuranceCompany.Where(i => i.Coy_Id == x.Coy_Id).FirstOrDefaultAsync(),
+                    Coy_Id = x.Coy_Id,
+                    Product_Category = await _context.Categories.Where(i => i.Categoty_Id == x.Category_Id).FirstOrDefaultAsync(),
+
+                    Category_Id = x.Category_Id,
+                    Product_Price = x.Product_Price,
+                    Product_Quantity = x.Product_Quantity,
+                    Product_Code = x.Product_Code,
+                    Product_Group = x.Product_Group
+                };
+                result.Add(pd);
+            }
+
+            return result;
         }
         #endregion
         #region GetAllProductsGroup
@@ -199,29 +237,37 @@ namespace Infrastructure.Content.Services
         #region GetAllProductsByGroup
         public async Task<List<ProductDtoDetails>> GetAllProductsByGroup(int pageNumber, int pageSize, string product_groupname)
         {
-            var product = await _context.Products.Where(g=>g.Product_Group== product_groupname)
-                 .Include(r => r.InsuranceCoy)
-            .Include(r => r.Category)
+            var p = await _context.Products.Where(g=>g.Product_Group== product_groupname)
+                 
                   .Skip((pageNumber - 1) * pageSize)
                   .Take(pageSize)
-                 .Select(x => new ProductDtoDetails
-                 {
-                     Product_Id = x.Product_Id,
-                     Product_Name = x.Product_Name,
-                     Coy_Name = x.InsuranceCoy.Coy_Name,
-                     Coy_Id = x.Coy_Id,
-                     Category_Name = x.Category.Category_Name,
-                     Category_Id = x.Category_Id,
-                     Product_Price = x.Product_Price,
-                     Product_Quantity = x.Product_Quantity,
-                     Product_Code = x.Product_Code,
-                     Product_Group = x.Product_Group
-                 })
+                
                  .OrderBy(x => x.Product_Name)
                  .AsNoTracking()
                  .ToListAsync();
 
-            return product;
+            List<ProductDtoDetails> result = new List<ProductDtoDetails>();
+
+            foreach (Product x in p)
+            {
+                ProductDtoDetails pd = new()
+                {
+                    Product_Id = x.Product_Id,
+                    Product_Name = x.Product_Name,
+                    InsuranceCoy = await _context.InsuranceCompany.Where(i => i.Coy_Id == x.Coy_Id).FirstOrDefaultAsync(),
+                    Coy_Id = x.Coy_Id,
+                    Product_Category = await _context.Categories.Where(i => i.Categoty_Id == x.Category_Id).FirstOrDefaultAsync(),
+
+                    Category_Id = x.Category_Id,
+                    Product_Price = x.Product_Price,
+                    Product_Quantity = x.Product_Quantity,
+                    Product_Code = x.Product_Code,
+                    Product_Group = x.Product_Group
+                };
+                result.Add(pd);
+            }
+
+            return result;
         }
         #endregion
 

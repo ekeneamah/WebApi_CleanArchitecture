@@ -64,10 +64,12 @@
         {
             return await _claimService.AddClaimsForm(model);
         }
+        #endregion
 
-            #endregion
 
-            [HttpPut("{claimId}")]
+        #region update claim
+
+        [HttpPut("{claimId}")]
             public async Task<ActionResult<ClaimsDto>> UpdateClaim(string claimId, ClaimsDto model)
             {
                 if (claimId != model.ClaimId.ToString())
@@ -89,6 +91,7 @@
                 return Ok(updatedClaim);
             }
         }
-    }
+    #endregion
+}
 
 

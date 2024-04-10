@@ -35,5 +35,24 @@ namespace Domain.Models
         public string? Coy_CityCode { get; set; }
         [MaxLength(3)]
         public string? Coy_CountryCode { get; set; }
+        public string? Coy_VideoLink { get; set; }
+        public string? Coy_Image { get; set; }
+        public string? Coy_Logo { get; set; }
+    }
+
+    public class CoyBenefit
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Benefit_Id { get; set; }
+
+        [Required]
+        public int Coy_id { get; set; }
+
+
+        [Required]
+        [MaxLength(100)]
+
+        public string? Benefits_Title { get; set; }
     }
 }

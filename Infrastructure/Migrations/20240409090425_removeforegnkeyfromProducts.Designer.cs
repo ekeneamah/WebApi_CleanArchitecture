@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240408151645_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20240409090425_removeforegnkeyfromProducts")]
+    partial class removeforegnkeyfromProducts
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -258,6 +258,9 @@ namespace Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Product_Id"));
 
+                    b.Property<int>("CategoryCategoty_Id")
+                        .HasColumnType("int");
+
                     b.Property<int?>("Category_Id")
                         .HasColumnType("int");
 
@@ -293,7 +296,7 @@ namespace Infrastructure.Migrations
 
                     b.HasKey("Product_Id");
 
-                    b.HasIndex("Category_Id");
+                    b.HasIndex("CategoryCategoty_Id");
 
                     b.HasIndex("InsuranceCoyCoy_Id");
 
@@ -453,7 +456,9 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Models.Category", "Category")
                         .WithMany()
-                        .HasForeignKey("Category_Id");
+                        .HasForeignKey("CategoryCategoty_Id")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.HasOne("Domain.Models.InsuranceCoy", "InsuranceCoy")
                         .WithMany()
