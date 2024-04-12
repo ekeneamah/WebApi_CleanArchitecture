@@ -18,7 +18,7 @@ namespace Domain.Models
         public int? ProductId { get; set; }
         public string? PolicyNo { get; set; }
         public double Amount { get; set; }
-        public DateTime DateTime { get; set; }=DateTime.Now;
+        public DateTime? DateTime { get; set; }
         public string? UserEmail { get; set; }
         public string? PaymentRef { get; set; }
     }
@@ -34,8 +34,9 @@ namespace Domain.Models
         public int? ProductId { get; set; }
         public string? PolicyNo { get; set; }
         public double Amount { get; set; }
-        public DateTime DateTime { get; set; } = DateTime.Now;
+        public DateTime? DateTime { get; set; }
         public string? UserEmail { get; set; }
         public string? PaymentRef { get; set; }
+        public  Product? Product{get;set;}
     }
 }

@@ -33,7 +33,7 @@ namespace Infrastructure.Content.Services
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
-                UserId = u.UserId,
+               
                 BusinessLocation = u.BusinessLocation,
                 BVN = u.BVN,
                 City = u.City,
@@ -86,7 +86,7 @@ namespace Infrastructure.Content.Services
                     FirstName = u.FirstName,
                     LastName = u.LastName,
                     Email = u.Email,
-                    UserId = u.UserId,
+                    UserId = u.Id,
                     BusinessLocation = u.BusinessLocation,
                     BVN = u.BVN,
                     City = u.City,

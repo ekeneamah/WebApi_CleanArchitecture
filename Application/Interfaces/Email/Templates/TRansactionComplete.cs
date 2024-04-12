@@ -60,9 +60,9 @@ namespace Infrastructure.Content.Services
                 <p>Your transaction with reference number <strong>{transaction.Reference}</strong> has been processed successfully.</p>
                 <p>Transaction Details:</p>
                 <ul>
-                    <li>Amount: {transaction.Amount}</li>
-                    <li>Date: {transaction.DateTime}</li>
-                    <li>Stattus: {transaction.Status}</li>
+                    <li>Amount: {transaction?.Amount}</li>
+                    <li>Date: {transaction?.DateTime}</li>
+                    <li>Stattus: {transaction?.Status}</li>
                     <li>Product: {p.Product_Name} </li>
                    
                 </ul>

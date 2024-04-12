@@ -51,15 +51,17 @@
 		[HttpPost("initialize")]
 		public async Task<IActionResult> InitializeTransaction( TransactionRequest request)
 		{
-            var payload = new
-            {
-                email = request.Email, // Provide a valid email address here
-                amount =request.Amount,             // Provide a valid amount here
-                callback =request.Callback,
-            };
+            
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
 		    if (user == null)
 			    return BadRequest("Invalid User");
+            
+            var payload = new
+            {
+                email = user.Email, // Provide a valid email address here
+                amount =request.Amount,             // Provide a valid amount here
+                callback =request.Callback,
+            };
 			var apiUrl = ApiBaseUrl + "transaction/initialize";
 
             var jsonPayload = Newtonsoft.Json.JsonConvert.SerializeObject(payload);
@@ -80,7 +82,7 @@
                 var transactionData = new Transaction
                 {
                     Authorization_Url = responseObj.Data.Authorization_Url,
-                    AccessCode = responseObj.Data.AccessCode,
+                    AccessCode = responseObj.Data.Access_Code,
                     Reference = responseObj.Data.Reference,
 					Amount =double.Parse(request.Amount),
 					UserId = user.Id,
@@ -89,7 +91,7 @@
 
                 // Save transactionData to your database using Entity Framework Core or other ORM
                 await _transactionService.SaveResponse(transactionData);
-
+                responseObj.Data.Amount = double.Parse(request.Amount);
                 return Ok(responseObj);
             }
             else
@@ -97,9 +99,9 @@
                 return BadRequest(responseData);
             }
         }
-
-		[HttpPost("CompleteTransaction")]
-		public async Task<ActionResult<int>> CompleteTransaction(Transaction transactionResponse)
+        #region complete transaction
+        [HttpPost("CompleteTransaction")]
+		public async Task<ActionResult<TransactionVerificationResponse>> CompleteTransaction(Transaction transactionResponse)
 		{
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -108,7 +110,7 @@
             {
                 
            
-                var apiUrl = ApiBaseUrl + "transaction/initialize";
+                var apiUrl = ApiBaseUrl + "transaction/verify/";
 
 
                 _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "sk_test_5a79p4peopxivb0eohtxpzefa7kz4eg3lxysx09");
@@ -117,49 +119,74 @@
 
                 
                 
-                var response = await _httpClient.GetAsync($"transaction/verify/:{transactionResponse.Reference}");
+                var response = await _httpClient.GetAsync($"{ApiBaseUrl}transaction/verify/:{transactionResponse.Reference}");
                 var responseData = await response.Content.ReadAsStringAsync();
+                var responseObj = JsonConvert.DeserializeObject<TransactionVerificationResponse>(responseData);
                 if (response.IsSuccessStatusCode)
                 {
-                    var responseObj = JsonConvert.DeserializeObject<TransactionVerificationResponse>(responseData);
+                   
                     Transaction result = new()
                     {
 
                         PaymentRef = responseObj.Data.Reference,
                         Amount = double.Parse(responseObj.Data.Amount),
                         UserId = user.Id,
-                        DateTime = DateTime.UtcNow,
+                        UserEmail = user.Email,
                         Reference = responseObj.Data.Reference,
                         Status = responseObj.Data.Status,
+                        ProductId = transactionResponse.ProductId,
+                        DateTime = responseObj.Data.TransactionDate==null?DateTime.UtcNow: responseObj.Data.TransactionDate,
+
                     };
 
                     // Save transactionData to your database using Entity Framework Core or other ORM
-                    return await _transactionService.UpdateResponse(result);
+                     await _transactionService.UpdateResponse(result);
+                    
                 }
+                return Ok(responseObj);
                 }
             catch (HttpRequestException ex)
             {
                 return StatusCode(500, $"Error: {ex.Message}");
             }
-            var transactionData = new Transaction
-            {
-                
-                Reference = transactionResponse.Reference,
-                Amount = transactionResponse.Amount,
-                UserId = user.Id,
-                DateTime = DateTime.UtcNow,
-            };
-
-            // Save transactionData to your database using Entity Framework Core or other ORM
-            return await _transactionService.UpdateResponse(transactionData);
+           
 
 
         }
-	}
+        #endregion
+        [HttpGet("{reference}")]
+        public async Task<ActionResult<Transaction>> GetTransactionByReference(string reference)
+        {
+            var transaction = await _transactionService.GetTransactionByReference(reference);
 
-	public class TransactionRequest
+            if (transaction == null)
+            {
+                return NotFound();
+            }
+
+            return Ok(transaction);
+        }
+
+        [HttpGet("GetTransactionsByUserId")]
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionsByUserId()
+        {
+            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
+            if (user == null)
+                return BadRequest("Invalid User");
+            var transactions = await _transactionService.GetTransactionsByUserId(user.Id);
+
+            if (transactions == null || !transactions.Any())
+            {
+                return NotFound();
+            }
+
+            return Ok(transactions);
+        }
+    }
+
+    public class TransactionRequest
 	{
-		public string Email { get; set; }
+		public string? Email { get; set; }
 		public string Amount { get; set; }
 		public string? Callback { get; set; }
 	}

@@ -15,11 +15,9 @@ namespace Infrastructure.Identity.Models
         [MaxLength(50)]
         public required string LastName { get; set; }
 
-        [Required]
         [StringLength(256)]
-        public string OTP { get; set; }
+        public string? OTP { get; set; }
 
-        [Required]
         [StringLength(256)]
         public DateTime OtpTimestamp { get; set; }
 
@@ -27,17 +25,14 @@ namespace Infrastructure.Identity.Models
 
         public List<RefreshToken>? RefreshTokens { get; set; }
 
-        [Required]
-        [MaxLength(50)]
-        public string? UserId { get; set; }
+       
 
 
-        [Required]
+      
         [MaxLength(50)]
         public string? DateofBirth { get; set; }
-        [Required, MaxLength(10)]
+        [MaxLength(10)]
         public string? MaritalStatus { get; set; }
-        [Required]
         public string? ResidentialAddress { get; set; }
        
         [MaxLength(120)]

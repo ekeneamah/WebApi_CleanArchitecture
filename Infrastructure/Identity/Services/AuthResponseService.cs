@@ -132,7 +132,7 @@ namespace Infrastructure.Identity.Services
                 UserName = model.Username,
                 Email = model.Email,
                 OTP = GenerateAndStoreOTP(),
-                OtpTimestamp = DateTime.UtcNow,
+                OtpTimestamp = DateTime.Now.AddHours(1),
                 IsActivated = false
                
                 
@@ -447,7 +447,7 @@ namespace Infrastructure.Identity.Services
                 return "Invalid userid.";
 
             // Check if OTP is expired (1 hour)
-            if (!user.OtpTimestamp.ToString().IsNullOrEmpty() && DateTime.UtcNow.Subtract(user.OtpTimestamp).TotalHours > 1)
+            if (!user.OtpTimestamp.ToString().IsNullOrEmpty() && DateTime.Now.AddHours(1).Subtract(user.OtpTimestamp).TotalHours > 4)
             {
                 return "OTP has expired.";
             }
@@ -475,7 +475,7 @@ namespace Infrastructure.Identity.Services
             if (user == null)
                 return "Invalid userid.";
             user.OTP = GenerateAndStoreOTP();
-            user.OtpTimestamp = DateTime.UtcNow;
+            user.OtpTimestamp = DateTime.Now.AddHours(1);
             await _userManager.UpdateAsync(user);
 
             #region SendVerificationEmail
@@ -521,7 +521,7 @@ namespace Infrastructure.Identity.Services
                     <h2>Email Verification</h2>
                     <p>Please use the following One-Time Password (OTP) to verify your email:</p>
                     <div class='otp-container'>{user.OTP}</div>
-<p>OTP was generated on <b> {user.OtpTimestamp}</b> and will expire on <b>{user.OtpTimestamp.AddHours(1)}</b></p>
+<p>OTP was generated on <b> {user.OtpTimestamp}</b> and will expire on <b>{user.OtpTimestamp.AddHours(4)}</b></p>
                     <p>If you did not request this verification, please ignore this email.</p>
                 </div>
             </div>
