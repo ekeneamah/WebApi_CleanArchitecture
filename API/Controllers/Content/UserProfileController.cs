@@ -41,7 +41,7 @@ namespace API.Controllers.Content
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
-            return Ok(await _profileservice.GetById(user.Id));
+            return Ok(await _profileservice.GetProfilebyUserid(user.Id));
         }
         #endregion
 

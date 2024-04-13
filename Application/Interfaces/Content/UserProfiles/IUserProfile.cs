@@ -13,7 +13,7 @@ namespace Application.Interfaces.Content.UserProfiles
     {
         Task<List<UserProfileDto>> GetAll();
 
-        Task<UserProfileDto> GetById(string id);
+        Task<UserProfileDto> GetProfilebyUserid(string id);
 
         Task<UserProfileDto> Add(UserProfileDto model);
 

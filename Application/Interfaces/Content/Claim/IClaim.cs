@@ -18,9 +18,9 @@ namespace Application.Interfaces.Content.Claim
 
         Task<ClaimsDto> AddClaims(ClaimsDto model);
 
-        Task<int> AddClaimsForm(ClaimsForm model);
-        Task<int> UpdateClaimsForm(ClaimsForm model);
-        Task<ClaimsForm> GetClaimsForm(int policyid);
+        Task<int> AddClaimsForm(ClaimsFormEntity model);
+        Task<int> UpdateClaimsForm(ClaimsFormEntity model);
+        Task<ClaimsFormEntity> GetClaimsForm(int policyid);
 
 
 

@@ -173,6 +173,7 @@ using (IServiceScope? scope = app.Services.CreateScope())
 //{
     app.UseSwagger();
     app.UseSwaggerUI();
+app.UseStaticFiles();
 //}
 
 app.UseHttpsRedirection();

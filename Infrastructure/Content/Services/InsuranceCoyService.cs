@@ -23,8 +23,8 @@ namespace Infrastructure
         public async Task<List<InsuranceCoyDTO>> GetAll()
         {
             List<InsuranceCoyDTO> result = new List<InsuranceCoyDTO>();
-            List<InsuranceCoy> InsuranceCoy = await _context.InsuranceCompany.ToListAsync();
-            foreach(InsuranceCoy i in InsuranceCoy)
+            List<InsuranceCoyEntity> InsuranceCoy = await _context.InsuranceCompany.ToListAsync();
+            foreach(InsuranceCoyEntity i in InsuranceCoy)
             {
                 InsuranceCoyDTO insuranceCoyDTO = new()
                 {
@@ -54,7 +54,7 @@ namespace Infrastructure
          
         public async Task<InsuranceCoyDTO> GetById(int id)
         {
-            InsuranceCoy i = await _context.InsuranceCompany.Where(m => m.Coy_Id == id).FirstOrDefaultAsync();
+            InsuranceCoyEntity i = await _context.InsuranceCompany.Where(m => m.Coy_Id == id).FirstOrDefaultAsync();
             InsuranceCoyDTO insuranceCoyDTO = new()
             {
                 Coy_Name = i.Coy_Name,
@@ -81,7 +81,7 @@ namespace Infrastructure
 
         public async Task<InsuranceCoyDTO> Add_Coy(InsuranceCoyDTO model)
         {
-            InsuranceCoy i = new()
+            InsuranceCoyEntity i = new()
             {
                 Coy_Email = model.Coy_Email,
                 Coy_City = model.Coy_City,
@@ -115,7 +115,7 @@ namespace Infrastructure
 
         public async Task<int> Update_Coy(InsuranceCoyDTO model)
         {
-            InsuranceCoy insuranceCoy = new()
+            InsuranceCoyEntity insuranceCoy = new()
             {
                 Coy_Id = model.Coy_id,
                 Coy_Name = model.Coy_Name,
@@ -134,7 +134,7 @@ namespace Infrastructure
                 
 
             };
-            InsuranceCoy coy = insuranceCoy;
+            InsuranceCoyEntity coy = insuranceCoy;
             _context.InsuranceCompany.Update(coy);
           
 
@@ -142,9 +142,9 @@ namespace Infrastructure
         }
 
 
-        public async Task<InsuranceCoy> Delete_Coy(InsuranceCoyDTO model)
+        public async Task<InsuranceCoyEntity> Delete_Coy(InsuranceCoyDTO model)
         {
-            InsuranceCoy coy = new()
+            InsuranceCoyEntity coy = new()
             {
                 Coy_Id = model.Coy_id,
                 Coy_Name = model.Coy_Name,

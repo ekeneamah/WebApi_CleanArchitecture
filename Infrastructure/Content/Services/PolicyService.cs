@@ -1,5 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.Content.Policy;
+using Domain.Entities;
 using Domain.Models;
 using Infrastructure.Content.Data;
 using Infrastructure.Identity.Models;
@@ -21,6 +22,8 @@ namespace Infrastructure.Content.Services
         private readonly ProductService productService;
         private readonly UserProfileService userProfileService;
         private UserManager<AppUser> _userManager;
+        private readonly GetPolicyNumberService _getPolicyNumberService;
+        private readonly KYCService _kYCService;
 
         public PolicyService(AppDbContext context, UserManager<AppUser> userManager)
         {
@@ -29,6 +32,15 @@ namespace Infrastructure.Content.Services
             productService = new ProductService(context);
             _userManager = userManager;
             userProfileService = new UserProfileService(context, _userManager);
+
+        }
+        public PolicyService(AppDbContext context,GetPolicyNumberService getPolicyNumberService,KYCService kYCService)
+        {
+            _context = context;
+            _getPolicyNumberService = getPolicyNumberService;
+            _kYCService = kYCService;
+
+         
 
         }
         public async Task<int> AddPolicy(PolicyDTO x)
@@ -82,7 +94,7 @@ namespace Infrastructure.Content.Services
                     UserId = x.UserId,
                     InsuranceCoy = await _insuranceCoyService.GetById(x.Coy_Id),
                     Product = await productService.GetProductByCode(x.ProductCode),
-                    UserProfile = await userProfileService.GetById(x.UserId)
+                    UserProfile = await userProfileService.GetProfilebyUserid(x.UserId)
                 };
                 result.Add(pd);
             }
@@ -107,7 +119,7 @@ namespace Infrastructure.Content.Services
                 PaymentRef = x.PaymentRef,
                 InsuranceCoy = await _insuranceCoyService.GetById(x.Coy_Id),
                 Product = await productService.GetProductByCode(x.ProductCode),
-                UserProfile = await userProfileService.GetById(x.UserId)
+                UserProfile = await userProfileService.GetProfilebyUserid(x.UserId)
             };
             return pd;
 
@@ -136,33 +148,38 @@ namespace Infrastructure.Content.Services
                     PaymentRef = x.PaymentRef,
                     InsuranceCoy = await _insuranceCoyService.GetById(x.Coy_Id),
                     Product = await productService.GetProductByCode(x.ProductCode),
-                    UserProfile = await userProfileService.GetById(x.UserId)
+                    UserProfile = await userProfileService.GetProfilebyUserid(x.UserId)
                 };
                 result.Add(pd);
             }
             return result;
         }
 
-        public async Task<PolicyDTO> GetByUserName(string userid)
+        public async Task<List<PolicyDTO>> GetByUserName(string userid)
         {
-            Policy x = await _context.Policies.FirstOrDefaultAsync(x => x.UserId == userid);
-            PolicyDTO pd = new()
+            List<PolicyDTO> result = new();
+            List<Policy> policies = await _context.Policies.Where(u=>u.UserId==userid).ToListAsync();
+            foreach (Policy x in policies)
             {
-                Coy_Id = x.Coy_Id,
-                PolicyNo = x.PolicyNo,
-                Price = x.Price,
-                ProductCode = x.ProductCode,
-                ProductId = x.ProductId,
-                PurchasedDate = x.PurchasedDate,
-                TransactionRef = x.TransactionRef,
-                PaymentRef = x.PaymentRef,
-                TransactionStatus = x.TransactionStatus,
-                UserId = x.UserId,
-                InsuranceCoy = await _insuranceCoyService.GetById(x.Coy_Id),
-                Product = await productService.GetProductByCode(x.ProductCode),
-                UserProfile = await userProfileService.GetById(x.UserId)
-            };
-            return pd;
+                PolicyDTO pd = new()
+                {
+                    Coy_Id = x.Coy_Id,
+                    PolicyNo = x.PolicyNo,
+                    Price = x.Price,
+                    ProductCode = x.ProductCode,
+                    ProductId = x.ProductId,
+                    PurchasedDate = x.PurchasedDate,
+                    TransactionRef = x.TransactionRef,
+                    PaymentRef = x.PaymentRef,
+                    TransactionStatus = x.TransactionStatus,
+                    UserId = x.UserId,
+                    InsuranceCoy = await _insuranceCoyService.GetById(x.Coy_Id),
+                    Product = await productService.GetProductByCode(x.ProductCode),
+                    UserProfile = await userProfileService.GetProfilebyUserid(x.UserId)
+                };
+                result.Add(pd);
+            }
+            return result;
 
         }
 
@@ -174,6 +191,48 @@ namespace Infrastructure.Content.Services
         public PolicyDTO UpdatePolicy(PolicyDTO model)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<PolicyGenReturnedData> GeneratePolicyNumber(GeneratePolicyDTO generatePolicyDTO)
+        {
+            ProductDtoDetails productDetails = await productService.GetDetailsById(generatePolicyDTO.ProductId);
+            UserProfileDto userProfileDto = await userProfileService.GetProfilebyUserid(generatePolicyDTO.Userid);
+            KYCDTO kYCDTO = await _kYCService.GetKYCById(generatePolicyDTO.kycid);
+            Insured insured = new Insured()
+            {
+                address = userProfileDto.ResidentialAddress,
+                isOrg = productDetails.InsuranceCoy.IsOrg,
+                title = productDetails.InsuranceCoy.Title,
+                firstName = userProfileDto.FirstName,
+                lastName = userProfileDto.LastName,
+                otherName = userProfileDto.OtherName,
+                gender = userProfileDto.Gender,
+                email = userProfileDto.Email,
+                phoneLine1 = userProfileDto.Phone,
+                cityLGA = userProfileDto.LocalGovernment,
+                stateID = userProfileDto.City,
+                nationality = userProfileDto.Country,
+                dateOfBirth = userProfileDto.DateofBirth == null ? DateTime.Today : DateTime.Parse(userProfileDto.DateofBirth),
+                taxIdNumber = userProfileDto.TaxIdNumber,
+                kycType = kYCDTO.IdentityType,
+                kycExpiryDate = kYCDTO.FromExpiryDate,
+                kycIssueDate = kYCDTO.ToExpiryDate,
+                kycNumber = kYCDTO.IdentityNumber
+
+            };
+           
+           
+
+            GetPolicyNumberDTO getPolicyNumberDTO = new GetPolicyNumberDTO()
+            {
+                agentID = productDetails.InsuranceCoy.Coy_AgentId,
+                endDate=generatePolicyDTO.EndDate,
+                startDate = generatePolicyDTO.StartDate,
+                insured = insured,
+                sections = generatePolicyDTO.sections
+
+            };
+          return await _getPolicyNumberService.PostPolicyAndTransform("https://testcipapiservices.gibsonline.com/api/policies", getPolicyNumberDTO);
         }
     }
 }

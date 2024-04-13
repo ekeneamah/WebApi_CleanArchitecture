@@ -110,7 +110,7 @@ namespace Infrastructure.Content.Services
             return result;
         }
 
-        public async Task<UserProfileDto> GetById(string id)
+        public async Task<UserProfileDto> GetProfilebyUserid(string id)
         {
             
             AppUser u = await _userManager.FindByIdAsync(id);
@@ -166,6 +166,9 @@ namespace Infrastructure.Content.Services
             return await _context.UserProfiles.AnyAsync(p => p.UserId == userid);
         }
 
-        
+        internal Task<UserProfileDto> GetProfilebyUserid(object userid)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

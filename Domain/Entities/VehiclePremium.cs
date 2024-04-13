@@ -20,5 +20,7 @@ namespace Domain.Models
         public double Premium {  get; set; }
         [Required]
         public string Description { get; set;}
+        [Required]
+        public string SumInsured { get; set; }
     }
 }

@@ -28,7 +28,7 @@ namespace Domain.Models
         [Required]
         public required string TransactionStatus { get; set; }
         public required int Coy_Id { get; set; }
-        public InsuranceCoy? InsuranceCoy { get; set; }
+        public InsuranceCoyEntity? InsuranceCoy { get; set; }
         public Product? Product { get; set; }
         public UserProfile? UserProfile { get; set; }
         public required string PolicyNo { get; set; }

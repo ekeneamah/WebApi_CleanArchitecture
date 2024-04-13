@@ -29,7 +29,11 @@ namespace Application.Dtos
         public string? Coy_VideoLink { get; set; }
         public string? Coy_Image { get; set; }
         public string? Coy_Logo { get; set; }
-        public List<CoyBenefit> Coy_Benefits { get; set; }
+        public required bool IsOrg {  get; set; }
+        [MaxLength(6)]
+        public required string Title { get; set; }
+        public required string Coy_AgentId { get; set; }    
+        public List<CoyBenefit>? Coy_Benefits { get; set; }
 
     }
 }

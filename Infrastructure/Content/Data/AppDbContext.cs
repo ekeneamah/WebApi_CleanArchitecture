@@ -12,21 +12,19 @@ namespace Infrastructure.Content.Data
 
         }
 
-        public DbSet<InsuranceCoy> InsuranceCompany { get; set; }
+        public DbSet<InsuranceCoyEntity> InsuranceCompany { get; set; }
         public DbSet<Product> Products { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Category> Categories { get; set; }
         public DbSet<Claim> Claims { get; set; }
         public DbSet<Policy> Policies { get; set; }
-        public DbSet<ClaimsForm> ClaimsForms { get; set; }
+        public DbSet<ClaimsFormEntity> ClaimsForms { get; set; }
         public DbSet<Transaction> Transactions { get; set; }
         public DbSet<CategoryBenefit> Benefits { get; set; }
         public DbSet<VehiclePremium> VehiclePremiums { get; set; }
         public DbSet<CoyBenefit> CoyBenefits { get; set; }
         public DbSet<MotorClaim> MotorClaims { get; set; }
-
-
-
+        public DbSet<kycEntity> KYCs { get; internal set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

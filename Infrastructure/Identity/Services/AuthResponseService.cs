@@ -534,6 +534,8 @@ namespace Infrastructure.Identity.Services
 
             return "OTP re-sent to your e-mail";
         }
+
+        
         #endregion
 
 

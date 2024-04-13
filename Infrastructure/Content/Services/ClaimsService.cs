@@ -76,7 +76,7 @@ namespace Infrastructure.Content.Services
             return model;
         }
         #region get claims form by insuarance coy
-        public async Task<ClaimsForm> GetClaimsForm(int PolicyId)
+        public async Task<ClaimsFormEntity> GetClaimsForm(int PolicyId)
         { int InsuranceCompanyId = await _dbContext.Policies.Where(i => i.Id == PolicyId).Select(c => c.Coy_Id).FirstOrDefaultAsync();
             return await _dbContext.ClaimsForms.FirstOrDefaultAsync(p => p.Coy_id == InsuranceCompanyId);
         }
@@ -84,7 +84,7 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region Add Claims form by insuarance coy
-        public async Task<int> AddClaimsForm(ClaimsForm model)
+        public async Task<int> AddClaimsForm(ClaimsFormEntity model)
         {
             _dbContext.ClaimsForms.Add(model);
             return await _dbContext.SaveChangesAsync();
@@ -93,9 +93,9 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region update Claims form by insuarance coy
-        public async Task<int> UpdateClaimsForm(ClaimsForm model)
+        public async Task<int> UpdateClaimsForm(ClaimsFormEntity model)
         {
-            ClaimsForm claimForm = await _dbContext.ClaimsForms.FindAsync(model.Id);
+            ClaimsFormEntity claimForm = await _dbContext.ClaimsForms.FindAsync(model.Id);
             claimForm = model;
             _dbContext.ClaimsForms.Update(claimForm);
             return await _dbContext.SaveChangesAsync();

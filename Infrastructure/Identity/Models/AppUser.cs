@@ -47,11 +47,11 @@ namespace Infrastructure.Identity.Models
         public string? ResidentPerminNo { get; set; }
         public string? Maidenname { get; set; }
         public string? Stateoforigin { get; set; }
-        public string? NIN { get; set; }
+       
         public string? BVN { get; set; }
         public string? BusinessLocation { get; set; }
         public string? SignatureUrl { get; set; }
         public string? Gender { get; set; }
-
+        public string NIN { get; internal set; }
     }
 }

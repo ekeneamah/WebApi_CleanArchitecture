@@ -18,7 +18,7 @@ namespace Application.Interfaces.Content.Brands
 
         Task<int> Update_Coy(InsuranceCoyDTO model);
 
-        Task<InsuranceCoy> Delete_Coy(InsuranceCoyDTO model);
+        Task<InsuranceCoyEntity> Delete_Coy(InsuranceCoyDTO model);
 
         Task<bool> CoyIsExist(string code);
 

@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Domain.Models
 {
-    public class InsuranceCoy
+    public class InsuranceCoyEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -38,6 +38,9 @@ namespace Domain.Models
         public string? Coy_VideoLink { get; set; }
         public string? Coy_Image { get; set; }
         public string? Coy_Logo { get; set; }
+        public required string Coy_AgentId { get; set; } = "ABC";
+        public bool IsOrg { get; set; }
+        public string Title { get; set; }
     }
 
     public class CoyBenefit

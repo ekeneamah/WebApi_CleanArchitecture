@@ -1,4 +1,5 @@
 ﻿using Application.Dtos;
+using Domain.Entities;
 using Domain.Models;
 using System;
 using System.Collections.Generic;
@@ -15,7 +16,7 @@ namespace Application.Interfaces.Content.Policy
 
         Task<PolicyDTO> GetById(int id);
         Task<List<PolicyDTO>> GetAllPolicyByUserId(string userid);
-        Task<PolicyDTO> GetByUserName(string username);
+        Task<List<PolicyDTO>> GetByUserName(string username);
 
 
         Task<int> AddPolicy(PolicyDTO model);
@@ -32,6 +33,6 @@ namespace Application.Interfaces.Content.Policy
 
         Task<bool> POlicyIsExist(string policyName);
 
-       
+        Task<PolicyGenReturnedData> GeneratePolicyNumber(GeneratePolicyDTO generatePolicyDTO);
     }
 }
