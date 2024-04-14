@@ -25,7 +25,7 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Models.Category", b =>
+            modelBuilder.Entity("Domain.Models.CategoryEntity", b =>
                 {
                     b.Property<int>("Categoty_Id")
                         .ValueGeneratedOnAdd()
@@ -54,7 +54,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Domain.Models.CategoryBenefit", b =>
+            modelBuilder.Entity("Domain.Models.CategoryBenefitEntity", b =>
                 {
                     b.Property<int>("Benefit_Id")
                         .ValueGeneratedOnAdd()
@@ -80,7 +80,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Benefits");
                 });
 
-            modelBuilder.Entity("Domain.Models.Claim", b =>
+            modelBuilder.Entity("Domain.Models.ClaimEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -151,7 +151,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("ClaimsForms");
                 });
 
-            modelBuilder.Entity("Domain.Models.CoyBenefit", b =>
+            modelBuilder.Entity("Domain.Models.CoyBenefitEntity", b =>
                 {
                     b.Property<int>("Benefit_Id")
                         .ValueGeneratedOnAdd()
@@ -246,7 +246,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("InsuranceCompany");
                 });
 
-            modelBuilder.Entity("Domain.Models.MotorClaim", b =>
+            modelBuilder.Entity("Domain.Models.MotorClaimEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -288,7 +288,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("MotorClaims");
                 });
 
-            modelBuilder.Entity("Domain.Models.Policy", b =>
+            modelBuilder.Entity("Domain.Models.PolicyEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -350,7 +350,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Policies");
                 });
 
-            modelBuilder.Entity("Domain.Models.Product", b =>
+            modelBuilder.Entity("Domain.Models.ProductEntity", b =>
                 {
                     b.Property<int>("Product_Id")
                         .ValueGeneratedOnAdd()
@@ -393,7 +393,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Domain.Models.Transaction", b =>
+            modelBuilder.Entity("Domain.Models.TransactionEntity", b =>
                 {
                     b.Property<string>("Reference")
                         .HasColumnType("nvarchar(450)");
@@ -434,7 +434,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Domain.Models.UserProfile", b =>
+            modelBuilder.Entity("Domain.Models.UserProfileEntity", b =>
                 {
                     b.Property<int>("Profile_Id")
                         .ValueGeneratedOnAdd()
@@ -520,7 +520,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("UserProfiles");
                 });
 
-            modelBuilder.Entity("Domain.Models.VehiclePremium", b =>
+            modelBuilder.Entity("Domain.Models.VehiclePremiumEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -545,37 +545,37 @@ namespace Infrastructure.Migrations
                     b.ToTable("VehiclePremiums");
                 });
 
-            modelBuilder.Entity("Domain.Models.CategoryBenefit", b =>
+            modelBuilder.Entity("Domain.Models.CategoryBenefitEntity", b =>
                 {
-                    b.HasOne("Domain.Models.Category", null)
+                    b.HasOne("Domain.Models.CategoryEntity", null)
                         .WithMany("Category_Benefits")
                         .HasForeignKey("CategoryCategoty_Id");
                 });
 
-            modelBuilder.Entity("Domain.Models.Policy", b =>
+            modelBuilder.Entity("Domain.Models.PolicyEntity", b =>
                 {
                     b.HasOne("Domain.Models.InsuranceCoy", "InsuranceCoy")
                         .WithMany()
                         .HasForeignKey("InsuranceCoyCoy_Id");
 
-                    b.HasOne("Domain.Models.Product", "Product")
+                    b.HasOne("Domain.Models.ProductEntity", "ProductEntity")
                         .WithMany()
                         .HasForeignKey("ProductId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("Domain.Models.UserProfile", "UserProfile")
+                    b.HasOne("Domain.Models.UserProfileEntity", "UserProfileEntity")
                         .WithMany()
                         .HasForeignKey("UserProfileProfile_Id");
 
                     b.Navigation("InsuranceCoy");
 
-                    b.Navigation("Product");
+                    b.Navigation("ProductEntity");
 
-                    b.Navigation("UserProfile");
+                    b.Navigation("UserProfileEntity");
                 });
 
-            modelBuilder.Entity("Domain.Models.Category", b =>
+            modelBuilder.Entity("Domain.Models.CategoryEntity", b =>
                 {
                     b.Navigation("Category_Benefits");
                 });

@@ -58,7 +58,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<ClaimsDto> AddClaims(ClaimsDto model)
         {
-            var claim = new Claim
+            var claim = new ClaimEntity
             {
                 ClaimsId = Guid.NewGuid(), // Generating a new Guid for ClaimsId
                 UserId = model.UserId,
@@ -109,7 +109,7 @@ namespace Infrastructure.Content.Services
             var claim = await _dbContext.Claims.FirstOrDefaultAsync(c => c.ClaimsId == model.PolicyId);
             if (claim == null)
             {
-                return null; // Claim not found
+                return null; // ClaimEntity not found
             }
 
             // Update claim properties

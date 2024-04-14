@@ -64,14 +64,14 @@ namespace CleanaArchitecture1.Controllers.Content
 
         // GET: api/Products/5
         [HttpGet("{code}")]
-        public async Task<ActionResult<Product>> GetProduct(string code)
+        public async Task<ActionResult<ProductEntity>> GetProduct(string code)
         {
             
             var product = await _productServcie.GetByCode(code);
 
             if (product == null)
             {
-                return NotFound($"no Product with {code} was found");
+                return NotFound($"no ProductEntity with {code} was found");
             }
 
             return Ok(product);
@@ -82,14 +82,14 @@ namespace CleanaArchitecture1.Controllers.Content
 
         // GET: api/Products/5
         [HttpGet("GetProductDetailById")]
-        public async Task<ActionResult<Product>> GetProductDetailById(int product_id)
+        public async Task<ActionResult<ProductEntity>> GetProductDetailById(int product_id)
         {
 
             var product = await _productServcie.GetDetailsById(product_id);
 
             if (product == null)
             {
-                return NotFound($"no Product with {product_id} was found");
+                return NotFound($"no ProductEntity with {product_id} was found");
             }
 
             return Ok(product);
@@ -108,12 +108,12 @@ namespace CleanaArchitecture1.Controllers.Content
 
             if (isExist is true)
             {
-                return BadRequest("Product Code already exists");
+                return BadRequest("ProductEntity Code already exists");
 
             }
             else
             {
-                var product = new Product
+                var product = new ProductEntity
                 {
                     Product_Name = model.Product_Name,
                     Coy_Id = model.InsuranceCoy_id,

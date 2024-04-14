@@ -9,7 +9,7 @@ namespace Application.Dtos
     public class ClaimsDto
     {
         public Guid ClaimId { get; set; }
-        public Guid PolicyId { get; set; } // Guid for Policy ID
+        public Guid PolicyId { get; set; } // Guid for PolicyEntity ID
         public string PolicyNo { get; set; }
         public DateTime LossDate { get; set; }
         public DateTime NotifyDate { get; set; }

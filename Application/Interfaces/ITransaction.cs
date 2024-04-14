@@ -9,9 +9,9 @@ namespace Application.Interfaces
 {
     public interface ITransaction
     {
-        Task<int> SaveResponse(Transaction transactionResponse);
-        Task<int> DeleteResponse(Transaction transactionResponse);
-        Task<int> UpdateResponse(Transaction transactionResponse);
+        Task<int> SaveResponse(TransactionEntity transactionResponse);
+        Task<int> DeleteResponse(TransactionEntity transactionResponse);
+        Task<int> UpdateResponse(TransactionEntity transactionResponse);
         Task<TransactionDTO> GetTransactionByReference(string reference); // New method
         Task<IEnumerable<TransactionDTO>> GetTransactionsByUserId(string userId); // New method
     }

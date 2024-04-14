@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class Policy
+    public class PolicyEntity
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
@@ -28,9 +28,7 @@ namespace Domain.Models
         [Required]
         public required string TransactionStatus { get; set; }
         public required int Coy_Id { get; set; }
-        public InsuranceCoyEntity? InsuranceCoy { get; set; }
-        public Product? Product { get; set; }
-        public UserProfile? UserProfile { get; set; }
+        
         public required string PolicyNo { get; set; }
         public required string PaymentRef { get; set; }
     }

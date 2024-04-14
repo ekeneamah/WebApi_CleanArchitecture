@@ -26,7 +26,7 @@ namespace Application.Dtos
 
         public string Product_Code { get; set; }
         public object Product_Group { get; set; }
-        public Category Product_Category { get; set;}
+        public CategoryEntity Product_Category { get; set;}
         public InsuranceCoyEntity InsuranceCoy { get; set; }
     }
 

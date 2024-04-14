@@ -15,7 +15,7 @@ namespace Infrastructure.Content.Services
         }
 
         #region GetAll
-        public async Task<List<Category>> GetAll()
+        public async Task<List<CategoryEntity>> GetAll()
         {
             return await _context.Categories
                   .AsNoTracking()
@@ -24,7 +24,7 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region GetById
-        public async Task<Category> GetById(int id)
+        public async Task<CategoryEntity> GetById(int id)
         {
             return await _context.Categories
               .FindAsync(id);
@@ -32,7 +32,7 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region AddCategory
-        public async Task<Category> AddCategory(Category model)
+        public async Task<CategoryEntity> AddCategory(CategoryEntity model)
         {
             _context.Categories.Add(model);
 
@@ -43,7 +43,7 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region UpdateCategory
-        public Category UpdateCategory(Category model)
+        public CategoryEntity UpdateCategory(CategoryEntity model)
         {
             _context.Update(model);
             _context.SaveChanges();
@@ -52,7 +52,7 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region DeleteCategory
-        public Category DeleteCategory(Category model)
+        public CategoryEntity DeleteCategory(CategoryEntity model)
         {
             _context.Remove(model);
             _context.SaveChanges();

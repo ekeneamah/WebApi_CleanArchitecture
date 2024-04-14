@@ -45,7 +45,7 @@ namespace Infrastructure.Content.Services
         }
         public async Task<int> AddPolicy(PolicyDTO x)
         {
-            Policy pd = new()
+            PolicyEntity pd = new()
             {
                 Coy_Id = x.Coy_Id,
                 PolicyNo = x.PolicyNo,
@@ -73,15 +73,15 @@ namespace Infrastructure.Content.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<PolicyDTO>> GetAll()
+        public async Task<List<PolicyDetailDTO>> GetAll()
         {
-            List<Policy> p = await _context.Policies
+            List<PolicyEntity> p = await _context.Policies
                  .AsNoTracking()
                .ToListAsync();
-            List<PolicyDTO> result = new List<PolicyDTO>();
-            foreach (Policy x in p)
+            List<PolicyDetailDTO> result = new List<PolicyDetailDTO>();
+            foreach (PolicyEntity x in p)
             {
-                PolicyDTO pd = new()
+                PolicyDetailDTO pd = new()
                 {
                     Coy_Id = x.Coy_Id,
                     PolicyNo = x.PolicyNo,
@@ -102,10 +102,10 @@ namespace Infrastructure.Content.Services
 
         }
 
-        public async Task<PolicyDTO> GetById(int id)
+        public async Task<PolicyDetailDTO> GetById(int id)
         {
-            Policy x = await _context.Policies.FirstOrDefaultAsync(x => x.Id == id);
-            PolicyDTO pd = new()
+            PolicyEntity x = await _context.Policies.FirstOrDefaultAsync(x => x.Id == id);
+            PolicyDetailDTO pd = new()
             {
                 Coy_Id = x.Coy_Id,
                 PolicyNo = x.PolicyNo,
@@ -125,15 +125,15 @@ namespace Infrastructure.Content.Services
 
         }
 
-        public async Task<List<PolicyDTO>> GetAllPolicyByUserId(string userId)
+        public async Task<List<PolicyDetailDTO>> GetAllPolicyByUserId(string userId)
         {
-            List<Policy> p = await _context.Policies.Where(u=>u.UserId==userId)
+            List<PolicyEntity> p = await _context.Policies.Where(u=>u.UserId==userId)
                  .AsNoTracking()
                .ToListAsync();
-            List<PolicyDTO> result = new();
-            foreach (Policy x in p)
+            List<PolicyDetailDTO> result = new();
+            foreach (PolicyEntity x in p)
             {
-                PolicyDTO pd = new()
+                PolicyDetailDTO pd = new()
                 {
                     PolicyId = x.Id,
                     PolicyNo= x.PolicyNo,
@@ -155,13 +155,13 @@ namespace Infrastructure.Content.Services
             return result;
         }
 
-        public async Task<List<PolicyDTO>> GetByUserName(string userid)
+        public async Task<List<PolicyDetailDTO>> GetByUserName(string userid)
         {
-            List<PolicyDTO> result = new();
-            List<Policy> policies = await _context.Policies.Where(u=>u.UserId==userid).ToListAsync();
-            foreach (Policy x in policies)
+            List<PolicyDetailDTO> result = new();
+            List<PolicyEntity> policies = await _context.Policies.Where(u=>u.UserId==userid).ToListAsync();
+            foreach (PolicyEntity x in policies)
             {
-                PolicyDTO pd = new()
+                PolicyDetailDTO pd = new()
                 {
                     Coy_Id = x.Coy_Id,
                     PolicyNo = x.PolicyNo,
@@ -183,12 +183,12 @@ namespace Infrastructure.Content.Services
 
         }
 
-        public PolicyDTO UpdatePolicy(Category model)
+        public PolicyDTO UpdatePolicy(CategoryEntity model)
         {
             throw new NotImplementedException();
         }
 
-        public PolicyDTO UpdatePolicy(PolicyDTO model)
+        public PolicyDetailDTO UpdatePolicy(PolicyDTO model)
         {
             throw new NotImplementedException();
         }
@@ -198,7 +198,7 @@ namespace Infrastructure.Content.Services
             ProductDtoDetails productDetails = await productService.GetDetailsById(generatePolicyDTO.ProductId);
             UserProfileDto userProfileDto = await userProfileService.GetProfilebyUserid(generatePolicyDTO.Userid);
             KYCDTO kYCDTO = await _kYCService.GetKYCById(generatePolicyDTO.kycid);
-            Insured insured = new Insured()
+            InsuredDTO insured = new InsuredDTO()
             {
                 address = userProfileDto.ResidentialAddress,
                 isOrg = productDetails.InsuranceCoy.IsOrg,
@@ -217,7 +217,8 @@ namespace Infrastructure.Content.Services
                 kycType = kYCDTO.IdentityType,
                 kycExpiryDate = kYCDTO.FromExpiryDate,
                 kycIssueDate = kYCDTO.ToExpiryDate,
-                kycNumber = kYCDTO.IdentityNumber
+                kycNumber = kYCDTO.IdentityNumber,
+                
 
             };
            
@@ -229,7 +230,8 @@ namespace Infrastructure.Content.Services
                 endDate=generatePolicyDTO.EndDate,
                 startDate = generatePolicyDTO.StartDate,
                 insured = insured,
-                sections = generatePolicyDTO.sections
+                sections = generatePolicyDTO.sections,
+                Token = generatePolicyDTO.Token,
 
             };
           return await _getPolicyNumberService.PostPolicyAndTransform("https://testcipapiservices.gibsonline.com/api/policies", getPolicyNumberDTO);

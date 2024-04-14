@@ -8,13 +8,13 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class Claim
+    public class ClaimEntity
     {
         
         [Key]
         public int Id { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
-        public  Guid ClaimsId { get; set; } // Guid for Policy ID
+        public  Guid ClaimsId { get; set; } // Guid for PolicyEntity ID
         [Required]
         [MaxLength(100)]
         public required string UserId { get; set; } // User ID

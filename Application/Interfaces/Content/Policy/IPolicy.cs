@@ -11,19 +11,19 @@ namespace Application.Interfaces.Content.Policy
 {
     public interface IPolicy
     {
-        Task<List<PolicyDTO>> GetAll();
+        Task<List<PolicyDetailDTO>> GetAll();
 
 
-        Task<PolicyDTO> GetById(int id);
-        Task<List<PolicyDTO>> GetAllPolicyByUserId(string userid);
-        Task<List<PolicyDTO>> GetByUserName(string username);
+        Task<PolicyDetailDTO> GetById(int id);
+        Task<List<PolicyDetailDTO>> GetAllPolicyByUserId(string userid);
+        Task<List<PolicyDetailDTO>> GetByUserName(string username);
 
 
         Task<int> AddPolicy(PolicyDTO model);
 
 
 
-        PolicyDTO UpdatePolicy(PolicyDTO model);
+        PolicyDetailDTO UpdatePolicy(PolicyDTO model);
 
 
 

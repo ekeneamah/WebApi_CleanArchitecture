@@ -68,7 +68,7 @@ public class KYCController : ControllerBase
         return kycDto;
     }
 
-        [HttpGet]
+        [HttpGet("GetKycByUserId")]
         public async Task<ActionResult<List<KYCDTO>>> GetKYCByUserId()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);

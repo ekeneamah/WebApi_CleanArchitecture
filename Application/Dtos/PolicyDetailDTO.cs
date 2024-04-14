@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Application.Dtos
 {
-    public class PolicyDTO
+    public class PolicyDetailDTO
     {
         
 
@@ -27,7 +27,9 @@ namespace Application.Dtos
         [Required]
         public required string TransactionStatus { get; set; }
         public required int Coy_Id { get; set; }
-       
+        public InsuranceCoyDTO? InsuranceCoy { get; set; }
+        public ProductDto? Product { get; set; }
+        public UserProfileDto? UserProfile { get; set; }
         public int PolicyId { get; set; }
         public string PolicyNo { get; set; }
         public string PaymentRef { get; set; }

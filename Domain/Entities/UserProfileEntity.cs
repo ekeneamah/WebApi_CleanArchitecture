@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class UserProfile
+    public class UserProfileEntity
     {
        
 
@@ -49,5 +49,6 @@ namespace Domain.Models
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
+        public string? NIN { get; set; }
     }
 }

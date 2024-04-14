@@ -4,7 +4,7 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace Application.Dtos
 {
-    public class Insured
+    public class InsuredDTO
 {
     public bool isOrg { get; set; }
     public string title { get; set; }
@@ -26,7 +26,7 @@ namespace Application.Dtos
     public DateTime kycExpiryDate { get; set; }
 }
 
-public class Field
+public class FieldDTO
 {
        [Key]
         public int id { get; set; }
@@ -35,7 +35,7 @@ public class Field
     public string value { get; set; }
 }
 
-public class Section
+public class SectionDTO
 {
         [Key]
         public int id { get; set; }
@@ -43,7 +43,7 @@ public class Section
     public string sectionID { get; set; }
     public int sectionPremium { get; set; }
     public int sectionSumInsured { get; set; }
-    public List<Field> fields { get; set; }
+    public List<FieldDTO> fields { get; set; }
 }
 
 public class GetPolicyNumberDTO
@@ -54,7 +54,8 @@ public class GetPolicyNumberDTO
     public DateTime endDate { get; set; }
     public string paymentReferenceID { get; set; }
     public string paymentAccountID { get; set; }
-    public Insured insured { get; set; }
-    public List<Section> sections { get; set; }
-}
+    public InsuredDTO insured { get; set; }
+    public List<SectionDTO> sections { get; set; }
+        public string Token { get; set; }
+    }
 }

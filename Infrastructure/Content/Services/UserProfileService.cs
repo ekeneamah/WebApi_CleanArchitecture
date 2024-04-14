@@ -61,7 +61,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<int> Delete_UserProfile(UserProfileDto m)
         {
-            UserProfile model = _context.UserProfiles.FirstOrDefault(p => p.UserId == m.UserId);
+            UserProfileEntity model = _context.UserProfiles.FirstOrDefault(p => p.UserId == m.UserId);
             if (model != null)
             {
                 _context.UserProfiles.Remove(model);
@@ -142,7 +142,7 @@ namespace Infrastructure.Content.Services
         public async Task<UserProfileDto> Update_UserProfile(UserProfileDto model)
         {
             _userProfilePoco = new UserProfilePoco();
-            UserProfile userProfile = await _context.UserProfiles.Where(u=>u.UserId==model.UserId).SingleOrDefaultAsync();
+            UserProfileEntity userProfile = await _context.UserProfiles.Where(u=>u.UserId==model.UserId).SingleOrDefaultAsync();
             userProfile = _userProfilePoco.UserProfilePocoDto(model);
             _context.UserProfiles.Update(userProfile);
             await _context.SaveChangesAsync();

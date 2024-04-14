@@ -43,7 +43,7 @@ namespace Domain.Models
         public string Title { get; set; }
     }
 
-    public class CoyBenefit
+    public class CoyBenefitEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

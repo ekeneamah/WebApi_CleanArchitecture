@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class Transaction
+    public class TransactionEntity
     {
         public string? Authorization_Url { get; set; }
         public string? AccessCode { get; set; }
@@ -37,6 +37,6 @@ namespace Domain.Models
         public DateTime? DateTime { get; set; }
         public string? UserEmail { get; set; }
         public string? PaymentRef { get; set; }
-        public  Product? Product{get;set;}
+        public  ProductEntity? Product{get;set;}
     }
 }

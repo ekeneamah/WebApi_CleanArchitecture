@@ -30,7 +30,7 @@ namespace Infrastructure.Content.Services
                  .AsNoTracking()
                  .ToListAsync();
 
-            foreach (Product x in p)
+            foreach (ProductEntity x in p)
             {
                 ProductDtoDetails pd = new()
                 {
@@ -82,7 +82,7 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region GetProductByCode
-        // return entity/model : (Product)
+        // return entity/model : (ProductEntity)
         public async Task<ProductDto> GetProductByCode(string code)
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.Product_Code == code);
@@ -104,7 +104,7 @@ namespace Infrastructure.Content.Services
         #region GetDetailsById
         public async Task<ProductDtoDetails> GetDetailsById(int id)
         {
-            Product x = await _context.Products.FindAsync(id);
+            ProductEntity x = await _context.Products.FindAsync(id);
             ProductDtoDetails pd = new()
             {
                 Product_Id = x.Product_Id,
@@ -124,16 +124,16 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region GetById
-        public async Task<Product> GetById(int id)
+        public async Task<ProductEntity> GetById(int id)
         {
-            Product x =  await _context.Products.FindAsync(id);
+            ProductEntity x =  await _context.Products.FindAsync(id);
            
             return x;
         }
         #endregion
 
         #region Add 
-        public async Task<Product> Add(Product model)
+        public async Task<ProductEntity> Add(ProductEntity model)
         {
             await _context.Products.AddAsync(model);
             await _context.SaveChangesAsync();
@@ -142,7 +142,7 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region Update
-        public Product Update(Product model)
+        public ProductEntity Update(ProductEntity model)
         {
             _context.Update(model);
             _context.SaveChangesAsync();
@@ -151,7 +151,7 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region Delete
-        public Product Delete(Product model)
+        public ProductEntity Delete(ProductEntity model)
         {
             _context.Products.Remove(model);
             _context.SaveChangesAsync();
@@ -196,7 +196,7 @@ namespace Infrastructure.Content.Services
                  .ToListAsync();
             List<ProductDtoDetails> result = new List<ProductDtoDetails>(); 
 
-            foreach (Product x in p)
+            foreach (ProductEntity x in p)
             {
                 ProductDtoDetails pd = new()
                 {
@@ -248,7 +248,7 @@ namespace Infrastructure.Content.Services
 
             List<ProductDtoDetails> result = new List<ProductDtoDetails>();
 
-            foreach (Product x in p)
+            foreach (ProductEntity x in p)
             {
                 ProductDtoDetails pd = new()
                 {

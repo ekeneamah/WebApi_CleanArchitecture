@@ -19,7 +19,7 @@ namespace API.Controllers.Content
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VehiclePremium>>> GetAllVehiclePremiums()
+        public async Task<ActionResult<IEnumerable<VehiclePremiumEntity>>> GetAllVehiclePremiums()
         {
             try
             {
@@ -33,7 +33,7 @@ namespace API.Controllers.Content
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<VehiclePremium>> GetVehiclePremiumById(int id)
+        public async Task<ActionResult<VehiclePremiumEntity>> GetVehiclePremiumById(int id)
         {
             try
             {
@@ -51,7 +51,7 @@ namespace API.Controllers.Content
         }
 
         [HttpPost]
-        public async Task<ActionResult<VehiclePremium>> AddVehiclePremium(VehiclePremium vehiclePremium)
+        public async Task<ActionResult<VehiclePremiumEntity>> AddVehiclePremium(VehiclePremiumEntity vehiclePremium)
         {
             try
             {
@@ -65,7 +65,7 @@ namespace API.Controllers.Content
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateVehiclePremium(int id, VehiclePremium vehiclePremium)
+        public async Task<IActionResult> UpdateVehiclePremium(int id, VehiclePremiumEntity vehiclePremium)
         {
             if (id != vehiclePremium.Id)
             {

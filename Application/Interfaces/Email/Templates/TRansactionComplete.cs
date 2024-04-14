@@ -10,15 +10,15 @@ namespace Infrastructure.Content.Services
 {
     public class TRansactionComplete
     {
-        private readonly Transaction _transaction;
+        private readonly TransactionEntity _transaction;
 
         public TRansactionComplete() { 
         }
 
-        public string GetEmailBody(Transaction transaction,Product p, string FirstName )
+        public string GetEmailBody(TransactionEntity transaction,ProductEntity p, string FirstName )
         {
 
-            // Replace placeholders in the HTML template with actual values from the Transaction object
+            // Replace placeholders in the HTML template with actual values from the TransactionEntity object
             string emailBody = $@"
         <html>
         <head>
@@ -55,15 +55,15 @@ namespace Infrastructure.Content.Services
         </head>
         <body>
             <div class='container'>
-                <h2>Transaction Confirmation</h2>
+                <h2>TransactionEntity Confirmation</h2>
                 <p>Hello {FirstName},</p>
                 <p>Your transaction with reference number <strong>{transaction.Reference}</strong> has been processed successfully.</p>
-                <p>Transaction Details:</p>
+                <p>TransactionEntity Details:</p>
                 <ul>
                     <li>Amount: {transaction?.Amount}</li>
                     <li>Date: {transaction?.DateTime}</li>
                     <li>Stattus: {transaction?.Status}</li>
-                    <li>Product: {p.Product_Name} </li>
+                    <li>ProductEntity: {p.Product_Name} </li>
                    
                 </ul>
                 <p>Thank you for choosing our services!</p>
@@ -75,10 +75,10 @@ namespace Infrastructure.Content.Services
             return emailBody;
         }
 
-        public string GetEmailBodyInsuranceCoy(Transaction transaction, Product p, string FirstName)
+        public string GetEmailBodyInsuranceCoy(TransactionEntity transaction, ProductEntity p, string FirstName)
         {
 
-            // Replace placeholders in the HTML template with actual values from the Transaction object
+            // Replace placeholders in the HTML template with actual values from the TransactionEntity object
             string emailBody = $@"
         <html>
         <head>
@@ -115,15 +115,15 @@ namespace Infrastructure.Content.Services
         </head>
         <body>
             <div class='container'>
-                <h2>Transaction Confirmation</h2>
+                <h2>TransactionEntity Confirmation</h2>
                 <p>Hello ,</p>
                 <p>A transaction with reference number <strong>{transaction.Reference}</strong> has been processed successfully.</p>
-                <p>Transaction Details:</p>
+                <p>TransactionEntity Details:</p>
                 <ul>
                     <li>Amount: {transaction.Amount}</li>
                     <li>Date: {transaction.DateTime}</li>
                     <li>Stattus: {transaction.Status}</li>
-                    <li>Product: {p.Product_Name} </li>
+                    <li>ProductEntity: {p.Product_Name} </li>
 <li>Payment Ref.: {transaction.PaymentRef} </li>
 
                    

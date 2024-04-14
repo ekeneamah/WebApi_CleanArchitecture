@@ -32,7 +32,7 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MotorClaim>>> GetAll()
+        public async Task<ActionResult<IEnumerable<MotorClaimEntity>>> GetAll()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -43,7 +43,7 @@ namespace API.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<MotorClaim>> GetById(int id)
+        public async Task<ActionResult<MotorClaimEntity>> GetById(int id)
         {
             var claim = await _repository.GetMotorClaimById(id);
             if (claim == null)
@@ -54,7 +54,7 @@ namespace API.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<MotorClaim>> Create(MotorClaim motorClaim)
+        public async Task<ActionResult<MotorClaimEntity>> Create(MotorClaimEntity motorClaim)
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -67,7 +67,7 @@ namespace API.Controllers
         }
 
         [NonAction]
-        public async Task<HttpResponseMessage> SendClaimAsync(MotorClaim claimRequest)
+        public async Task<HttpResponseMessage> SendClaimAsync(MotorClaimEntity claimRequest)
         {
             // API endpoint
             string endpoint = "https://app.cornerstone.com.ng/claimapi/api/ProcessClaim/NewClaim";
@@ -91,7 +91,7 @@ namespace API.Controllers
     
 
     [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, MotorClaim motorClaim)
+        public async Task<IActionResult> Update(int id, MotorClaimEntity motorClaim)
         {
             if (id != motorClaim.Id)
             {

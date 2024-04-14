@@ -9,21 +9,21 @@ namespace Application.Interfaces.Content.Categories
 {
     public interface ICategory
     {
-        Task<List<Category>> GetAll();
+        Task<List<CategoryEntity>> GetAll();
 
 
-        Task<Category> GetById(int id);
+        Task<CategoryEntity> GetById(int id);
 
 
-        Task<Category> AddCategory(Category model);
-
-
-
-        Category UpdateCategory(Category model);
+        Task<CategoryEntity> AddCategory(CategoryEntity model);
 
 
 
-        Category DeleteCategory(Category model);
+        CategoryEntity UpdateCategory(CategoryEntity model);
+
+
+
+        CategoryEntity DeleteCategory(CategoryEntity model);
 
 
 

@@ -37,7 +37,7 @@ namespace CleanaArchitecture1.Controllers.Content
             var category = await _categoryService.GetById(id);
 
             if (category == null)
-                return NotFound($"No Category has found with this {id} ");
+                return NotFound($"No CategoryEntity has found with this {id} ");
 
             return Ok(category);
         }
@@ -46,7 +46,7 @@ namespace CleanaArchitecture1.Controllers.Content
         #region Create Category Endpoint
         // POST: CategoriesController/Create
         [HttpPost("Add_NewCategory")]
-        public async Task<IActionResult> CreateCategory([FromQuery] Category model)
+        public async Task<IActionResult> CreateCategory([FromQuery] CategoryEntity model)
         {
             model.Category_Description = model.Category_Description.Replace("\n", "\\n");
             if (ModelState.IsValid is false)
@@ -55,9 +55,9 @@ namespace CleanaArchitecture1.Controllers.Content
             }
 
             if (await _categoryService.CategoryIsExist(model.Category_Name))
-                return BadRequest(" this Category name is already registred");
+                return BadRequest(" this CategoryEntity name is already registred");
 
-            var categy = new Category
+            var categy = new CategoryEntity
             {
                 Category_Name = model.Category_Name,
                 Category_Description = model.Category_Description,
@@ -75,13 +75,13 @@ namespace CleanaArchitecture1.Controllers.Content
         #region Update Category
         // POST: CategoriesController/Edit/5
         [HttpPut("Edit_Category")]
-        public async Task<IActionResult> UpdateCategory(int id, Category model)
+        public async Task<IActionResult> UpdateCategory(int id, CategoryEntity model)
         {
             var category = await _categoryService.GetById(id);
 
 
             if (category == null)
-                return NotFound($"No Category was found with ID {id}");
+                return NotFound($"No CategoryEntity was found with ID {id}");
 
            
 
@@ -108,7 +108,7 @@ namespace CleanaArchitecture1.Controllers.Content
 
             _categoryService.DeleteCategory(category);
 
-            return Ok($"Category : {category.Category_Name} with Id : ({category.Categoty_Id}) is deleted");
+            return Ok($"CategoryEntity : {category.Category_Name} with Id : ({category.Categoty_Id}) is deleted");
         }
         #endregion
     }

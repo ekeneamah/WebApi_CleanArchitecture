@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class MotorClaim
+    public class MotorClaimEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

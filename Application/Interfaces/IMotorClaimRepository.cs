@@ -9,10 +9,10 @@ namespace Application.Interfaces
 {
     public interface IMotorClaimRepository
     {
-        Task<MotorClaim> CreateMotorClaim(MotorClaim motorClaim);
-        Task<MotorClaim> GetMotorClaimById(int id);
-        Task<IEnumerable<MotorClaim>> GetAllMotorClaims(string userid);
-        Task UpdateMotorClaim(MotorClaim motorClaim);
+        Task<MotorClaimEntity> CreateMotorClaim(MotorClaimEntity motorClaim);
+        Task<MotorClaimEntity> GetMotorClaimById(int id);
+        Task<IEnumerable<MotorClaimEntity>> GetAllMotorClaims(string userid);
+        Task UpdateMotorClaim(MotorClaimEntity motorClaim);
         Task DeleteMotorClaim(int id);
     }
 }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class VehiclePremium
+    public class VehiclePremiumEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]

@@ -22,7 +22,33 @@ namespace Infrastructure.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("Domain.Models.Category", b =>
+            modelBuilder.Entity("Domain.Models.CategoryBenefitEntity", b =>
+                {
+                    b.Property<int>("Benefit_Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Benefit_Id"));
+
+                    b.Property<string>("Benefits_Title")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("nvarchar(100)");
+
+                    b.Property<int?>("CategoryEntityCategoty_Id")
+                        .HasColumnType("int");
+
+                    b.Property<int>("Category_id")
+                        .HasColumnType("int");
+
+                    b.HasKey("Benefit_Id");
+
+                    b.HasIndex("CategoryEntityCategoty_Id");
+
+                    b.ToTable("Benefits");
+                });
+
+            modelBuilder.Entity("Domain.Models.CategoryEntity", b =>
                 {
                     b.Property<int>("Categoty_Id")
                         .ValueGeneratedOnAdd()
@@ -51,33 +77,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Categories");
                 });
 
-            modelBuilder.Entity("Domain.Models.CategoryBenefit", b =>
-                {
-                    b.Property<int>("Benefit_Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Benefit_Id"));
-
-                    b.Property<string>("Benefits_Title")
-                        .IsRequired()
-                        .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
-
-                    b.Property<int?>("CategoryCategoty_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Category_id")
-                        .HasColumnType("int");
-
-                    b.HasKey("Benefit_Id");
-
-                    b.HasIndex("CategoryCategoty_Id");
-
-                    b.ToTable("Benefits");
-                });
-
-            modelBuilder.Entity("Domain.Models.Claim", b =>
+            modelBuilder.Entity("Domain.Models.ClaimEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -120,7 +120,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Claims");
                 });
 
-            modelBuilder.Entity("Domain.Models.ClaimsForm", b =>
+            modelBuilder.Entity("Domain.Models.ClaimsFormEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -148,7 +148,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("ClaimsForms");
                 });
 
-            modelBuilder.Entity("Domain.Models.CoyBenefit", b =>
+            modelBuilder.Entity("Domain.Models.CoyBenefitEntity", b =>
                 {
                     b.Property<int>("Benefit_Id")
                         .ValueGeneratedOnAdd()
@@ -169,13 +169,17 @@ namespace Infrastructure.Migrations
                     b.ToTable("CoyBenefits");
                 });
 
-            modelBuilder.Entity("Domain.Models.InsuranceCoy", b =>
+            modelBuilder.Entity("Domain.Models.InsuranceCoyEntity", b =>
                 {
                     b.Property<int>("Coy_Id")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int");
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Coy_Id"));
+
+                    b.Property<string>("Coy_AgentId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Coy_City")
                         .HasMaxLength(50)
@@ -238,12 +242,19 @@ namespace Infrastructure.Migrations
                         .HasMaxLength(6)
                         .HasColumnType("nvarchar(6)");
 
+                    b.Property<bool>("IsOrg")
+                        .HasColumnType("bit");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.HasKey("Coy_Id");
 
                     b.ToTable("InsuranceCompany");
                 });
 
-            modelBuilder.Entity("Domain.Models.MotorClaim", b =>
+            modelBuilder.Entity("Domain.Models.MotorClaimEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -285,7 +296,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("MotorClaims");
                 });
 
-            modelBuilder.Entity("Domain.Models.Policy", b =>
+            modelBuilder.Entity("Domain.Models.PolicyEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -294,9 +305,6 @@ namespace Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int>("Coy_Id")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("InsuranceCoyCoy_Id")
                         .HasColumnType("int");
 
                     b.Property<string>("PaymentRef")
@@ -333,21 +341,12 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("UserProfileProfile_Id")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("InsuranceCoyCoy_Id");
-
-                    b.HasIndex("ProductId");
-
-                    b.HasIndex("UserProfileProfile_Id");
 
                     b.ToTable("Policies");
                 });
 
-            modelBuilder.Entity("Domain.Models.Product", b =>
+            modelBuilder.Entity("Domain.Models.ProductEntity", b =>
                 {
                     b.Property<int>("Product_Id")
                         .ValueGeneratedOnAdd()
@@ -390,12 +389,12 @@ namespace Infrastructure.Migrations
                     b.ToTable("Products");
                 });
 
-            modelBuilder.Entity("Domain.Models.Transaction", b =>
+            modelBuilder.Entity("Domain.Models.TransactionEntity", b =>
                 {
                     b.Property<string>("Reference")
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("Access_Code")
+                    b.Property<string>("AccessCode")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<double>("Amount")
@@ -404,7 +403,7 @@ namespace Infrastructure.Migrations
                     b.Property<string>("Authorization_Url")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime>("DateTime")
+                    b.Property<DateTime?>("DateTime")
                         .HasColumnType("datetime2");
 
                     b.Property<string>("PaymentRef")
@@ -430,7 +429,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("Transactions");
                 });
 
-            modelBuilder.Entity("Domain.Models.UserProfile", b =>
+            modelBuilder.Entity("Domain.Models.UserProfileEntity", b =>
                 {
                     b.Property<int>("Profile_Id")
                         .ValueGeneratedOnAdd()
@@ -516,7 +515,7 @@ namespace Infrastructure.Migrations
                     b.ToTable("UserProfiles");
                 });
 
-            modelBuilder.Entity("Domain.Models.VehiclePremium", b =>
+            modelBuilder.Entity("Domain.Models.VehiclePremiumEntity", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -531,6 +530,10 @@ namespace Infrastructure.Migrations
                     b.Property<double>("Premium")
                         .HasColumnType("float");
 
+                    b.Property<string>("SumInsured")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<string>("VehicleClass")
                         .IsRequired()
                         .HasMaxLength(50)
@@ -541,37 +544,49 @@ namespace Infrastructure.Migrations
                     b.ToTable("VehiclePremiums");
                 });
 
-            modelBuilder.Entity("Domain.Models.CategoryBenefit", b =>
+            modelBuilder.Entity("Domain.Models.kycEntity", b =>
                 {
-                    b.HasOne("Domain.Models.Category", null)
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("FromExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IdentityNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ToExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("KYCs");
+                });
+
+            modelBuilder.Entity("Domain.Models.CategoryBenefitEntity", b =>
+                {
+                    b.HasOne("Domain.Models.CategoryEntity", null)
                         .WithMany("Category_Benefits")
-                        .HasForeignKey("CategoryCategoty_Id");
+                        .HasForeignKey("CategoryEntityCategoty_Id");
                 });
 
-            modelBuilder.Entity("Domain.Models.Policy", b =>
-                {
-                    b.HasOne("Domain.Models.InsuranceCoy", "InsuranceCoy")
-                        .WithMany()
-                        .HasForeignKey("InsuranceCoyCoy_Id");
-
-                    b.HasOne("Domain.Models.Product", "Product")
-                        .WithMany()
-                        .HasForeignKey("ProductId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Domain.Models.UserProfile", "UserProfile")
-                        .WithMany()
-                        .HasForeignKey("UserProfileProfile_Id");
-
-                    b.Navigation("InsuranceCoy");
-
-                    b.Navigation("Product");
-
-                    b.Navigation("UserProfile");
-                });
-
-            modelBuilder.Entity("Domain.Models.Category", b =>
+            modelBuilder.Entity("Domain.Models.CategoryEntity", b =>
                 {
                     b.Navigation("Category_Benefits");
                 });

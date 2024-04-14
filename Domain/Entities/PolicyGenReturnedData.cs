@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,6 +14,7 @@ namespace Domain.Entities
         public string naicomID { get; set; }
         public string productID { get; set; }
         public string agentID { get; set; }
+        public string Certificate { get; set; }
         public DateTime entryDate { get; set; }
         public DateTime startDate { get; set; }
         public DateTime endDate { get; set; }
@@ -27,9 +29,10 @@ namespace Domain.Entities
 
     public class Section
     {
-        public string sectionID { get; set; }
-        public int sectionSumInsured { get; set; }
-        public int sectionPremium { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public double sectionSumInsured { get; set; }
+        public double sectionPremium { get; set; }
         public Field[] fields { get; set; }
         public Rate[] rates { get; set; }
         public Smi[] smIs { get; set; }

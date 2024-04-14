@@ -45,6 +45,9 @@ namespace Infrastructure
                     Coy_PostalCode = i.Coy_PostalCode,
                     Coy_State = i.Coy_State,
                     Coy_Status = i.Coy_Status,
+                    Coy_AgentId = i.Coy_AgentId,
+                    IsOrg = i.IsOrg,
+                    Title = i.Title,
                 };
                 result.Add(insuranceCoyDTO);
             }
@@ -74,6 +77,10 @@ namespace Infrastructure
                 Coy_PostalCode = i.Coy_PostalCode,
                 Coy_State = i.Coy_State,
                 Coy_Status = i.Coy_Status,
+                Coy_AgentId = i.Coy_AgentId,
+                IsOrg = i.IsOrg,
+                Title = i.Title,
+                Coy_ZipCode = i.Coy_ZipCode 
             };
             return insuranceCoyDTO;
         }
@@ -98,12 +105,18 @@ namespace Infrastructure
                 Coy_VideoLink = model.Coy_VideoLink,
                 Coy_Status = model.Coy_Status,
                 Coy_PostalCode = model.Coy_PostalCode,
+                Coy_AgentId = model.Coy_AgentId,
+                Title = model.Title,
+                IsOrg = model.IsOrg,
+                Coy_Id = model.Coy_id,
+                Coy_ZipCode = model.Coy_ZipCode
+                
 
             };
 
            await _context.InsuranceCompany.AddAsync(i);
             await _context.SaveChangesAsync();
-            foreach(CoyBenefit cb in model.Coy_Benefits)
+            foreach(CoyBenefitEntity cb in model.Coy_Benefits)
             {
                 cb.Coy_id = i.Coy_Id;
                 _context.CoyBenefits.Add(cb);
@@ -131,6 +144,13 @@ namespace Infrastructure
                 Coy_Status = model.Coy_Status,
                 Coy_Street = model.Coy_Street,
                 Coy_ZipCode = model.Coy_ZipCode,
+                Coy_AgentId = model.Coy_AgentId,
+                IsOrg = model.IsOrg,    
+                Title = model.Title,
+                Coy_Image = model.Coy_Image,
+                Coy_Logo = model.Coy_Logo,
+                Coy_VideoLink = model.Coy_VideoLink
+                
                 
 
             };
@@ -150,6 +170,7 @@ namespace Infrastructure
                 Coy_Name = model.Coy_Name,
                 Coy_Email = model.Coy_Email,
                 Coy_City = model.Coy_City,
+                Coy_AgentId= model.Coy_AgentId,
                 
             };
             _context.InsuranceCompany.Remove(coy);

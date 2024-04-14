@@ -28,31 +28,31 @@ namespace Infrastructure.Content.Services
             _userManager = userManager;
         }
 
-        public async Task<int> SaveResponse(Transaction transactionResponse)
+        public async Task<int> SaveResponse(TransactionEntity transactionResponse)
         {
             _dbContext.Transactions.Add(transactionResponse);
             return await _dbContext.SaveChangesAsync(); ;
         }
 
-        public async Task<int> DeleteResponse(Transaction transactionResponse)
+        public async Task<int> DeleteResponse(TransactionEntity transactionResponse)
         {
             _dbContext.Transactions.Remove(transactionResponse);
             return await _dbContext.SaveChangesAsync(); ;
         }
 
-        public async Task<int> UpdateResponse(Transaction transactionResponse)
+        public async Task<int> UpdateResponse(TransactionEntity transactionResponse)
         {
             _dbContext.Transactions.Update(transactionResponse);
-            Product p = await _dbContext.Products.Where(p => p.Product_Id == transactionResponse.ProductId).FirstOrDefaultAsync();
+            ProductEntity p = await _dbContext.Products.Where(p => p.Product_Id == transactionResponse.ProductId).FirstOrDefaultAsync();
             AppUser a = await _userManager.FindByIdAsync(transactionResponse.UserId);
             TRansactionComplete emailBody = new();
             int coyId = await _dbContext.Products.Where(p=>p.Product_Id==transactionResponse.ProductId).Select(c=>c.Coy_Id).FirstOrDefaultAsync();
             string coyEmail =await  _dbContext.InsuranceCompany.Where(i=>i.Coy_Id== coyId).Select(e=>e.Coy_Email).FirstOrDefaultAsync();
             await _emailSender.SendEmailAsync2(transactionResponse.UserEmail,
-                 "Transaction Receipt",emailBody.GetEmailBody(transactionResponse, p, a.FirstName));
+                 "TransactionEntity Receipt",emailBody.GetEmailBody(transactionResponse, p, a.FirstName));
             await _emailSender.SendEmailAsync2(coyEmail,
                 // CCEmail = coyEmail,
-                "Transaction Receipt for " + a.FirstName + " " + a.LastName,
+                "TransactionEntity Receipt for " + a.FirstName + " " + a.LastName,
 
                 emailBody.GetEmailBodyInsuranceCoy(transactionResponse, p, a.FirstName));
             return await _dbContext.SaveChangesAsync();
@@ -60,7 +60,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<TransactionDTO> GetTransactionByReference(string reference)
         {
-            Transaction t =  await _dbContext.Transactions.FirstOrDefaultAsync(t => t.Reference == reference);
+            TransactionEntity t =  await _dbContext.Transactions.FirstOrDefaultAsync(t => t.Reference == reference);
             TransactionDTO td = new()
             {
                 Reference = reference,
@@ -81,8 +81,8 @@ namespace Infrastructure.Content.Services
         public async Task<IEnumerable<TransactionDTO>> GetTransactionsByUserId(string userId)
         {
             List<TransactionDTO> td = new();
-            List<Transaction> transactions = await _dbContext.Transactions.Where(t => t.UserId == userId).ToListAsync();
-            foreach(Transaction t in transactions)
+            List<TransactionEntity> transactions = await _dbContext.Transactions.Where(t => t.UserId == userId).ToListAsync();
+            foreach(TransactionEntity t in transactions)
             {
                 TransactionDTO tdto = new()
                 {

@@ -21,9 +21,9 @@ namespace Domain.Models
         public DateTime? TransactionDate { get; set; }
         public string Reference { get; set; }
         public string Domain { get; set; }
-        public object GatewayResponse { get; set; }
-        public object Channel { get; set; }
-        public object IpAddress { get; set; }
+        public string GatewayResponse { get; set; }
+        public string Channel { get; set; }
+        public string IpAddress { get; set; }
         public TransactionLog Log { get; set; }
     }
 
@@ -31,10 +31,10 @@ namespace Domain.Models
     {
         public int TimeSpent { get; set; }
         public int Attempts { get; set; }
-        public object Authentication { get; set; }
+        public string Authentication { get; set; }
         public int Errors { get; set; }
         public bool Success { get; set; }
-        public object Channel { get; set; }
+        public string Channel { get; set; }
         public TransactionHistory[] History { get; set; }
     }
 

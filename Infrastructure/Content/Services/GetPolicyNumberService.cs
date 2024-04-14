@@ -1,6 +1,7 @@
 ﻿using Application.Dtos;
 using Domain.Entities;
 using Infrastructure.Identity.Services;
+using NuGet.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -24,12 +25,13 @@ namespace Infrastructure.Content.Services
         {
             // Serialize the PolicyDTO to JSON
             var jsonContent = JsonSerializer.Serialize(policyDto);
+            
 
             try
             {
                 // Create the HTTP POST request
                 var response = await _httpClient.PostAsync(endpointUrl, new StringContent(jsonContent, Encoding.UTF8, "application/json"));
-
+                _httpClient.DefaultRequestHeaders.Add("Authorization", $"Bearer {policyDto.Token}");
                 // Check if the request was successful
                 if (response.IsSuccessStatusCode)
                 {

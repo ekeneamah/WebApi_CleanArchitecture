@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class Product
+    public class ProductEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -26,7 +26,7 @@ namespace Domain.Models
         public int Coy_Id { get; set; }
        
 
-        [ForeignKey("Category")]
+        [ForeignKey("CategoryEntity")]
         public int? Category_Id { get; set; }
        
 

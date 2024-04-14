@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Domain.Models
 {
-    public class Category
+    public class CategoryEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
@@ -25,12 +25,12 @@ namespace Domain.Models
         [MaxLength(450)]
         public string? Category_VideoLink { get; set; }
         public string? Category_Image {  get; set; }
-        public List<CategoryBenefit>? Category_Benefits { get; set; }
+        public List<CategoryBenefitEntity>? Category_Benefits { get; set; }
 
 
 
     }
-    public class CategoryBenefit
+    public class CategoryBenefitEntity
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
