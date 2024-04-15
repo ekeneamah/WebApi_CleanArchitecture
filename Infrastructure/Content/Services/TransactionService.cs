@@ -28,22 +28,22 @@ namespace Infrastructure.Content.Services
             _userManager = userManager;
         }
 
-        public async Task<int> SaveResponse(TransactionEntity transactionResponse)
+        public async Task<int> SaveResponse(Transaction transactionResponse)
         {
             _dbContext.Transactions.Add(transactionResponse);
             return await _dbContext.SaveChangesAsync(); ;
         }
 
-        public async Task<int> DeleteResponse(TransactionEntity transactionResponse)
+        public async Task<int> DeleteResponse(Transaction transactionResponse)
         {
             _dbContext.Transactions.Remove(transactionResponse);
             return await _dbContext.SaveChangesAsync(); ;
         }
 
-        public async Task<int> UpdateResponse(TransactionEntity transactionResponse)
+        public async Task<int> UpdateResponse(Transaction transactionResponse)
         {
             _dbContext.Transactions.Update(transactionResponse);
-            ProductEntity p = await _dbContext.Products.Where(p => p.Product_Id == transactionResponse.ProductId).FirstOrDefaultAsync();
+            Product p = await _dbContext.Products.Where(p => p.Product_Id == transactionResponse.ProductId).FirstOrDefaultAsync();
             AppUser a = await _userManager.FindByIdAsync(transactionResponse.UserId);
             TRansactionComplete emailBody = new();
             int coyId = await _dbContext.Products.Where(p=>p.Product_Id==transactionResponse.ProductId).Select(c=>c.Coy_Id).FirstOrDefaultAsync();
@@ -60,7 +60,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<TransactionDTO> GetTransactionByReference(string reference)
         {
-            TransactionEntity t =  await _dbContext.Transactions.FirstOrDefaultAsync(t => t.Reference == reference);
+            Transaction t =  await _dbContext.Transactions.FirstOrDefaultAsync(t => t.Reference == reference);
             TransactionDTO td = new()
             {
                 Reference = reference,
@@ -81,8 +81,8 @@ namespace Infrastructure.Content.Services
         public async Task<IEnumerable<TransactionDTO>> GetTransactionsByUserId(string userId)
         {
             List<TransactionDTO> td = new();
-            List<TransactionEntity> transactions = await _dbContext.Transactions.Where(t => t.UserId == userId).ToListAsync();
-            foreach(TransactionEntity t in transactions)
+            List<Transaction> transactions = await _dbContext.Transactions.Where(t => t.UserId == userId).ToListAsync();
+            foreach(Transaction t in transactions)
             {
                 TransactionDTO tdto = new()
                 {

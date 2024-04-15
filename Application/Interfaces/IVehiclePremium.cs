@@ -9,10 +9,10 @@ namespace Application.Interfaces
 {
     public interface IVehiclePremiumRepository
     {
-        Task<IEnumerable<VehiclePremiumEntity>> GetAllVehiclePremiumsAsync();
-        Task<VehiclePremiumEntity> GetVehiclePremiumByIdAsync(int id);
-        Task AddVehiclePremiumAsync(VehiclePremiumEntity vehiclePremium);
-        Task UpdateVehiclePremiumAsync(VehiclePremiumEntity vehiclePremium);
+        Task<IEnumerable<VehiclePremium>> GetAllVehiclePremiumsAsync();
+        Task<VehiclePremium> GetVehiclePremiumByIdAsync(int id);
+        Task AddVehiclePremiumAsync(VehiclePremium vehiclePremium);
+        Task UpdateVehiclePremiumAsync(VehiclePremium vehiclePremium);
         Task DeleteVehiclePremiumAsync(int id);
     }
 }

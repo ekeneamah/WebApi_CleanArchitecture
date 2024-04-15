@@ -45,7 +45,7 @@ namespace Infrastructure.Content.Services
         }
         public async Task<int> AddPolicy(PolicyDTO x)
         {
-            PolicyEntity pd = new()
+            Policy pd = new()
             {
                 Coy_Id = x.Coy_Id,
                 PolicyNo = x.PolicyNo,
@@ -75,11 +75,11 @@ namespace Infrastructure.Content.Services
 
         public async Task<List<PolicyDetailDTO>> GetAll()
         {
-            List<PolicyEntity> p = await _context.Policies
+            List<Policy> p = await _context.Policies
                  .AsNoTracking()
                .ToListAsync();
             List<PolicyDetailDTO> result = new List<PolicyDetailDTO>();
-            foreach (PolicyEntity x in p)
+            foreach (Policy x in p)
             {
                 PolicyDetailDTO pd = new()
                 {
@@ -104,7 +104,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<PolicyDetailDTO> GetById(int id)
         {
-            PolicyEntity x = await _context.Policies.FirstOrDefaultAsync(x => x.Id == id);
+            Policy x = await _context.Policies.FirstOrDefaultAsync(x => x.Id == id);
             PolicyDetailDTO pd = new()
             {
                 Coy_Id = x.Coy_Id,
@@ -127,11 +127,11 @@ namespace Infrastructure.Content.Services
 
         public async Task<List<PolicyDetailDTO>> GetAllPolicyByUserId(string userId)
         {
-            List<PolicyEntity> p = await _context.Policies.Where(u=>u.UserId==userId)
+            List<Policy> p = await _context.Policies.Where(u=>u.UserId==userId)
                  .AsNoTracking()
                .ToListAsync();
             List<PolicyDetailDTO> result = new();
-            foreach (PolicyEntity x in p)
+            foreach (Policy x in p)
             {
                 PolicyDetailDTO pd = new()
                 {
@@ -158,8 +158,8 @@ namespace Infrastructure.Content.Services
         public async Task<List<PolicyDetailDTO>> GetByUserName(string userid)
         {
             List<PolicyDetailDTO> result = new();
-            List<PolicyEntity> policies = await _context.Policies.Where(u=>u.UserId==userid).ToListAsync();
-            foreach (PolicyEntity x in policies)
+            List<Policy> policies = await _context.Policies.Where(u=>u.UserId==userid).ToListAsync();
+            foreach (Policy x in policies)
             {
                 PolicyDetailDTO pd = new()
                 {
@@ -183,7 +183,7 @@ namespace Infrastructure.Content.Services
 
         }
 
-        public PolicyDTO UpdatePolicy(CategoryEntity model)
+        public PolicyDTO UpdatePolicy(Category model)
         {
             throw new NotImplementedException();
         }

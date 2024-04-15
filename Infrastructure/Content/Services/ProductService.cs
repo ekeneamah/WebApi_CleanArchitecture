@@ -30,7 +30,7 @@ namespace Infrastructure.Content.Services
                  .AsNoTracking()
                  .ToListAsync();
 
-            foreach (ProductEntity x in p)
+            foreach (Product x in p)
             {
                 ProductDtoDetails pd = new()
                 {
@@ -38,7 +38,7 @@ namespace Infrastructure.Content.Services
                     Product_Name = x.Product_Name,
                     Coy_Name = await _context.InsuranceCompany.Where(i => i.Coy_Id == x.Coy_Id).Select(n => n.Coy_Name).FirstOrDefaultAsync(),
                     Coy_Id = x.Coy_Id,
-                    Category_Name = await _context.Categories.Where(i => i.Categoty_Id == x.Category_Id).Select(n => n.Category_Name).FirstOrDefaultAsync(),
+                    Category_Name = await _context.Categories.Where(i => i.Category_Id == x.Category_Id).Select(n => n.Category_Name).FirstOrDefaultAsync(),
 
                     Category_Id = x.Category_Id,
                     Product_Price = x.Product_Price,
@@ -69,7 +69,7 @@ namespace Infrastructure.Content.Services
                   Product_Name = x.Product_Name,
                   Coy_Name = await _context.InsuranceCompany.Where(i => i.Coy_Id == x.Coy_Id).Select(n => n.Coy_Name).FirstOrDefaultAsync(),
                   Coy_Id = x.Coy_Id,
-                  Category_Name = await _context.Categories.Where(i => i.Categoty_Id == x.Category_Id).Select(n => n.Category_Name).FirstOrDefaultAsync(),
+                  Category_Name = await _context.Categories.Where(i => i.Category_Id == x.Category_Id).Select(n => n.Category_Name).FirstOrDefaultAsync(),
                   Category_Id = x.Category_Id,
                   Product_Price = x.Product_Price,
                   Product_Quantity = x.Product_Quantity,
@@ -104,14 +104,14 @@ namespace Infrastructure.Content.Services
         #region GetDetailsById
         public async Task<ProductDtoDetails> GetDetailsById(int id)
         {
-            ProductEntity x = await _context.Products.FindAsync(id);
+            Product x = await _context.Products.FindAsync(id);
             ProductDtoDetails pd = new()
             {
                 Product_Id = x.Product_Id,
                 Product_Name = x.Product_Name,
                 InsuranceCoy = await _context.InsuranceCompany.Where(i => i.Coy_Id == x.Coy_Id).FirstOrDefaultAsync(),
                 Coy_Id = x.Coy_Id,
-                Product_Category = await _context.Categories.Where(i => i.Categoty_Id == x.Category_Id).FirstOrDefaultAsync(),
+                Product_Category = await _context.Categories.Where(i => i.Category_Id == x.Category_Id).FirstOrDefaultAsync(),
 
                 Category_Id = x.Category_Id,
                 Product_Price = x.Product_Price,
@@ -124,16 +124,16 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region GetById
-        public async Task<ProductEntity> GetById(int id)
+        public async Task<Product> GetById(int id)
         {
-            ProductEntity x =  await _context.Products.FindAsync(id);
+            Product x =  await _context.Products.FindAsync(id);
            
             return x;
         }
         #endregion
 
         #region Add 
-        public async Task<ProductEntity> Add(ProductEntity model)
+        public async Task<Product> Add(Product model)
         {
             await _context.Products.AddAsync(model);
             await _context.SaveChangesAsync();
@@ -142,7 +142,7 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region Update
-        public ProductEntity Update(ProductEntity model)
+        public Product Update(Product model)
         {
             _context.Update(model);
             _context.SaveChangesAsync();
@@ -151,7 +151,7 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region Delete
-        public ProductEntity Delete(ProductEntity model)
+        public Product Delete(Product model)
         {
             _context.Products.Remove(model);
             _context.SaveChangesAsync();
@@ -196,7 +196,7 @@ namespace Infrastructure.Content.Services
                  .ToListAsync();
             List<ProductDtoDetails> result = new List<ProductDtoDetails>(); 
 
-            foreach (ProductEntity x in p)
+            foreach (Product x in p)
             {
                 ProductDtoDetails pd = new()
                 {
@@ -204,7 +204,7 @@ namespace Infrastructure.Content.Services
                     Product_Name = x.Product_Name,
                     InsuranceCoy = await _context.InsuranceCompany.Where(i => i.Coy_Id == x.Coy_Id).FirstOrDefaultAsync(),
                     Coy_Id = x.Coy_Id,
-                    Product_Category = await _context.Categories.Where(i => i.Categoty_Id == x.Category_Id).FirstOrDefaultAsync(),
+                    Product_Category = await _context.Categories.Where(i => i.Category_Id == x.Category_Id).FirstOrDefaultAsync(),
 
                     Category_Id = x.Category_Id,
                     Product_Price = x.Product_Price,
@@ -248,7 +248,7 @@ namespace Infrastructure.Content.Services
 
             List<ProductDtoDetails> result = new List<ProductDtoDetails>();
 
-            foreach (ProductEntity x in p)
+            foreach (Product x in p)
             {
                 ProductDtoDetails pd = new()
                 {
@@ -256,7 +256,7 @@ namespace Infrastructure.Content.Services
                     Product_Name = x.Product_Name,
                     InsuranceCoy = await _context.InsuranceCompany.Where(i => i.Coy_Id == x.Coy_Id).FirstOrDefaultAsync(),
                     Coy_Id = x.Coy_Id,
-                    Product_Category = await _context.Categories.Where(i => i.Categoty_Id == x.Category_Id).FirstOrDefaultAsync(),
+                    Product_Category = await _context.Categories.Where(i => i.Category_Id == x.Category_Id).FirstOrDefaultAsync(),
 
                     Category_Id = x.Category_Id,
                     Product_Price = x.Product_Price,

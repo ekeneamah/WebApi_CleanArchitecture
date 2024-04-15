@@ -60,7 +60,7 @@
         #endregion
         #region create claim 
         [HttpPost("CreateClaimform")]
-        public async Task<ActionResult<int>> CreateClaimform(ClaimsFormEntity model)
+        public async Task<ActionResult<int>> CreateClaimform(ClaimsForm model)
         {
             return await _claimService.AddClaimsForm(model);
         }

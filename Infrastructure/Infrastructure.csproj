@@ -42,4 +42,9 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\AppDb\" />
+    <Folder Include="Migrations\AppIdentity\" />
+  </ItemGroup>
+
 </Project>

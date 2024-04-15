@@ -15,24 +15,24 @@ public class MotorClaimService : IMotorClaimRepository
         _context = context;
     }
 
-    public async Task<MotorClaimEntity> CreateMotorClaim(MotorClaimEntity motorClaim)
+    public async Task<MotorClaim> CreateMotorClaim(MotorClaim motorClaim)
     {
         _context.MotorClaims.Add(motorClaim);
         await _context.SaveChangesAsync();
         return motorClaim;
     }
 
-    public async Task<MotorClaimEntity> GetMotorClaimById(int id)
+    public async Task<MotorClaim> GetMotorClaimById(int id)
     {
         return await _context.MotorClaims.FindAsync(id);
     }
 
-    public async Task<IEnumerable<MotorClaimEntity>> GetAllMotorClaims(string userid)
+    public async Task<IEnumerable<MotorClaim>> GetAllMotorClaims(string userid)
     {
         return await _context.MotorClaims.Where(u=>u.User_Id==userid).ToListAsync();
     }
 
-    public async Task UpdateMotorClaim(MotorClaimEntity motorClaim)
+    public async Task UpdateMotorClaim(MotorClaim motorClaim)
     {
         _context.Entry(motorClaim).State = EntityState.Modified;
         await _context.SaveChangesAsync();

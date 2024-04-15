@@ -14,16 +14,16 @@ namespace Application.Interfaces.Content.Products
         Task<List<ProductDtoDetails>> GetAllProductsByCategory(int pageNumber, int pageSize, int product_categoryId);
         Task<List<ProductGroupDto>> GetAllProductsGroup();
         Task<List<ProductDtoDetails>> GetAllProductsByGroup(int pageNumber, int pageSize, string product_groupname);
-        Task<ProductEntity> GetById(int id);
+        Task<Product> GetById(int id);
         Task<ProductDtoDetails> GetDetailsById(int id);
         Task<ProductDtoDetails> GetByCode(string code);
         Task<ProductDto> GetProductByCode(string code);
 
-        Task<ProductEntity> Add(ProductEntity model);
+        Task<Product> Add(Product model);
 
-        ProductEntity Update(ProductEntity model);
+        Product Update(Product model);
 
-        ProductEntity Delete(ProductEntity model);
+        Product Delete(Product model);
 
         Task<bool> ProductIsExist(string code);
         Task<int> SaveChanges();

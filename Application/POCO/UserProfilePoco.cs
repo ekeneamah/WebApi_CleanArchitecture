@@ -12,7 +12,7 @@ namespace Application.POCO
     public class UserProfilePoco
     {
        public UserProfilePoco() { }
-      public  UserProfileDto UserProfilePocoModel(UserProfileEntity u) {
+      public  UserProfileDto UserProfilePocoModel(UserProfile u) {
             UserProfileDto ud = new()
             {
                 UserId = u.UserId,
@@ -40,9 +40,9 @@ namespace Application.POCO
             return ud;
 
         }
-       public  UserProfileEntity UserProfilePocoDto(UserProfileDto u)
+       public  UserProfile UserProfilePocoDto(UserProfileDto u)
         {
-            UserProfileEntity ud = new()
+            UserProfile ud = new()
             {
                 UserId = u.UserId,
                 DateofBirth = u.DateofBirth,
@@ -70,9 +70,9 @@ namespace Application.POCO
             return ud;
         }
 
-        public UserProfileEntity UserProfilePocoDtoNull()
+        public UserProfile UserProfilePocoDtoNull()
         {
-            UserProfileEntity ud = new()
+            UserProfile ud = new()
             {
                 UserId = "",
                 DateofBirth = "",

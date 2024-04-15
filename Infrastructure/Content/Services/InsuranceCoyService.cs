@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing.Printing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -20,11 +21,14 @@ namespace Infrastructure
             _context = context;
         }
 
-        public async Task<List<InsuranceCoyDTO>> GetAll()
+        public async Task<List<InsuranceCoyDTO>> GetAll(int pageNumber, int pageSize)
         {
             List<InsuranceCoyDTO> result = new List<InsuranceCoyDTO>();
-            List<InsuranceCoyEntity> InsuranceCoy = await _context.InsuranceCompany.ToListAsync();
-            foreach(InsuranceCoyEntity i in InsuranceCoy)
+            List<InsuranceCoy> InsuranceCoy = await _context.InsuranceCompany
+                .Skip((pageNumber - 1) * pageSize)
+                  .Take(pageSize)
+                  .ToListAsync();
+            foreach(InsuranceCoy i in InsuranceCoy)
             {
                 InsuranceCoyDTO insuranceCoyDTO = new()
                 {
@@ -57,7 +61,7 @@ namespace Infrastructure
          
         public async Task<InsuranceCoyDTO> GetById(int id)
         {
-            InsuranceCoyEntity i = await _context.InsuranceCompany.Where(m => m.Coy_Id == id).FirstOrDefaultAsync();
+            InsuranceCoy i = await _context.InsuranceCompany.Where(m => m.Coy_Id == id).FirstOrDefaultAsync();
             InsuranceCoyDTO insuranceCoyDTO = new()
             {
                 Coy_Name = i.Coy_Name,
@@ -88,7 +92,7 @@ namespace Infrastructure
 
         public async Task<InsuranceCoyDTO> Add_Coy(InsuranceCoyDTO model)
         {
-            InsuranceCoyEntity i = new()
+            InsuranceCoy i = new()
             {
                 Coy_Email = model.Coy_Email,
                 Coy_City = model.Coy_City,
@@ -120,7 +124,7 @@ namespace Infrastructure
             {
                 cb.Coy_id = i.Coy_Id;
                 _context.CoyBenefits.Add(cb);
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             return model;
         }
@@ -128,7 +132,7 @@ namespace Infrastructure
 
         public async Task<int> Update_Coy(InsuranceCoyDTO model)
         {
-            InsuranceCoyEntity insuranceCoy = new()
+            InsuranceCoy insuranceCoy = new()
             {
                 Coy_Id = model.Coy_id,
                 Coy_Name = model.Coy_Name,
@@ -154,7 +158,7 @@ namespace Infrastructure
                 
 
             };
-            InsuranceCoyEntity coy = insuranceCoy;
+            InsuranceCoy coy = insuranceCoy;
             _context.InsuranceCompany.Update(coy);
           
 
@@ -162,9 +166,9 @@ namespace Infrastructure
         }
 
 
-        public async Task<InsuranceCoyEntity> Delete_Coy(InsuranceCoyDTO model)
+        public async Task<InsuranceCoy> Delete_Coy(InsuranceCoyDTO model)
         {
-            InsuranceCoyEntity coy = new()
+            InsuranceCoy coy = new()
             {
                 Coy_Id = model.Coy_id,
                 Coy_Name = model.Coy_Name,

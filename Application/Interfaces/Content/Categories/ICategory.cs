@@ -3,27 +3,28 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Dtos;
 using Domain.Models;
 
 namespace Application.Interfaces.Content.Categories
 {
     public interface ICategory
     {
-        Task<List<CategoryEntity>> GetAll();
+        public Task<List<CategoryDTO>> GetAll();
 
 
-        Task<CategoryEntity> GetById(int id);
+        Task<CategoryDTO> GetById(int id);
 
 
-        Task<CategoryEntity> AddCategory(CategoryEntity model);
-
-
-
-        CategoryEntity UpdateCategory(CategoryEntity model);
+        Task<CategoryDTO> AddCategory(CategoryDTO model);
 
 
 
-        CategoryEntity DeleteCategory(CategoryEntity model);
+        Task<CategoryDTO> UpdateCategory(CategoryDTO model, int category_id);
+
+
+
+        Task<Category> DeleteCategory(int category_id);
 
 
 

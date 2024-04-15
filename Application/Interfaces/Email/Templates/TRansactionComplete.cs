@@ -10,12 +10,12 @@ namespace Infrastructure.Content.Services
 {
     public class TRansactionComplete
     {
-        private readonly TransactionEntity _transaction;
+        private readonly Transaction _transaction;
 
         public TRansactionComplete() { 
         }
 
-        public string GetEmailBody(TransactionEntity transaction,ProductEntity p, string FirstName )
+        public string GetEmailBody(Transaction transaction,Product p, string FirstName )
         {
 
             // Replace placeholders in the HTML template with actual values from the TransactionEntity object
@@ -75,7 +75,7 @@ namespace Infrastructure.Content.Services
             return emailBody;
         }
 
-        public string GetEmailBodyInsuranceCoy(TransactionEntity transaction, ProductEntity p, string FirstName)
+        public string GetEmailBodyInsuranceCoy(Transaction transaction, Product p, string FirstName)
         {
 
             // Replace placeholders in the HTML template with actual values from the TransactionEntity object

@@ -23,8 +23,8 @@ namespace Application.Dtos
         public string Product_Description { get; set; }
         public string Product_Group { get; set; }
         public int Product_Id { get; set; }
-        public InsuranceCoyEntity? InsuranceCoy { get; set; }
-        public CategoryEntity? Product_Category { get; set; }
+        public InsuranceCoy? InsuranceCoy { get; set; }
+        public Category? Product_Category { get; set; }
         public int Coy_Id { get; set; }
     }
 }

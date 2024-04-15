@@ -535,7 +535,12 @@ namespace Infrastructure.Identity.Services
             return "OTP re-sent to your e-mail";
         }
 
-        
+        public Task<string> DeleteAllUserAsync()
+        {
+            throw new NotImplementedException();
+        }
+
+
         #endregion
 
 

@@ -20,13 +20,13 @@ namespace API.Controllers.Content
             _insuranceCoyService = insuranceCoyService;
         }
 
-        #region Get All Brands Endpoint
+        #region Get All Insurance coy Endpoint
 
         // GET: api/InsuranceCompany
         [HttpGet]
-        public async Task<ActionResult<List<InsuranceCoyEntity>>> GetBrands()
+        public async Task<ActionResult<List<InsuranceCoy>>> GetAllInsuranceCoy(int pageNumber = 1, int pageSize = 10)
         {
-            var brands = await _insuranceCoyService.GetAll();
+            var brands = await _insuranceCoyService.GetAll(pageNumber, pageSize);
 
             if (brands is null)
                 return BadRequest("No Data here !");
@@ -59,7 +59,7 @@ namespace API.Controllers.Content
 
         // POST: api/InsuranceCompany
         [HttpPost]
-        public async Task<ActionResult<InsuranceCoyEntity>> PostInsuranceCoy([FromForm] InsuranceCoyDTO insuranceCoy, IFormFile logoImageFile, IFormFile displayImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
+        public async Task<ActionResult<InsuranceCoy>> PostInsuranceCoy([FromForm] InsuranceCoyDTO insuranceCoy, IFormFile logoImageFile, IFormFile displayImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
             if (await _insuranceCoyService.CoyIsExist(insuranceCoy.Coy_Name))
             {
@@ -91,8 +91,8 @@ namespace API.Controllers.Content
             // Set display image URL
             insuranceCoy.Coy_Image = $"~/images/{displayImageName}";
 
-            await _insuranceCoyService.Add_Coy(insuranceCoy);
-            return Ok(await _insuranceCoyService.GetAll());
+           
+            return Ok( await _insuranceCoyService.Add_Coy(insuranceCoy));
         }
 
         #endregion Create Brand Endpoint
@@ -100,7 +100,7 @@ namespace API.Controllers.Content
         #region Update Category
         // PUT: api/InsuranceCompany/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBrand(int id, InsuranceCoyEntity model)
+        public async Task<IActionResult> UpdateBrand(int id, InsuranceCoy model)
         {
             var brand = await _insuranceCoyService.GetById(id);
 

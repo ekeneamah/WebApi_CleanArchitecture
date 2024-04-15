@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Common;
 
-namespace CleanaArchitecture1.Controllers.Authentication
+namespace API.Controllers.Authentication
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -192,6 +192,14 @@ namespace CleanaArchitecture1.Controllers.Authentication
         {
 
             return Ok(await _authService.Signout());
+        }
+        #endregion
+        #region signout
+        [HttpDelete("DeleteAllUser")]
+        public async Task<IActionResult> DeleteAllUser()
+        {
+
+            return Ok(await _authService.DeleteAllUserAsync());
         }
         #endregion
     }

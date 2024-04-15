@@ -19,23 +19,23 @@ namespace Infrastructure.Content.Services
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<VehiclePremiumEntity>> GetAllVehiclePremiumsAsync()
+        public async Task<IEnumerable<VehiclePremium>> GetAllVehiclePremiumsAsync()
         {
             return await _dbContext.VehiclePremiums.ToListAsync();
         }
 
-        public async Task<VehiclePremiumEntity> GetVehiclePremiumByIdAsync(int id)
+        public async Task<VehiclePremium> GetVehiclePremiumByIdAsync(int id)
         {
             return await _dbContext.VehiclePremiums.FindAsync(id);
         }
 
-        public async Task AddVehiclePremiumAsync(VehiclePremiumEntity vehiclePremium)
+        public async Task AddVehiclePremiumAsync(VehiclePremium vehiclePremium)
         {
             await _dbContext.VehiclePremiums.AddAsync(vehiclePremium);
             await _dbContext.SaveChangesAsync();
         }
 
-        public async Task UpdateVehiclePremiumAsync(VehiclePremiumEntity vehiclePremium)
+        public async Task UpdateVehiclePremiumAsync(VehiclePremium vehiclePremium)
         {
             _dbContext.Entry(vehiclePremium).State = EntityState.Modified;
             await _dbContext.SaveChangesAsync();

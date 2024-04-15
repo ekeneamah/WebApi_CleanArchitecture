@@ -23,5 +23,6 @@ namespace Application.Interfaces.Authentication
         Task<string> ConfirmOTPAsync(VerifyOTPDto model);
         Task<string> ResendOTPAsync(VerifyOTPDto model);
         Task<string> Signout();
+        Task<string> DeleteAllUserAsync();
     }
 }

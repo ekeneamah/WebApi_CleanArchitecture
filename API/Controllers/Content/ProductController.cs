@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore;
 using NuGet.Configuration;
 using System.Drawing.Printing;
 
-namespace CleanaArchitecture1.Controllers.Content
+namespace API.Controllers.Content
 {
     [Route("api/[controller]")]
     [ApiController]
@@ -64,7 +64,7 @@ namespace CleanaArchitecture1.Controllers.Content
 
         // GET: api/Products/5
         [HttpGet("{code}")]
-        public async Task<ActionResult<ProductEntity>> GetProduct(string code)
+        public async Task<ActionResult<Product>> GetProduct(string code)
         {
             
             var product = await _productServcie.GetByCode(code);
@@ -82,7 +82,7 @@ namespace CleanaArchitecture1.Controllers.Content
 
         // GET: api/Products/5
         [HttpGet("GetProductDetailById")]
-        public async Task<ActionResult<ProductEntity>> GetProductDetailById(int product_id)
+        public async Task<ActionResult<Product>> GetProductDetailById(int product_id)
         {
 
             var product = await _productServcie.GetDetailsById(product_id);
@@ -113,7 +113,7 @@ namespace CleanaArchitecture1.Controllers.Content
             }
             else
             {
-                var product = new ProductEntity
+                var product = new Product
                 {
                     Product_Name = model.Product_Name,
                     Coy_Id = model.InsuranceCoy_id,

@@ -23,7 +23,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<KYCDTO> CreateKYC(KYCDTO kycDto)
         {
-            kycEntity kycEntity = new()
+            kyc kycEntity = new()
             {
                 IdentityType = kycDto.IdentityType,
                 Name = kycDto.Name,
@@ -52,13 +52,13 @@ namespace Infrastructure.Content.Services
         public async Task<List<KYCDTO>> GetKYCByUserId(string userid)
         {
             List<KYCDTO> result = new();
-            List<kycEntity> kentity = await _context.KYCs.Where(u => u.UserId == userid).ToListAsync();
+            List<kyc> kentity = await _context.KYCs.Where(u => u.UserId == userid).ToListAsync();
 
             if (kentity == null)
             {
                 return null;
             }
-            foreach (kycEntity entity in kentity)
+            foreach (kyc entity in kentity)
             {
                 KYCDTO k = new()
                 {
@@ -116,7 +116,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<KYCDTO> UpdateKYC(int id, KYCDTO kycDto)
         {
-            kycEntity kycEntity = await _context.KYCs.FindAsync(id);
+            kyc kycEntity = await _context.KYCs.FindAsync(id);
 
             if (kycEntity == null)
             {

@@ -52,6 +52,6 @@ namespace Infrastructure.Identity.Models
         public string? BusinessLocation { get; set; }
         public string? SignatureUrl { get; set; }
         public string? Gender { get; set; }
-        public string NIN { get; internal set; }
+        public string? NIN { get; internal set; }
     }
 }

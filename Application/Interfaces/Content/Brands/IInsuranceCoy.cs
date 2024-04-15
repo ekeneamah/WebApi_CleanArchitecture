@@ -10,7 +10,7 @@ namespace Application.Interfaces.Content.Brands
 {
     public interface IInsuranceCoy
     {
-        Task<List<InsuranceCoyDTO>> GetAll();
+        Task<List<InsuranceCoyDTO>> GetAll(int pageNumber, int pageSize);
 
         Task<InsuranceCoyDTO> GetById(int id);
 
@@ -18,7 +18,7 @@ namespace Application.Interfaces.Content.Brands
 
         Task<int> Update_Coy(InsuranceCoyDTO model);
 
-        Task<InsuranceCoyEntity> Delete_Coy(InsuranceCoyDTO model);
+        Task<InsuranceCoy> Delete_Coy(InsuranceCoyDTO model);
 
         Task<bool> CoyIsExist(string code);
 

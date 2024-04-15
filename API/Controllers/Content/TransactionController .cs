@@ -79,7 +79,7 @@
                 var responseObj = JsonConvert.DeserializeObject<ApiResponse>(responseData);
 
                 // Save relevant data to database
-                var transactionData = new TransactionEntity
+                var transactionData = new Transaction
                 {
                     Authorization_Url = responseObj.Data.Authorization_Url,
                     AccessCode = responseObj.Data.Access_Code,
@@ -101,7 +101,7 @@
         }
         #region complete transaction
         [HttpPost("CompleteTransaction")]
-		public async Task<ActionResult<TransactionVerificationResponse>> CompleteTransaction(TransactionEntity transactionResponse)
+		public async Task<ActionResult<TransactionVerificationResponse>> CompleteTransaction(Transaction transactionResponse)
 		{
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -125,7 +125,7 @@
                 if (response.IsSuccessStatusCode)
                 {
                    
-                    TransactionEntity result = new()
+                    Transaction result = new()
                     {
 
                         PaymentRef = responseObj.Data.Reference,
@@ -155,7 +155,7 @@
         }
         #endregion
         [HttpGet("{reference}")]
-        public async Task<ActionResult<TransactionEntity>> GetTransactionByReference(string reference)
+        public async Task<ActionResult<Transaction>> GetTransactionByReference(string reference)
         {
             var transaction = await _transactionService.GetTransactionByReference(reference);
 
@@ -168,7 +168,7 @@
         }
 
         [HttpGet("GetTransactionsByUserId")]
-        public async Task<ActionResult<IEnumerable<TransactionEntity>>> GetTransactionsByUserId()
+        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionsByUserId()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
