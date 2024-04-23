@@ -4,6 +4,7 @@ using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations.AppDb
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240420214106_Updated product entity")]
+    partial class Updatedproductentity
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -397,7 +400,7 @@ namespace Infrastructure.Migrations.AppDb
                     b.Property<bool?>("Is_Deleted")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("Is_Recommended")
+                    b.Property<bool?>("Is_Recommended")
                         .HasColumnType("bit");
 
                     b.Property<string>("Product_Code")

@@ -38,7 +38,7 @@ namespace Infrastructure.Services
                 var email = new MimeMessage();
                 email.Sender = new MailboxAddress(_mailSettings.DisplayName, _mailSettings.Mail);
                 email.To.Add(MailboxAddress.Parse(request.ToEmail));
-                //email.Cc.Add(MailboxAddress.Parse(request.CCEmail));
+                //email.Cc.UpdateUser(MailboxAddress.Parse(request.CCEmail));
                 email.From.Add(MailboxAddress.Parse("developers@transparencyscape.onmicrosoft.com"));
                 email.Subject =request.Subject;
                 var builder = new BodyBuilder();

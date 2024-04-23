@@ -57,5 +57,6 @@ public class GetPolicyNumberDTO
     public InsuredDTO insured { get; set; }
     public List<SectionDTO> sections { get; set; }
         public string Token { get; set; }
+        public string policyNo { get; set; }
     }
 }

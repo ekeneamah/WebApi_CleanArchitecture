@@ -1,4 +1,5 @@
 ﻿using Application.Dtos;
+using Application.Interfaces;
 using Application.Interfaces.Content.Policy;
 using Domain.Entities;
 using Infrastructure.Identity.Models;
@@ -19,41 +20,50 @@ namespace API.Controllers.Content
         private readonly IPolicy _policyService;
         private readonly UserManager<AppUser> _userManager;
         private readonly IWebHostEnvironment _hostingEnvironment;
-        private readonly IConfiguration _configuration;
+        private readonly ITransaction _transactionService;
         public PolicyController(IPolicy policyService,UserManager<AppUser> userManager, IWebHostEnvironment hostingEnvironment, IConfiguration configuration)
         {
             _hostingEnvironment = hostingEnvironment;
-            _configuration = configuration;
             _policyService = policyService;
             _userManager = userManager;
         }
         #region create policy
         [HttpPost]
-        public ActionResult<int> Create(PolicyDTO policyDTO)
+        public ActionResult<int> Create(TransactionDTO policyDTO)
         {
             return Ok(_policyService.AddPolicy(policyDTO));
         }
         #endregion
 
-        #region get policy customer id
+        #region get my policies
         [HttpGet("GetMyPolicies")]
         public async Task<ActionResult> GetMyPolicies()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
-            return Ok(_policyService.GetAllPolicyByUserId(user.Id));
+            return Ok(await _policyService.GetAllPolicyByUserId(user.Id));
         }
         #endregion
-        #region get policy customer id
-       /// <summary>
-       /// Get Customer policy number from Cornerstone
-       /// If the policy no is available then it will call the get certifcate endpoint
-       /// </summary>
-       /// <param name="generatePolicyDTO"></param>
-       /// <returns></returns>
+        #region get policy by customer name
+        [HttpGet("GetByUserName")]
+        public async Task<ActionResult> GetByUserName()
+        {
+            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
+            if (user == null)
+                return BadRequest("Invalid User");
+            return Ok(await _policyService.GetByUserName(user.Id));
+        }
+        #endregion
+        #region get policy number from insurance
+        /// <summary>
+        /// Get Customer policy number from Cornerstone
+        /// If the policy no is available then it will call the get certifcate endpoint
+        /// </summary>
+        /// <param name="generatePolicyDTO"></param>
+        /// <returns></returns>
         [HttpPost("GenPolicyNo")]
-        public async Task<ActionResult<PolicyGenReturnedData>> GenPolicyNo(GeneratePolicyDTO generatePolicyDTO)
+        public async Task<ActionResult<string>> GenPolicyNo(GeneratePolicyDTO generatePolicyDTO)
         {
             string token = await AuthenticateAndGetToken();
             if (string.IsNullOrEmpty(token))
@@ -65,12 +75,13 @@ namespace API.Controllers.Content
                 return BadRequest("Invalid User");
             generatePolicyDTO.Userid = user.Id;
             generatePolicyDTO.Token = token;
-            return Ok(_policyService.GeneratePolicyNumber(generatePolicyDTO));
+            return await _policyService.GeneratePolicyNumber(generatePolicyDTO);
+            
         }
         #endregion
-        #region get policy customer id
+        #region Update policy
         [HttpPut("Update")]
-        public async Task<ActionResult> UpdatePolicies(PolicyDTO policy)
+        public async Task<ActionResult> UpdatePolicies(TransactionDTO policy)
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -89,7 +100,6 @@ namespace API.Controllers.Content
             {
                 return Unauthorized("Failed to obtain authentication token.");
             }
-            // Make sure to replace this URL with the actual URL of the endpoint
             string apiUrl = $"https://testcipapiservices.gibsonline.com/api/utilities/fetch/certificate?policyNo={policyNo}&email={email}";
 
             using var client = new HttpClient();
@@ -146,7 +156,7 @@ namespace API.Controllers.Content
                     {
                         var responseData = await response.Content.ReadAsStringAsync();
                         var tokenObject = JsonSerializer.Deserialize<AuthResponse>(responseData);
-                        return tokenObject.Token;
+                        return tokenObject.accessToken;
                     }
                     else
                     {
@@ -158,7 +168,7 @@ namespace API.Controllers.Content
 
         private class AuthResponse
         {
-            public string Token { get; set; }
+            public string accessToken { get; set; }
         }
         #endregion
     }

@@ -46,8 +46,8 @@ namespace Application.Dtos
         public string? FirstName { get;  set; }
         public string? LastName { get;  set; }
         public string? Email { get;  set; }
-        public string TaxIdNumber { get; set; }
-        public string LocalGovernment { get; set; }
-        public string OtherName { get; set; }
+        public string? TaxIdNumber { get; set; }
+        public string? LocalGovernment { get; set; }
+        public string? OtherName { get; set; }
     }
 }

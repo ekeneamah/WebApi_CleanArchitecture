@@ -41,6 +41,10 @@ namespace Domain.Models
         public string? Product_Code { get; set; }
         public string? Product_Group { get; set; }
         public string? Product_Description { get; set; }
+        public bool? Is_Approved { get; set;}
+        public bool? Is_Deleted { get; set;}
+        public bool Is_Recommended { get; set; } = false;
+        public int? SortingWeight { get; set; }
     }
 
 

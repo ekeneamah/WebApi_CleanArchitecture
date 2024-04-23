@@ -28,5 +28,7 @@ namespace Application.Interfaces.Content.Products
         Task<bool> ProductIsExist(string code);
         Task<int> SaveChanges();
         void WithDraw(WithDrawProducts dto);
+        Task<List<Product>> GetProductsByInsuranceCoyId(int pageNumber, int pageSize, int insuranceCoyId);
+        Task<List<Product>> GetRecommendedProducts(int pageNumber, int pageSize);
     }
 }

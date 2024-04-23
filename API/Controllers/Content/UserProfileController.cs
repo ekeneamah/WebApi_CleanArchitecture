@@ -56,12 +56,83 @@ namespace API.Controllers.Content
             if (user == null)
                 return BadRequest("Invalid User");
             u.UserId = user.Id;
-            var result = await _profileservice.Add(u);
+            var result = await _profileservice.UpdateUser(u);
             return new JsonResult(result);
         }
         #endregion create profile
 
-       
-      
+        #region update only logo
+        [HttpPut("{id}/profilepix")]
+        public async Task<ActionResult<Boolean>> UpdateProfileImage(int id, IFormFile profileImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
+        {
+            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
+            if (user == null)
+                return BadRequest("Invalid User");
+           
+            if (!string.IsNullOrEmpty(user.ProfilePix))
+            {
+                string wwwrootPathold = webHostEnvironment.WebRootPath;
+                string logoImagePathold = Path.Combine(wwwrootPathold, user.ProfilePix.TrimStart('~', '/'));
+                if (System.IO.File.Exists(logoImagePathold))
+                {
+                    System.IO.File.Delete(logoImagePathold);
+                }
+            }
+
+            // Save logo image file to wwwroot/Images folder
+            string wwwrootPath = webHostEnvironment.WebRootPath;
+            string imagesFolder = Path.Combine(wwwrootPath, "images");
+            string logoImageName = $"{Guid.NewGuid()}_proflepix_{profileImageFile.FileName}";
+            string logoImagePath = Path.Combine(imagesFolder, logoImageName);
+
+            using (var stream = new FileStream(logoImagePath, FileMode.Create))
+            {
+                await profileImageFile.CopyToAsync(stream);
+            }
+
+            // Set logo image URL
+            user.ProfilePix = $"~/images/{logoImageName}";
+
+            // Update InsuranceCoy in the database with the new logo image URL
+           
+
+            return  await _profileservice.Update_UserProfilePix(user.ProfilePix,user.Id);
+        }
+
+        #endregion
+
+        #region delete profile pix
+        [HttpDelete("{id}/profilepix")]
+        public async Task<ActionResult<Boolean>> DeleteProfileImage(int id, IFormFile profileImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
+        {
+            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
+            if (user == null)
+                return BadRequest("Invalid User");
+
+            if (!string.IsNullOrEmpty(user.ProfilePix))
+            {
+                string wwwrootPathold = webHostEnvironment.WebRootPath;
+                string logoImagePathold = Path.Combine(wwwrootPathold, user.ProfilePix.TrimStart('~', '/'));
+                if (System.IO.File.Exists(logoImagePathold))
+                {
+                    System.IO.File.Delete(logoImagePathold);
+                }
+            }
+
+          
+
+            // Set logo image URL
+            user.ProfilePix = null;
+
+            // Update InsuranceCoy in the database with the new logo image URL
+
+
+            return await _profileservice.Update_UserProfilePix(user.ProfilePix, user.Id);
+        }
+
+        #endregion
+
+
+
     }
 }

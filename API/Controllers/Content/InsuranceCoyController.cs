@@ -10,7 +10,7 @@ namespace API.Controllers.Content
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+    
     public class InsuranceCoyController : ControllerBase
     {
         private readonly IInsuranceCoy _insuranceCoyService;
@@ -40,14 +40,14 @@ namespace API.Controllers.Content
 
         // GET: api/InsuranceCompany/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "SuperAdmin")]
+       // [Authorize(Roles = "SuperAdmin")]
         public async Task<ActionResult<InsuranceCoyDTO>> GetInsuranceCoy(int id)
         {
             var brand = await _insuranceCoyService.GetById(id);
 
             if (brand == null)
             {
-                return NotFound($"No insuranceCoy has found with this {id} ");
+                return NotFound($"No insuranceCoy was found with this {id} ");
             }
 
             return brand;

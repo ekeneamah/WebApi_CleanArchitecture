@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
 using Domain.Models;
+using Domain.Entities;
 
 namespace Infrastructure.Content.Data
 {
@@ -26,6 +27,12 @@ namespace Infrastructure.Content.Data
         public DbSet<CoyBenefitEntity> CoyBenefits { get; set; }
         public DbSet<MotorClaim> MotorClaims { get; set; }
         public DbSet<kyc> KYCs { get; internal set; }
+        public DbSet<PolicyGenReturnedData_cornerstone> PolicyGenReturnedData_cornerstone { get; set; }
+        public DbSet<PolicySection> policySections { get; set; }
+        public DbSet<PolicySectionField> PolicySectionFields { get; set; }
+        public DbSet<PolicySectionRate> PolicySectionRates { get; set; }
+        public DbSet<PolicySectionSmi> PolicySectionSmis { get; set; }
+        public DbSet<CategoryandInsurancecoy> CategoryandInsurancecoys { get;  set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

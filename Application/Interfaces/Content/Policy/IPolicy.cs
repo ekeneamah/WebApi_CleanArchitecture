@@ -17,22 +17,22 @@ namespace Application.Interfaces.Content.Policy
         Task<PolicyDetailDTO> GetById(int id);
         Task<List<PolicyDetailDTO>> GetAllPolicyByUserId(string userid);
         Task<List<PolicyDetailDTO>> GetByUserName(string username);
+        Task<string> GeneratePolicyNumber(GeneratePolicyDTO ret );
 
 
-        Task<int> AddPolicy(PolicyDTO model);
-
-
-
-        PolicyDetailDTO UpdatePolicy(PolicyDTO model);
+        Task<int> AddPolicy(Dtos.TransactionDTO model);
 
 
 
-        PolicyDTO DeletePolicy(PolicyDTO model);
+        PolicyDetailDTO UpdatePolicy(Dtos.TransactionDTO model);
+
+
+
+        Dtos.TransactionDTO DeletePolicy(Dtos.TransactionDTO model);
 
 
 
         Task<bool> POlicyIsExist(string policyName);
 
-        Task<PolicyGenReturnedData> GeneratePolicyNumber(GeneratePolicyDTO generatePolicyDTO);
     }
 }

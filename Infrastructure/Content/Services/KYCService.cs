@@ -13,12 +13,10 @@ namespace Infrastructure.Content.Services
     public class KYCService : IKYC
     {
         private readonly AppDbContext _context;
-        private readonly AuthResponseService _authResponseService;
 
-        public KYCService(AppDbContext context,AuthResponseService authResponseService )
+        public KYCService(AppDbContext context )
         {
             _context = context;
-            _authResponseService = authResponseService;
         }
 
         public async Task<KYCDTO> CreateKYC(KYCDTO kycDto)
@@ -116,7 +114,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<KYCDTO> UpdateKYC(int id, KYCDTO kycDto)
         {
-            kyc kycEntity = await _context.KYCs.FindAsync(id);
+            kyc kycEntity = await _context.KYCs.Where(u=>u.UserId==kycDto.UserId && u.Id==id).FirstOrDefaultAsync();
 
             if (kycEntity == null)
             {

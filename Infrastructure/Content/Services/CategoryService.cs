@@ -84,34 +84,46 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region UpdateCategory
-        public async Task<CategoryDTO> UpdateCategory(CategoryDTO item,int category_id)
+        public async Task<int> UpdateCategory(Category item,int category_id,List<CategoryBenefit> categoryBenefit)
         {
-            Category cat = await _context.Categories.FindAsync(category_id);
-            Category model = new()
+            int result = 0;
+          //  CategoryDTO cd = new CategoryDTO();
+            try
             {
-                Category_Description = item.Category_Description,
-                Category_Name = item.Category_Name,
-                Category_Image = item.Category_Image,
-                Category_VideoLink = item.Category_VideoLink,
-                Category_Id = category_id
-            };
+                Category category = await _context.Categories.FindAsync(category_id);
+           
+
+            category = item;
+            _context.Entry(category).State= EntityState.Modified;
             
-            _context.Update(cat);
-            _context.SaveChanges();
+           result =  await _context.SaveChangesAsync();
             CategoryBenefit cb = await _context.CategoryBenefits.Where(b => b.Benefit_Category_id == category_id).FirstOrDefaultAsync();
             if (cb != null)
             {
                 _context.Remove(cb);
                 await _context.SaveChangesAsync();
             }
-            foreach (CategoryBenefit c in item.Category_Benefits)
+            foreach (CategoryBenefit c in categoryBenefit)
             {
               
-                c.Benefit_Category_id = model.Category_Id;
+                c.Benefit_Category_id = category_id;
                 _context.CategoryBenefits.Add(c);
                await _context.SaveChangesAsync();
             }
-            return item;
+             CategoryDTO cd = new()
+            {
+                 category_id = category_id,
+                 Category_Benefits = categoryBenefit,
+                 Category_Description= item.Category_Description,
+                 Category_Name= item.Category_Name,
+                 Category_VideoLink= item.Category_VideoLink,
+            };
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            return result;
         }
         #endregion
 

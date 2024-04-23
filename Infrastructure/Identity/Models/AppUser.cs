@@ -53,5 +53,6 @@ namespace Infrastructure.Identity.Models
         public string? SignatureUrl { get; set; }
         public string? Gender { get; set; }
         public string? NIN { get; internal set; }
+        public string? ProfilePix { get; set; }
     }
 }

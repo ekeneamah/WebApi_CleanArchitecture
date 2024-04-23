@@ -13,23 +13,35 @@ namespace Domain.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
-       
-        public required string  UserId { get; set; }
+
         [Required]
-        public required int ProductId {  get; set; }
+        public string? UserId { get; set; }
+
         [Required]
-        public required string ProductCode { get; set; }
+        public int? ProductId { get; set; }
+
         [Required]
-        public required string PurchasedDate {  get; set; }
+        public string? ProductCode { get; set; }
+
         [Required]
-        public required double Price { get; set;}
+        public DateTime PurchasedDate { get; set; }
+
         [Required]
-        public required string TransactionRef { get; set; }
+        [Column(TypeName = "decimal(18, 2)")]
+        public decimal Price { get; set; }
+
         [Required]
-        public required string TransactionStatus { get; set; }
-        public required int Coy_Id { get; set; }
-        
-        public required string PolicyNo { get; set; }
-        public required string PaymentRef { get; set; }
+        public string? TransactionRef { get; set; }
+
+        [Required]
+        public string? TransactionStatus { get; set; }
+
+        public int Coy_Id { get; set; }
+
+        [Required]
+        public string? PolicyNo { get; set; }
+
+        [Required]
+        public string? PaymentRef { get; set; }
     }
 }

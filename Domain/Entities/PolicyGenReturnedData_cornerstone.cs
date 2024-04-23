@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
@@ -7,8 +8,11 @@ using System.Threading.Tasks;
 
 namespace Domain.Entities
 {
-    public class PolicyGenReturnedData
+    public class PolicyGenReturnedData_cornerstone
     {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
         public string documentNo { get; set; }
         public string policyNo { get; set; }
         public string naicomID { get; set; }
@@ -24,34 +28,42 @@ namespace Domain.Entities
         public string fxCurrency { get; set; }
         public string customerName { get; set; }
         public string customerID { get; set; }
-        public Section[] sections { get; set; }
+        
     }
 
-    public class Section
+    public class PolicySection
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
+        public int PolicyGenReturnedData_cornerstone_Id { get; set; }
         public double sectionSumInsured { get; set; }
         public double sectionPremium { get; set; }
-        public Field[] fields { get; set; }
-        public Rate[] rates { get; set; }
-        public Smi[] smIs { get; set; }
+       
     }
 
-    public class Field
+    public class PolicySectionField
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public required int PolicySection_id { get; set; }
         public string code { get; set; }
         public string value { get; set; }
     }
 
-    public class Rate
+    public class PolicySectionRate
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public required int PolicySection_id { get; set; }
         public string code { get; set; }
         public string value { get; set; }
     }
 
-    public class Smi
+    public class PolicySectionSmi
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int Id { get; set; }
+        public required int PolicySection_id { get; set; }
         public string code { get; set; }
         public int sumInsured { get; set; }
         public int premium { get; set; }

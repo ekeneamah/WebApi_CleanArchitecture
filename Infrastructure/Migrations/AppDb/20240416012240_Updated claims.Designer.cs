@@ -4,6 +4,7 @@ using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.Migrations.AppDb
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240416012240_Updated claims")]
+    partial class Updatedclaims
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -21,33 +24,6 @@ namespace Infrastructure.Migrations.AppDb
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
-
-            modelBuilder.Entity("Domain.Entities.CategoryandInsurancecoy", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("CategoryId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("CategoryName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("InsuranceCoyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("InsuranceCoyName")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("CategoryandInsurancecoys");
-                });
 
             modelBuilder.Entity("Domain.Models.Category", b =>
                 {
@@ -119,17 +95,15 @@ namespace Infrastructure.Migrations.AppDb
                         .IsRequired()
                         .HasColumnType("int");
 
-                    b.Property<string>("LossDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("LossDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("NotificationNo")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("NotifyDate")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
+                    b.Property<DateTime>("NotifyDate")
+                        .HasColumnType("datetime2");
 
                     b.Property<string>("PolicyNo")
                         .IsRequired()
@@ -391,15 +365,6 @@ namespace Infrastructure.Migrations.AppDb
                     b.Property<int>("Coy_Id")
                         .HasColumnType("int");
 
-                    b.Property<bool?>("Is_Approved")
-                        .HasColumnType("bit");
-
-                    b.Property<bool?>("Is_Deleted")
-                        .HasColumnType("bit");
-
-                    b.Property<bool>("Is_Recommended")
-                        .HasColumnType("bit");
-
                     b.Property<string>("Product_Code")
                         .HasColumnType("nvarchar(max)");
 
@@ -419,9 +384,6 @@ namespace Infrastructure.Migrations.AppDb
                         .HasColumnType("float");
 
                     b.Property<int>("Product_Quantity")
-                        .HasColumnType("int");
-
-                    b.Property<int?>("SortingWeight")
                         .HasColumnType("int");
 
                     b.HasKey("Product_Id");

@@ -18,7 +18,6 @@ namespace Infrastructure.Content.Services
         public string GetEmailBody(Transaction transaction,Product p, string FirstName )
         {
 
-            // Replace placeholders in the HTML template with actual values from the TransactionEntity object
             string emailBody = $@"
         <html>
         <head>
@@ -78,7 +77,6 @@ namespace Infrastructure.Content.Services
         public string GetEmailBodyInsuranceCoy(Transaction transaction, Product p, string FirstName)
         {
 
-            // Replace placeholders in the HTML template with actual values from the TransactionEntity object
             string emailBody = $@"
         <html>
         <head>

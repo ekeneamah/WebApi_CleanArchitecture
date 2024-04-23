@@ -3,12 +3,13 @@ using Application.Interfaces.Content.Categories;
 using Domain.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers.Content
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+   
     public class CategoryController : ControllerBase
     {
         private readonly ICategory _categoryService;
@@ -69,19 +70,25 @@ namespace API.Controllers.Content
         #region Update Category
         // POST: CategoriesController/Edit/5
         [HttpPut("Edit_Category")]
-        public async Task<IActionResult> UpdateCategory(int id, Category model)
+        public async Task<IActionResult> UpdateCategory(int id, CategoryDTO item)
         {
-            var category = await _categoryService.GetById(id);
+            
 
 
-            if (category == null)
-                return NotFound($"No CategoryEntity was found with ID {id}");
+          Category  cat = new()
+            {
+                Category_Description = item.Category_Description,
+                Category_Name = item.Category_Name,
+                Category_Image = item.Category_Image,
+                Category_VideoLink = item.Category_VideoLink,
+                Category_Id = id,
+                
+                
+            };
 
-           
+            ;
 
-            _categoryService.UpdateCategory(category,id);
-
-            return Ok(category);
+            return Ok(_categoryService.UpdateCategory(cat, id, item.Category_Benefits));
         }
         #endregion
 

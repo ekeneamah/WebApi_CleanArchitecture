@@ -14,7 +14,7 @@ namespace API.Controllers.Content
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize]
+  
     public class ProductController : ControllerBase
     {
         private readonly IProduct _productServcie;
@@ -55,6 +55,28 @@ namespace API.Controllers.Content
         public async Task<ActionResult<ProductDtoDetails>> GetProductsByCategoryId(int product_categoryId, int pageNumber = 1, int pageSize = 10)
         {
             var products = await _productServcie.GetAllProductsByCategory( pageNumber, pageSize, product_categoryId);
+            //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
+
+            return Ok(products);
+        }
+        #endregion
+        #region GetAllProducts by insurance id Endpoint
+        // GET: api/Products
+        [HttpGet("GetProductsByInsuranceCoyId")]
+        public async Task<ActionResult<Product>> GetProductsByInsuranceCoyId(int insuranceCoyId, int pageNumber = 1, int pageSize = 10)
+        {
+            var products = await _productServcie.GetProductsByInsuranceCoyId(pageNumber, pageSize, insuranceCoyId);
+            //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
+
+            return Ok(products);
+        }
+        #endregion
+        #region Get Recommended Products Endpoint
+        // GET: api/Products
+        [HttpGet("GetRecommendedProducts")]
+        public async Task<ActionResult<Product>> GetRecommendedProducts(int pageNumber = 1, int pageSize = 10)
+        {
+            var products = await _productServcie.GetRecommendedProducts(pageNumber, pageSize);
             //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
 
             return Ok(products);
@@ -142,14 +164,17 @@ namespace API.Controllers.Content
 
             if (product == null)
             {
-                return NotFound($"brand:{product.Product_Name} with Id:{product.Product_Id} has not found");
+                return NotFound($"brand:{model.Product_Name}  has not found");
             }
 
             product.Product_Name = model.Product_Name;
             product.Coy_Id = model.InsuranceCoy_id;
-            product.Coy_Id = model.InsuranceCoy_id;
             product.Product_Price = model.Product_Price;
             product.Product_Quantity = model.Product_Quantity;
+            product.Product_Description = model.Product_Description;
+            product.Category_Id = model.Category_Id;
+            product.Product_Code = model.Product_Code;
+
 
             _productServcie.Update(product);
 

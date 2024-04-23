@@ -270,6 +270,33 @@ namespace Infrastructure.Content.Services
             return result;
         }
         #endregion
+        #region get products by insurance coy id
+
+        public async Task<List<Product>> GetProductsByInsuranceCoyId(int pageNumber, int pageSize, int insuranceCoyId)
+        {
+          return  await _context.Products.Where(g => g.Coy_Id == insuranceCoyId)
+
+                  .Skip((pageNumber - 1) * pageSize)
+                  .Take(pageSize)
+                 .OrderBy(x => x.Product_Name)
+                 .AsNoTracking()
+                 .ToListAsync();
+        }
+        #endregion
+
+        #region get products by insurance coy id
+
+        public async Task<List<Product>> GetRecommendedProducts(int pageNumber, int pageSize)
+        {
+            return await _context.Products.Where(g => g.Is_Recommended==true)
+
+                    .Skip((pageNumber - 1) * pageSize)
+                    .Take(pageSize)
+                   .OrderBy(x => x.Product_Name)
+                   .AsNoTracking()
+                   .ToListAsync();
+        }
+        #endregion
 
     }
 }

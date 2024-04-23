@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Transactions;
 
 namespace Infrastructure.Content.Services
 {
@@ -21,9 +22,9 @@ namespace Infrastructure.Content.Services
             _authResponseService = authResponseService;
         }
 
-        public async Task<PolicyGenReturnedData> PostPolicyAndTransform(string endpointUrl, GetPolicyNumberDTO policyDto)
+        public async Task<PolicyGenReturnedData_cornerstoneDTO> PostPolicyAndTransform(string endpointUrl, GetPolicyNumberDTO policyDto)
         {
-            // Serialize the PolicyDTO to JSON
+            // Serialize the TransactionDTO to JSON
             var jsonContent = JsonSerializer.Serialize(policyDto);
             
 
@@ -39,8 +40,8 @@ namespace Infrastructure.Content.Services
                     var responseContent = await response.Content.ReadAsStringAsync();
 
                     // Deserialize the response JSON into the target model
-                    var modelForDatabase = JsonSerializer.Deserialize<PolicyGenReturnedData>(responseContent);
-
+                    var modelForDatabase = JsonSerializer.Deserialize<PolicyGenReturnedData_cornerstoneDTO>(responseContent);
+                  
                     return modelForDatabase;
                 }
                 else

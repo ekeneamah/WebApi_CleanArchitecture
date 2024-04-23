@@ -20,7 +20,7 @@ namespace Application.Interfaces.Content.Categories
 
 
 
-        Task<CategoryDTO> UpdateCategory(CategoryDTO model, int category_id);
+        Task<int> UpdateCategory(Category model, int category_id, List<CategoryBenefit> categoryBenefit);
 
 
 

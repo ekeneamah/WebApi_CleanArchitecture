@@ -15,9 +15,10 @@ namespace Application.Interfaces.Content.UserProfiles
 
         Task<UserProfileDto> GetProfilebyUserid(string id);
 
-        Task<UserProfileDto> Add(UserProfileDto model);
+        Task<UserProfileDto> UpdateUser(UserProfileDto model);
 
         Task<UserProfileDto> Update_UserProfile(UserProfileDto model);
+        Task<Boolean> Update_UserProfilePix(string profilePix, string id);
 
         Task<int> Delete_UserProfile(UserProfileDto model);
 

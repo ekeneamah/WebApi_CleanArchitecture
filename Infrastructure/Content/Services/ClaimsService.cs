@@ -20,23 +20,42 @@ namespace Infrastructure.Content.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<ClaimsDto>> GetAll()
+        public async Task<List<ClaimDetailDTO>> GetAll()
         {
             return await _dbContext.Claims
-                .Select(c => new ClaimsDto
+                .Select(c => new ClaimDetailDTO
                 {
-                    PolicyId = c.ClaimsId,
+                    
                     PolicyNo = c.PolicyNo,
-                    LossDate = c.LossDate,
-                    NotifyDate = c.NotifyDate,
-                    ClaimForm = c.ClaimForm,
+                    LossDate = c.LossDate.ToString(),
+                    NotifyDate = c.NotifyDate.ToString(),
+                   
                     Reference = c.Reference,
-                    InsuranceCompanyId = c.InsuranceCompanyId,
+                   
                 })
                 .ToListAsync();
         }
 
-        public async Task<ClaimsDto> GetById(string claimId)
+        public async Task<List<ClaimDetailDTO>> GetAllMyClaims(string userid)
+        {
+            return await _dbContext.Claims.Where(u=>u.UserId==userid)
+                .Select(c => new ClaimDetailDTO
+                {
+
+                    PolicyNo = c.PolicyNo,
+                    LossDate = c.LossDate.ToString(),
+                    NotifyDate = c.NotifyDate.ToString(),
+                    NotificationNo = c.NotificationNo,
+                    Status = c.Status,
+                    ClaimNo = c.ClaimNo,
+                    ClaimsId = c.ClaimsId,
+                    Reference = c.Reference,
+
+                })
+                .ToListAsync();
+        }
+
+        public async Task<ClaimDetailDTO> GetById(string claimId)
         {
             var claim = await _dbContext.Claims.FindAsync(claimId);
             if (claim == null)
@@ -44,15 +63,17 @@ namespace Infrastructure.Content.Services
                 return null;
             }
 
-            return new ClaimsDto
+            return new ClaimDetailDTO
             {
-                PolicyId = claim.ClaimsId,
                 PolicyNo = claim.PolicyNo,
-                LossDate = claim.LossDate,
-                NotifyDate = claim.NotifyDate,
-                ClaimForm = claim.ClaimForm,
+                LossDate = claim.LossDate.ToString(),
+                NotifyDate = claim.NotifyDate.ToString(),
                 Reference = claim.Reference,
-                InsuranceCompanyId= claim.InsuranceCompanyId,
+                ClaimNo = claim.ClaimNo,
+                ClaimsId = claim.ClaimsId,
+                NotificationNo = claim.NotificationNo,
+                Status = claim.Status
+               
             };
         }
 
@@ -63,16 +84,14 @@ namespace Infrastructure.Content.Services
                 ClaimsId = Guid.NewGuid(), // Generating a new Guid for ClaimsId
                 UserId = model.UserId,
                 PolicyNo = model.PolicyNo,
-                LossDate = model.LossDate,
-                NotifyDate = model.NotifyDate,
-                ClaimForm = model.ClaimForm,
+                LossDate = model.LossDate.ToString(),
+                NotifyDate = model.NotifyDate.ToString(),
                 Reference = model.Reference,
-                InsuranceCompanyId = model.InsuranceCompanyId,
             };
 
             _dbContext.Claims.Add(claim);
             await _dbContext.SaveChangesAsync();
-
+            model.ClaimId = claim.ClaimsId;
             return model;
         }
         #region get claims form by insuarance coy
@@ -106,7 +125,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<ClaimsDto> UpdateClaims(ClaimsDto model)
         {
-            var claim = await _dbContext.Claims.FirstOrDefaultAsync(c => c.ClaimsId == model.PolicyId);
+            var claim = await _dbContext.Claims.FirstOrDefaultAsync(c => c.PolicyNo == model.PolicyNo);
             if (claim == null)
             {
                 return null; // ClaimEntity not found
@@ -115,10 +134,27 @@ namespace Infrastructure.Content.Services
             // Update claim properties
             claim.UserId = model.UserId;
             claim.PolicyNo = model.PolicyNo;
-            claim.LossDate = model.LossDate;
-            claim.NotifyDate = model.NotifyDate;
-            claim.ClaimForm = model.ClaimForm;
+            claim.LossDate = model.LossDate.ToString();
+            claim.NotifyDate = model.NotifyDate.ToString();
             claim.Reference = model.Reference;
+            _dbContext.Update(claim);
+            await _dbContext.SaveChangesAsync();
+
+            return model;
+        }
+
+        public async Task<NotificationDTO> AddNotification(NotificationDTO model)
+        {
+            var claim = await _dbContext.Claims.FirstOrDefaultAsync(c => c.ClaimsId == model.ClaimsId);
+            if (claim == null)
+            {
+                return null; // ClaimEntity not found
+            }
+
+            // Update claim properties
+            claim.Status = model.Status;
+            claim.ClaimNo = model.ClaimNo;  
+            claim.NotificationNo = model.NotificationNo;
             _dbContext.Update(claim);
             await _dbContext.SaveChangesAsync();
 

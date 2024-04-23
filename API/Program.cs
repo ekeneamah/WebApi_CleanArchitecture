@@ -55,7 +55,7 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 
     .AddEntityFrameworkStores<AppIdentityContext>()
     .AddDefaultTokenProviders();
-builder.Services.AddHttpClient(); // Add HttpClient and IHttpClientFactory
+builder.Services.AddHttpClient(); // UpdateUser HttpClient and IHttpClientFactory
 
 builder.Services.AddScoped<IInsuranceCoy, InsuranceCoyService>();
 builder.Services.AddScoped<ICategory, CategoryService>();
@@ -66,10 +66,12 @@ builder.Services.AddScoped<IUserProfile, UserProfileService>();
 builder.Services.AddScoped<ITransaction, TransactionService>();
 builder.Services.AddScoped<IVehiclePremiumRepository, VehiclePremiumService>();
 builder.Services.AddScoped<IMotorClaimRepository, MotorClaimService>();
+builder.Services.AddScoped<ICategoryandInsurancecoy, CategoryandInsurancecoyService>();
+
 
 builder.Services.AddScoped<IAuthResponse, AuthResponseService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
-
+builder.Services.AddScoped<IKYC, KYCService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 
 builder.Services.AddAuthentication(options =>
@@ -98,7 +100,7 @@ builder.Services.AddAuthentication(options =>
     });
 
 
-// Add services to the container.
+// UpdateUser services to the container.
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();

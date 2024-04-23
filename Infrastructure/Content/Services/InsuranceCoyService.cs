@@ -1,18 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing.Printing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Application.Dtos;
+﻿using Application.Dtos;
 using Application.Interfaces.Content.Brands;
 using Domain.Models;
 using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace Infrastructure
+namespace Infrastructure.Content.Services
 {
-    public class InsuranceCoyService:IInsuranceCoy
+    public class InsuranceCoyService : IInsuranceCoy
     {
         private readonly AppDbContext _context;
 
@@ -28,7 +22,7 @@ namespace Infrastructure
                 .Skip((pageNumber - 1) * pageSize)
                   .Take(pageSize)
                   .ToListAsync();
-            foreach(InsuranceCoy i in InsuranceCoy)
+            foreach (InsuranceCoy i in InsuranceCoy)
             {
                 InsuranceCoyDTO insuranceCoyDTO = new()
                 {
@@ -51,14 +45,14 @@ namespace Infrastructure
                     Coy_Status = i.Coy_Status,
                     Coy_AgentId = i.Coy_AgentId,
                     IsOrg = i.IsOrg,
-                    Title = i.Title,
+                    Title = i.Title==null?"":i.Title,
                 };
                 result.Add(insuranceCoyDTO);
             }
             return result;
         }
 
-         
+
         public async Task<InsuranceCoyDTO> GetById(int id)
         {
             InsuranceCoy i = await _context.InsuranceCompany.Where(m => m.Coy_Id == id).FirstOrDefaultAsync();
@@ -68,7 +62,7 @@ namespace Infrastructure
                 Coy_id = i.Coy_Id,
                 Coy_Email = i.Coy_Email,
                 Coy_Image = i.Coy_Image,
-                Coy_Benefits = await _context.CoyBenefits.Where(c=>c.Coy_id==i.Coy_Id).ToListAsync(),
+                Coy_Benefits = await _context.CoyBenefits.Where(c => c.Coy_id == i.Coy_Id).ToListAsync(),
                 Coy_Logo = i.Coy_Logo,
                 Coy_City = i.Coy_City,
                 Coy_VideoLink = i.Coy_VideoLink,
@@ -84,7 +78,7 @@ namespace Infrastructure
                 Coy_AgentId = i.Coy_AgentId,
                 IsOrg = i.IsOrg,
                 Title = i.Title,
-                Coy_ZipCode = i.Coy_ZipCode 
+                Coy_ZipCode = i.Coy_ZipCode
             };
             return insuranceCoyDTO;
         }
@@ -114,13 +108,13 @@ namespace Infrastructure
                 IsOrg = model.IsOrg,
                 Coy_Id = model.Coy_id,
                 Coy_ZipCode = model.Coy_ZipCode
-                
+
 
             };
 
-           await _context.InsuranceCompany.AddAsync(i);
+            await _context.InsuranceCompany.AddAsync(i);
             await _context.SaveChangesAsync();
-            foreach(CoyBenefitEntity cb in model.Coy_Benefits)
+            foreach (CoyBenefitEntity cb in model.Coy_Benefits)
             {
                 cb.Coy_id = i.Coy_Id;
                 _context.CoyBenefits.Add(cb);
@@ -149,18 +143,18 @@ namespace Infrastructure
                 Coy_Street = model.Coy_Street,
                 Coy_ZipCode = model.Coy_ZipCode,
                 Coy_AgentId = model.Coy_AgentId,
-                IsOrg = model.IsOrg,    
+                IsOrg = model.IsOrg,
                 Title = model.Title,
                 Coy_Image = model.Coy_Image,
                 Coy_Logo = model.Coy_Logo,
                 Coy_VideoLink = model.Coy_VideoLink
-                
-                
+
+
 
             };
             InsuranceCoy coy = insuranceCoy;
             _context.InsuranceCompany.Update(coy);
-          
+
 
             return await _context.SaveChangesAsync();
         }
@@ -174,8 +168,8 @@ namespace Infrastructure
                 Coy_Name = model.Coy_Name,
                 Coy_Email = model.Coy_Email,
                 Coy_City = model.Coy_City,
-                Coy_AgentId= model.Coy_AgentId,
-                
+                Coy_AgentId = model.Coy_AgentId,
+
             };
             _context.InsuranceCompany.Remove(coy);
             await _context.SaveChangesAsync();

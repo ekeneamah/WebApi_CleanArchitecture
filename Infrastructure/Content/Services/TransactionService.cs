@@ -49,12 +49,12 @@ namespace Infrastructure.Content.Services
             int coyId = await _dbContext.Products.Where(p=>p.Product_Id==transactionResponse.ProductId).Select(c=>c.Coy_Id).FirstOrDefaultAsync();
             string coyEmail =await  _dbContext.InsuranceCompany.Where(i=>i.Coy_Id== coyId).Select(e=>e.Coy_Email).FirstOrDefaultAsync();
             await _emailSender.SendEmailAsync2(transactionResponse.UserEmail,
-                 "TransactionEntity Receipt",emailBody.GetEmailBody(transactionResponse, p, a.FirstName));
-            await _emailSender.SendEmailAsync2(coyEmail,
+                 "Transaction Receipt",emailBody.GetEmailBody(transactionResponse, p, a.FirstName));
+            /*await _emailSender.SendEmailAsync2(coyEmail,
                 // CCEmail = coyEmail,
                 "TransactionEntity Receipt for " + a.FirstName + " " + a.LastName,
 
-                emailBody.GetEmailBodyInsuranceCoy(transactionResponse, p, a.FirstName));
+                //.GetEmailBodyInsuranceCoy(transactionResponse, p, a.FirstName));*/
             return await _dbContext.SaveChangesAsync();
         }
 

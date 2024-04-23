@@ -9,19 +9,19 @@ using System.Threading.Tasks;
 
 namespace Application.Dtos
 {
-    public class PolicyDTO
+    public class TransactionDTO
     {
         
 
         public required string UserId { get; set; }
         [Required]
-        public required int ProductId { get; set; }
+        public required int? ProductId { get; set; }
         [Required]
         public required string ProductCode { get; set; }
         [Required]
-        public required string PurchasedDate { get; set; }
+        public required DateTime PurchasedDate { get; set; }
         [Required]
-        public required double Price { get; set; }
+        public required decimal Price { get; set; }
         [Required]
         public required string TransactionRef { get; set; }
         [Required]

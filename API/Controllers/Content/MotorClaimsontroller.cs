@@ -60,10 +60,19 @@ namespace API.Controllers
             if (user == null)
                 return BadRequest("Invalid User");
             motorClaim.User_Id = user.Id;
-            motorClaim.Name = user.FirstName+" "+user.LastName;
-            var createdClaim = await _repository.CreateMotorClaim(motorClaim);
-            await SendClaimAsync(motorClaim);
-            return CreatedAtAction(nameof(GetById), new { id = createdClaim.Id }, createdClaim);
+           // motorClaim.Name = user.FirstName+" "+user.LastName;
+
+            HttpResponseMessage claimsRes = await SendClaimAsync(motorClaim);
+            if (claimsRes.IsSuccessStatusCode)
+            {
+
+                var createdClaim = await _repository.CreateMotorClaim(motorClaim);
+                return CreatedAtAction(nameof(GetById), new { id = createdClaim.Id }, createdClaim);
+            }
+            else
+            {
+                return BadRequest("Claims could not be created");
+            }
         }
 
         [NonAction]
@@ -79,7 +88,7 @@ namespace API.Controllers
             var request = new HttpRequestMessage(HttpMethod.Post, endpoint);
             request.Content = new StringContent(jsonContent, Encoding.UTF8, "application/json");
 
-            // Add basic authentication header
+            // UpdateUser basic authentication header
             var authValue = new AuthenticationHeaderValue("Basic",
                 Convert.ToBase64String(Encoding.UTF8.GetBytes("c31a6a20-7eda-41da-a7df-d14b501c237c:DECHANNEL")));
             _httpClient.DefaultRequestHeaders.Authorization = authValue;
@@ -88,6 +97,7 @@ namespace API.Controllers
             HttpResponseMessage response = await _httpClient.SendAsync(request);
             return response;
         }
+
     
 
     [HttpPut("{id}")]

@@ -43,7 +43,7 @@ namespace Infrastructure.Content.Services
          
 
         }
-        public async Task<int> AddPolicy(PolicyDTO x)
+        public async Task<int> AddPolicy(Application.Dtos.TransactionDTO x)
         {
             Policy pd = new()
             {
@@ -68,7 +68,7 @@ namespace Infrastructure.Content.Services
             throw new NotImplementedException();
         }
 
-        public PolicyDTO DeletePolicy(PolicyDTO model)
+        public Application.Dtos.TransactionDTO DeletePolicy(Application.Dtos.TransactionDTO model)
         {
             throw new NotImplementedException();
         }
@@ -127,32 +127,39 @@ namespace Infrastructure.Content.Services
 
         public async Task<List<PolicyDetailDTO>> GetAllPolicyByUserId(string userId)
         {
-            List<Policy> p = await _context.Policies.Where(u=>u.UserId==userId)
-                 .AsNoTracking()
-               .ToListAsync();
-            List<PolicyDetailDTO> result = new();
-            foreach (Policy x in p)
+            List<Policy> p = await _context.Policies.Where(u => u.UserId == userId)
+                  .ToListAsync();
+            if (p.Any())
             {
-                PolicyDetailDTO pd = new()
+               
+                List<PolicyDetailDTO> result = new();
+                foreach (Policy x in p)
                 {
-                    PolicyId = x.Id,
-                    PolicyNo= x.PolicyNo,
-                    Coy_Id = x.Coy_Id,
-                    Price = x.Price,
-                    ProductCode = x.ProductCode,
-                    ProductId = x.ProductId,
-                    PurchasedDate = x.PurchasedDate,
-                    TransactionRef = x.TransactionRef,
-                    TransactionStatus = x.TransactionStatus,
-                    UserId = x.UserId,
-                    PaymentRef = x.PaymentRef,
-                    InsuranceCoy = await _insuranceCoyService.GetById(x.Coy_Id),
-                    Product = await productService.GetProductByCode(x.ProductCode),
-                    UserProfile = await userProfileService.GetProfilebyUserid(x.UserId)
-                };
-                result.Add(pd);
+                    PolicyDetailDTO pd = new()
+                    {
+                        PolicyId = x.Id,
+                        PolicyNo = x.PolicyNo,
+                        Coy_Id = x.Coy_Id,
+                        Price = x.Price,
+                        ProductCode = x.ProductCode,
+                        ProductId = x.ProductId,
+                        PurchasedDate = x.PurchasedDate,
+                        TransactionRef = x.TransactionRef,
+                        TransactionStatus = x.TransactionStatus,
+                        UserId = x.UserId,
+                        PaymentRef = x.PaymentRef,
+                        InsuranceCoy = await _insuranceCoyService.GetById(x.Coy_Id),
+                        Product = await productService.GetProductByCode(x.ProductCode),
+                        UserProfile = await userProfileService.GetProfilebyUserid(x.UserId)
+                    };
+                    result.Add(pd);
+                }
+                return result;
             }
-            return result;
+            else
+            {
+              return   new List<PolicyDetailDTO>();
+            }
         }
 
         public async Task<List<PolicyDetailDTO>> GetByUserName(string userid)
@@ -183,17 +190,17 @@ namespace Infrastructure.Content.Services
 
         }
 
-        public PolicyDTO UpdatePolicy(Category model)
+        public Application.Dtos.TransactionDTO UpdatePolicy(Category model)
         {
             throw new NotImplementedException();
         }
 
-        public PolicyDetailDTO UpdatePolicy(PolicyDTO model)
+        public PolicyDetailDTO UpdatePolicy(Application.Dtos.TransactionDTO model)
         {
             throw new NotImplementedException();
         }
 
-        public async Task<PolicyGenReturnedData> GeneratePolicyNumber(GeneratePolicyDTO generatePolicyDTO)
+        public async Task<string> GeneratePolicyNumber(GeneratePolicyDTO generatePolicyDTO)
         {
             ProductDtoDetails productDetails = await productService.GetDetailsById(generatePolicyDTO.ProductId);
             UserProfileDto userProfileDto = await userProfileService.GetProfilebyUserid(generatePolicyDTO.Userid);
@@ -234,7 +241,108 @@ namespace Infrastructure.Content.Services
                 Token = generatePolicyDTO.Token,
 
             };
-          return await _getPolicyNumberService.PostPolicyAndTransform("https://testcipapiservices.gibsonline.com/api/policies", getPolicyNumberDTO);
+            PolicyGenReturnedData_cornerstoneDTO retPolicy =  await _getPolicyNumberService.PostPolicyAndTransform("https://testcipapiservices.gibsonline.com/api/policies", getPolicyNumberDTO);
+            if (retPolicy != null)
+            {
+               
+                PolicyGenReturnedData_cornerstoneDTO.ProductId = productDetails.Product_Id;
+                Policy p = _context.Policies.FirstOrDefault(p => p.ProductId == productDetails.Product_Id);
+                if (p != null)
+                {
+                    p.PolicyNo = retPolicy.policyNo;
+                }
+                _context.Policies.Update(p);
+                 await _context.SaveChangesAsync();
+                await SavePolicyNo(retPolicy);
+                return retPolicy.policyNo;
+
+            }
+            else
+            {
+                return "No policy number yet";
+            }
         }
+
+        private async Task SavePolicyNo(PolicyGenReturnedData_cornerstoneDTO retPolicy)
+        {
+            PolicyGenReturnedData_cornerstone policyGenReturnedData_Cornerstone = new()
+            {
+                agentID = retPolicy.agentID,
+                Certificate = retPolicy.Certificate,
+                customerID = retPolicy.customerID,
+                customerName = retPolicy.customerName,
+                documentNo = retPolicy.documentNo,
+                endDate = retPolicy.endDate,
+                startDate = retPolicy.startDate,
+                entryDate = retPolicy.entryDate,
+                fxCurrency = retPolicy.fxCurrency,
+                fxRate = retPolicy.fxRate,
+                naicomID = retPolicy.naicomID,
+                policyNo = retPolicy.policyNo,
+                premium = retPolicy.premium,
+                productID = retPolicy.productID,
+                sumInsured = retPolicy.sumInsured,
+            };
+            _context.PolicyGenReturnedData_cornerstone.Add(policyGenReturnedData_Cornerstone);
+           var result = await _context.SaveChangesAsync();
+            List<PolicySection> policySection = new List<PolicySection>();
+            foreach(Section ps in retPolicy.sections)
+            {
+                PolicySection psSection = new PolicySection()
+                {
+                    sectionPremium = ps.sectionPremium,
+                    PolicyGenReturnedData_cornerstone_Id = policyGenReturnedData_Cornerstone.Id,
+                    sectionSumInsured = ps.sectionSumInsured,
+                };
+                _context.policySections.Add(psSection);
+                await _context.SaveChangesAsync();
+                foreach(Rate sr in ps.rates)
+                {
+                    PolicySectionRate pr = new()
+                    {
+                        PolicySection_id = psSection.Id,
+                        code = sr.code,
+                        value = sr.value,
+                    };
+                    _context.PolicySectionRates.Add(pr);
+                    await _context.SaveChangesAsync();
+
+                }
+
+                foreach (Field item in ps.fields)
+                {
+                    PolicySectionField sf = new()
+                    {
+                        PolicySection_id = psSection.Id,
+                        value = item.value,
+                        code = item.code,
+
+                    };
+                    _context.PolicySectionFields.Add(sf);
+                    await _context.SaveChangesAsync();
+
+                    foreach(Smi sm in ps.smIs)
+                    {
+                        PolicySectionSmi smi = new()
+                        {
+                            PolicySection_id = psSection.Id,
+                            code = sm.code,
+                            description = sm.description,
+                            premium = sm.premium,
+                            premiumRate = sm.premiumRate,
+                            sumInsured = sm.sumInsured,
+
+                        };
+                        _context.PolicySectionSmis.Add(smi);
+                        await _context.SaveChangesAsync();  
+                    }
+                }
+
+
+            }
+
+        }
+
+        
     }
 }

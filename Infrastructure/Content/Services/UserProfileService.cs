@@ -25,7 +25,7 @@ namespace Infrastructure.Content.Services
             _userManager = userManager;
         }
 
-        public async Task<UserProfileDto> Add(UserProfileDto u)
+        public async Task<UserProfileDto> UpdateUser(UserProfileDto u)
         {
            var user = await _userManager.FindByIdAsync(u.UserId);
             AppUser au = new()
@@ -33,7 +33,6 @@ namespace Infrastructure.Content.Services
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email,
-               
                 BusinessLocation = u.BusinessLocation,
                 BVN = u.BVN,
                 City = u.City,
@@ -147,6 +146,17 @@ namespace Infrastructure.Content.Services
             _context.UserProfiles.Update(userProfile);
             await _context.SaveChangesAsync();
             return model;
+        }
+
+        public async Task<Boolean> Update_UserProfilePix(string profilePix, string id)
+        {
+           AppUser uprofile = await _userManager.Users.FirstOrDefaultAsync();
+            if (uprofile != null)
+            {
+                uprofile.ProfilePix = profilePix;
+            }
+            IdentityResult i = await _userManager.UpdateAsync(uprofile);
+            return i.Succeeded;
         }
 
         public async Task<bool> UserHasBVN(string userid)

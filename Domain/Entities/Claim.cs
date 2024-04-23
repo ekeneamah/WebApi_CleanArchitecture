@@ -21,13 +21,15 @@ namespace Domain.Models
         [Required]
         public required string PolicyNo { get; set; }
         
-        public DateTime LossDate { get; set; }
-        public DateTime NotifyDate { get; set; }
-        [Required]
-        public required string ClaimForm { get; set; }
+        public string LossDate { get; set; }
+        public string NotifyDate { get; set; }
+       
         [Required]
         public required string Reference { get; set; }
         [Required]
-        public required int InsuranceCompanyId { get; set; }
+        public  int? InsuranceCompanyId { get; set; }
+        public string NotificationNo { get; set; } = string.Empty;
+        public string ClaimNo { get; set; } = string.Empty;
+        public string Status { get; set; } = string.Empty;
     }
 }
