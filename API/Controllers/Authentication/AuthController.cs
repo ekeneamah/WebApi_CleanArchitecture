@@ -53,7 +53,7 @@ namespace API.Controllers.Authentication
                 return BadRequest(result.Message);
 
             //store the refresh token in a cookie
-            SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
+            SetRefreshTokenInCookies(result.RefreshToken??"invalid", result.RefreshTokenExpiration);
 
             return Ok(result);
         }
@@ -135,8 +135,8 @@ namespace API.Controllers.Authentication
             var result = await _authService.RevokeTokenAsync(refreshToken);
 
             //check if there is a problem with "result"
-            //if (!result)
-            //    return BadRequest("Token is Invalid");
+            if (!result)
+               return BadRequest("Token is Invalid");
 
             return Ok("Done Logout");
         }
@@ -148,20 +148,36 @@ namespace API.Controllers.Authentication
         [Authorize]
         public async Task<IActionResult> ConfirmOTPAsync(OTPDto otp)
         {
-           
-            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t=>t.Type=="UserId").Value);
-            if (user == null)
-                return BadRequest("Invalid User");
+            try
+            {
+                // Retrieve user from UserManager using the UserId claim
+                var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId")?.Value);
+                if (user == null)
+                    return BadRequest("Invalid User");
 
-            VerifyOTPDto model= new();
-            model.UserId = user.Id;
-            model.OTP = otp.OTP;
-            model.Token =  HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last();
-            model.Email = user.Email;
-           
+                // Prepare the model for OTP confirmation
+                VerifyOTPDto model = new()
+                {
+                    UserId = user.Id,
+                    OTP = otp.OTP,
+                    Token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last(),
+                    Email = user.Email
+                };
 
-            return Ok(await _authService.ConfirmOTPAsync(model));
+                // Call the service to confirm OTP
+                var result = await _authService.ConfirmOTPAsync(model);
+                return Ok(result);
+            }
+            catch (Exception ex)
+            {
+                // Log the exception as needed
+                 _logger.LogError(ex, "An error occurred while confirming OTP.");
+
+                // Return a generic error message to the client
+                return StatusCode(StatusCodes.Status500InternalServerError, "An error occurred while processing your request.");
+            }
         }
+
         #endregion
 
         #region Resend OTP

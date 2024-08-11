@@ -88,7 +88,7 @@ namespace API.Controllers.Content
 
             ;
 
-            return Ok(_categoryService.UpdateCategory(cat, id, item.Category_Benefits));
+            return Ok(await _categoryService.UpdateCategory(cat, id, item.Category_Benefits));
         }
         #endregion
 

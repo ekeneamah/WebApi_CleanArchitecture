@@ -158,7 +158,11 @@ namespace Infrastructure.Identity.Services
             #region SendVerificationEmail
 
             // var verificationUri = await SendVerificationEmail(user, orgin);
-            await _emailSender.SendEmailAsync2(user.Email, "Verify Email", $@"
+            await _emailSender.SendEmailAsync(new EmailRequest()
+            {
+                ToEmail = user.Email,
+                FromEmail = "Transcape",
+                Body = $@"
         <html>
         <head>
             <style>
@@ -199,7 +203,8 @@ namespace Infrastructure.Identity.Services
                 </div>
             </div>
         </body>
-        </html>");
+        </html>"
+            });
 
        
 
@@ -485,6 +490,7 @@ namespace Infrastructure.Identity.Services
             await _emailSender.SendEmailAsync(new EmailRequest()
             {
                 ToEmail = user.Email,
+               FromEmail = "Transcape",
                 Body = $@"
         <html>
         <head>

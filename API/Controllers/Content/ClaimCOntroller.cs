@@ -9,7 +9,6 @@
     using Microsoft.AspNetCore.Identity;
     using Microsoft.AspNetCore.Mvc;
     using Newtonsoft.Json;
-    using Org.BouncyCastle.Asn1.Ocsp;
     using System;
     using System.Collections.Generic;
     using System.Net.Http;
@@ -193,30 +192,26 @@
             var username = "Transcape";
             var password = "Transcape@321#";
 
-            using (var client = new HttpClient())
+            using var client = new HttpClient();
+            var authData = new
             {
-                var authData = new
-                {
-                    username,
-                    password
-                };
+                username,
+                password
+            };
 
-                var jsonAuthData = System.Text.Json.JsonSerializer.Serialize(authData);
-                var content = new StringContent(jsonAuthData, Encoding.UTF8, "application/json");
+            var jsonAuthData = System.Text.Json.JsonSerializer.Serialize(authData);
+            var content = new StringContent(jsonAuthData, Encoding.UTF8, "application/json");
 
-                using (var response = await client.PostAsync(authApiUrl, content))
-                {
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var responseData = await response.Content.ReadAsStringAsync();
-                        RespondData tokenObject = System.Text.Json.JsonSerializer.Deserialize<RespondData>(responseData);
-                        return tokenObject.accessToken;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-                }
+            using var response = await client.PostAsync(authApiUrl, content);
+            if (response.IsSuccessStatusCode)
+            {
+                var responseData = await response.Content.ReadAsStringAsync();
+                RespondData tokenObject = System.Text.Json.JsonSerializer.Deserialize<RespondData>(responseData);
+                return tokenObject.AccessToken;
+            }
+            else
+            {
+                return null;
             }
         }
         #endregion
@@ -249,7 +244,7 @@
     #endregion
     public class RespondData
     {
-        public string accessToken { get; set; }
+        public string AccessToken { get; set; }
     }
 }
 

@@ -1,20 +1,12 @@
 ﻿using Application.Dtos.Email;
 using Application.Interfaces;
 using Domain.Settings;
-using MailKit.Net.Smtp;
-using MimeKit;
-using MailKit.Security;
-using Microsoft.AspNetCore.Identity.UI.Services;
+
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
-using MimeKit;
 using System.Net;
-using Application.Dtos.Account;
-using Azure;
-using Microsoft.AspNetCore.WebUtilities;
-using System.Text;
+
 using System.Net.Mail;
-//using System.Net.Mail;
 
 namespace Infrastructure.Services
 {
@@ -30,7 +22,7 @@ namespace Infrastructure.Services
             _logger = logger;
         }
 
-        public async Task SendEmailAsync(EmailRequest request)
+      /*  public async Task SendEmailAsync(EmailRequest request)
         {
             try
             {
@@ -57,10 +49,10 @@ namespace Infrastructure.Services
                 _logger.LogError(ex.Message, ex);
                 throw new Exception(ex.Message);
             }
-        }
+        }*/
 
 
-        public async Task SendEmailAsync2(string toEmail, string subject, string body)
+        public async Task SendEmailAsync(EmailRequest request)
         {
             _smtpClient = new System.Net.Mail.SmtpClient("smtp.office365.com")
             {
@@ -71,7 +63,7 @@ namespace Infrastructure.Services
             };
             try
             {
-                var message = new MailMessage("developers@transparencyscape.onmicrosoft.com", toEmail, subject, body)
+                var message = new MailMessage("developers@transparencyscape.onmicrosoft.com", request.ToEmail, request.Subject, request.Body)
                 {
                     IsBodyHtml = true
                 };

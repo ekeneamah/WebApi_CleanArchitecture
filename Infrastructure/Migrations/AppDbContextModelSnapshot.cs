@@ -4,19 +4,16 @@ using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
-using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
 
-namespace Infrastructure.Migrations.AppDb
+namespace Infrastructure.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20240416075011_Updated claims change to date to string")]
-    partial class Updatedclaimschangetodatetostring
+    partial class AppDbContextModelSnapshot : ModelSnapshot
     {
-        /// <inheritdoc />
-        protected override void BuildTargetModel(ModelBuilder modelBuilder)
+        protected override void BuildModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -24,6 +21,203 @@ namespace Infrastructure.Migrations.AppDb
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("Domain.Entities.CategoryandInsurancecoy", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CategoryId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("CategoryName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InsuranceCoyId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("InsuranceCoyName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("CategoryandInsurancecoys");
+                });
+
+            modelBuilder.Entity("Domain.Entities.PolicyGenReturnedData_cornerstone", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Certificate")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("agentID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("customerID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("customerName")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("documentNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("endDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<DateTime>("entryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("fxCurrency")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("fxRate")
+                        .HasColumnType("int");
+
+                    b.Property<string>("naicomID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("policyNo")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("premium")
+                        .HasColumnType("int");
+
+                    b.Property<string>("productID")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("startDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("sumInsured")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PolicyGenReturnedData_cornerstone");
+                });
+
+            modelBuilder.Entity("Domain.Entities.PolicySection", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PolicyGenReturnedData_cornerstone_Id")
+                        .HasColumnType("int");
+
+                    b.Property<double>("sectionPremium")
+                        .HasColumnType("float");
+
+                    b.Property<double>("sectionSumInsured")
+                        .HasColumnType("float");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("policySections");
+                });
+
+            modelBuilder.Entity("Domain.Entities.PolicySectionField", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PolicySection_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PolicySectionFields");
+                });
+
+            modelBuilder.Entity("Domain.Entities.PolicySectionRate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PolicySection_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("value")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PolicySectionRates");
+                });
+
+            modelBuilder.Entity("Domain.Entities.PolicySectionSmi", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("PolicySection_id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("code")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("description")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("premium")
+                        .HasColumnType("int");
+
+                    b.Property<int>("premiumRate")
+                        .HasColumnType("int");
+
+                    b.Property<int>("sumInsured")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("PolicySectionSmis");
+                });
 
             modelBuilder.Entity("Domain.Models.Category", b =>
                 {
@@ -330,7 +524,8 @@ namespace Infrastructure.Migrations.AppDb
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("ProductId")
+                    b.Property<int?>("ProductId")
+                        .IsRequired()
                         .HasColumnType("int");
 
                     b.Property<DateTime>("PurchasedDate")
@@ -367,6 +562,15 @@ namespace Infrastructure.Migrations.AppDb
                     b.Property<int>("Coy_Id")
                         .HasColumnType("int");
 
+                    b.Property<bool?>("Is_Approved")
+                        .HasColumnType("bit");
+
+                    b.Property<bool?>("Is_Deleted")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Is_Recommended")
+                        .HasColumnType("bit");
+
                     b.Property<string>("Product_Code")
                         .HasColumnType("nvarchar(max)");
 
@@ -386,6 +590,9 @@ namespace Infrastructure.Migrations.AppDb
                         .HasColumnType("float");
 
                     b.Property<int>("Product_Quantity")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("SortingWeight")
                         .HasColumnType("int");
 
                     b.HasKey("Product_Id");

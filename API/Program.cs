@@ -20,19 +20,27 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Prometheus;
+using System.Collections;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
-var connectionString2 = builder.Configuration.GetConnectionString("IdentityConnection");
+//var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+//var connectionString2 = builder.Configuration.GetConnectionString("IdentityConnection");
+builder.Configuration.AddEnvironmentVariables();
+var ev = Environment.GetEnvironmentVariable("SQLCONNSTR_TranscapeMVP");
+var connectionString = ev != null ? ev.Replace("\"", "").Replace("\\\\", "\\") : "environment is null";// builder.Configuration.GetConnectionString("DefaultConnection");
+
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlServer(connectionString));
 
  builder.Services.AddDbContext<AppIdentityContext>(options =>
-    options.UseSqlServer(connectionString2));
+    options.UseSqlServer(connectionString));
+
 
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+builder.Services.UseHttpClientMetrics();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
@@ -136,12 +144,17 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
+    IDictionary environmentVariables = Environment.GetEnvironmentVariables();
+    foreach (DictionaryEntry entry in environmentVariables)
+    {
+        Console.WriteLine($"{entry.Key} = {entry.Value}");
+    }
     var serviceProvider = scope.ServiceProvider;
     try
     {
         var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
         var identityDbContext = serviceProvider.GetRequiredService<AppIdentityContext>();
-     //   dbContext.Database.EnsureDeleted();
+       // dbContext.Database.EnsureDeleted();
         dbContext.Database.Migrate(); // This line adds any pending migrations
         identityDbContext.Database.Migrate();
     }
@@ -183,7 +196,8 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 
 app.UseAuthorization();
-
+app.UseMetricServer();
+app.UseHttpMetrics();
 app.MapControllers();
 
 app.Run();

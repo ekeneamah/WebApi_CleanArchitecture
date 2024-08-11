@@ -3,10 +3,10 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
-namespace Infrastructure.Migrations.AppDb
+namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class redo : Migration
+    public partial class initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -28,6 +28,36 @@ namespace Infrastructure.Migrations.AppDb
                 });
 
             migrationBuilder.CreateTable(
+                name: "CategoryandInsurancecoys",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    CategoryId = table.Column<int>(type: "int", nullable: false),
+                    CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InsuranceCoyId = table.Column<int>(type: "int", nullable: false),
+                    InsuranceCoyName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryandInsurancecoys", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "CategoryBenefit",
+                columns: table => new
+                {
+                    Benefit_Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Benefits_Title = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    Benefit_Category_id = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_CategoryBenefit", x => x.Benefit_Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Claims",
                 columns: table => new
                 {
@@ -36,11 +66,13 @@ namespace Infrastructure.Migrations.AppDb
                     ClaimsId = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
                     UserId = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
                     PolicyNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LossDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    NotifyDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    ClaimForm = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LossDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NotifyDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Reference = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    InsuranceCompanyId = table.Column<int>(type: "int", nullable: false)
+                    InsuranceCompanyId = table.Column<int>(type: "int", nullable: false),
+                    NotificationNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ClaimNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -155,8 +187,8 @@ namespace Infrastructure.Migrations.AppDb
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     ProductId = table.Column<int>(type: "int", nullable: false),
                     ProductCode = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PurchasedDate = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Price = table.Column<double>(type: "float", nullable: false),
+                    PurchasedDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TransactionRef = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TransactionStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Coy_Id = table.Column<int>(type: "int", nullable: false),
@@ -166,6 +198,96 @@ namespace Infrastructure.Migrations.AppDb
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Policies", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PolicyGenReturnedData_cornerstone",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    documentNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    policyNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    naicomID = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    productID = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    agentID = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Certificate = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    entryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    startDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    endDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    sumInsured = table.Column<int>(type: "int", nullable: false),
+                    premium = table.Column<int>(type: "int", nullable: false),
+                    fxRate = table.Column<int>(type: "int", nullable: false),
+                    fxCurrency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    customerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    customerID = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PolicyGenReturnedData_cornerstone", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PolicySectionFields",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PolicySection_id = table.Column<int>(type: "int", nullable: false),
+                    code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    value = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PolicySectionFields", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PolicySectionRates",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PolicySection_id = table.Column<int>(type: "int", nullable: false),
+                    code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    value = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PolicySectionRates", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "policySections",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PolicyGenReturnedData_cornerstone_Id = table.Column<int>(type: "int", nullable: false),
+                    sectionSumInsured = table.Column<double>(type: "float", nullable: false),
+                    sectionPremium = table.Column<double>(type: "float", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_policySections", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "PolicySectionSmis",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    PolicySection_id = table.Column<int>(type: "int", nullable: false),
+                    code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    sumInsured = table.Column<int>(type: "int", nullable: false),
+                    premium = table.Column<int>(type: "int", nullable: false),
+                    premiumRate = table.Column<int>(type: "int", nullable: false),
+                    description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_PolicySectionSmis", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -181,7 +303,11 @@ namespace Infrastructure.Migrations.AppDb
                     Product_Quantity = table.Column<int>(type: "int", nullable: false),
                     Product_Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Product_Group = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Product_Description = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Product_Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Is_Approved = table.Column<bool>(type: "bit", nullable: true),
+                    Is_Deleted = table.Column<bool>(type: "bit", nullable: true),
+                    Is_Recommended = table.Column<bool>(type: "bit", nullable: false),
+                    SortingWeight = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -257,36 +383,17 @@ namespace Infrastructure.Migrations.AppDb
                 {
                     table.PrimaryKey("PK_VehiclePremiums", x => x.Id);
                 });
-
-            migrationBuilder.CreateTable(
-                name: "CategoryBenefit",
-                columns: table => new
-                {
-                    Benefit_Id = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Benefits_Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Benefit_Category_id = table.Column<int>(type: "int", nullable: false),
-                    Category_Id = table.Column<int>(type: "int", nullable: true)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_CategoryBenefit", x => x.Benefit_Id);
-                    table.ForeignKey(
-                        name: "FK_CategoryBenefit_Categories_Category_Id",
-                        column: x => x.Category_Id,
-                        principalTable: "Categories",
-                        principalColumn: "Category_Id");
-                });
-
-            migrationBuilder.CreateIndex(
-                name: "IX_CategoryBenefit_Category_Id",
-                table: "CategoryBenefit",
-                column: "Category_Id");
         }
 
         /// <inheritdoc />
         protected override void Down(MigrationBuilder migrationBuilder)
         {
+            migrationBuilder.DropTable(
+                name: "Categories");
+
+            migrationBuilder.DropTable(
+                name: "CategoryandInsurancecoys");
+
             migrationBuilder.DropTable(
                 name: "CategoryBenefit");
 
@@ -312,6 +419,21 @@ namespace Infrastructure.Migrations.AppDb
                 name: "Policies");
 
             migrationBuilder.DropTable(
+                name: "PolicyGenReturnedData_cornerstone");
+
+            migrationBuilder.DropTable(
+                name: "PolicySectionFields");
+
+            migrationBuilder.DropTable(
+                name: "PolicySectionRates");
+
+            migrationBuilder.DropTable(
+                name: "policySections");
+
+            migrationBuilder.DropTable(
+                name: "PolicySectionSmis");
+
+            migrationBuilder.DropTable(
                 name: "Products");
 
             migrationBuilder.DropTable(
@@ -322,9 +444,6 @@ namespace Infrastructure.Migrations.AppDb
 
             migrationBuilder.DropTable(
                 name: "VehiclePremiums");
-
-            migrationBuilder.DropTable(
-                name: "Categories");
         }
     }
 }
