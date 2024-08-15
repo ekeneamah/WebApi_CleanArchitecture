@@ -43,6 +43,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
 builder.Services.UseHttpClientMetrics();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
@@ -132,7 +134,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     // Other Swagger configurations...
-
+    c.DescribeAllParametersInCamelCase();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme",
