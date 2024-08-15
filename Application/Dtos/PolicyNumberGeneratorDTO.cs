@@ -4,59 +4,59 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 namespace Application.Dtos
 {
-    public class InsuredDTO
+    public class InsuredDto
 {
-    public bool isOrg { get; set; }
-    public string title { get; set; }
-    public string firstName { get; set; }
-    public string lastName { get; set; }
-    public string otherName { get; set; }
-    public string gender { get; set; }
-    public string email { get; set; }
-    public string phoneLine1 { get; set; }
-    public string address { get; set; }
-    public string cityLGA { get; set; }
-    public string stateID { get; set; }
-    public string nationality { get; set; }
-    public DateTime dateOfBirth { get; set; }
-    public string taxIdNumber { get; set; }
-    public string kycType { get; set; }
-    public string kycNumber { get; set; }
-    public DateTime kycIssueDate { get; set; }
-    public DateTime kycExpiryDate { get; set; }
+    public bool IsOrg { get; set; }
+    public string Title { get; set; }
+    public string FirstName { get; set; }
+    public string LastName { get; set; }
+    public string OtherName { get; set; }
+    public string Gender { get; set; }
+    public string Email { get; set; }
+    public string PhoneLine1 { get; set; }
+    public string Address { get; set; }
+    public string CityLga { get; set; }
+    public string StateId { get; set; }
+    public string Nationality { get; set; }
+    public DateTime DateOfBirth { get; set; }
+    public string TaxIdNumber { get; set; }
+    public string KycType { get; set; }
+    public string KycNumber { get; set; }
+    public DateTime KycIssueDate { get; set; }
+    public DateTime KycExpiryDate { get; set; }
 }
 
-public class FieldDTO
+public class FieldDto
 {
        [Key]
-        public int id { get; set; }
-        public int sectionId {  get; set; }
-    public string code { get; set; }
-    public string value { get; set; }
+        public int Id { get; set; }
+        public int SectionId {  get; set; }
+    public string Code { get; set; }
+    public string Value { get; set; }
 }
 
-public class SectionDTO
+public class SectionDto
 {
         [Key]
-        public int id { get; set; }
-        public int productId { get; set; }
-    public string sectionID { get; set; }
-    public int sectionPremium { get; set; }
-    public int sectionSumInsured { get; set; }
-    public List<FieldDTO> fields { get; set; }
+        public int Id { get; set; }
+        public int ProductId { get; set; }
+    public string SectionId { get; set; }
+    public int SectionPremium { get; set; }
+    public int SectionSumInsured { get; set; }
+    public List<FieldDto> Fields { get; set; }
 }
 
-public class GetPolicyNumberDTO
+public class GetPolicyNumberDto
 {
-    public string productID { get; set; }
-    public string agentID { get; set; }
-    public DateTime startDate { get; set; }
-    public DateTime endDate { get; set; }
-    public string paymentReferenceID { get; set; }
-    public string paymentAccountID { get; set; }
-    public InsuredDTO insured { get; set; }
-    public List<SectionDTO> sections { get; set; }
+    public string ProductId { get; set; }
+    public string AgentId { get; set; }
+    public DateTime StartDate { get; set; }
+    public DateTime EndDate { get; set; }
+    public string PaymentReferenceId { get; set; }
+    public string PaymentAccountId { get; set; }
+    public InsuredDto Insured { get; set; }
+    public List<SectionDto> Sections { get; set; }
         public string Token { get; set; }
-        public string policyNo { get; set; }
+        public string PolicyNo { get; set; }
     }
 }

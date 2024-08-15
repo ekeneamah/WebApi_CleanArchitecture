@@ -28,7 +28,7 @@ public class MotorClaimService : IMotorClaimRepository
 
     public async Task<IEnumerable<MotorClaim>> GetAllMotorClaims(string userid)
     {
-        return await _context.MotorClaims.Where(u=>u.User_Id==userid).ToListAsync();
+        return await _context.MotorClaims.Where(u=>u.UserId==userid).ToListAsync();
     }
 
     public async Task UpdateMotorClaim(MotorClaim motorClaim)

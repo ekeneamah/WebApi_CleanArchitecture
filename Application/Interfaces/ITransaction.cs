@@ -12,8 +12,8 @@ namespace Application.Interfaces
         Task<int> SaveResponse(Transaction transactionResponse);
         Task<int> DeleteResponse(Transaction transactionResponse);
         Task<int> UpdateResponse(Transaction transactionResponse);
-        Task<TransactionDTO> GetTransactionByReference(string reference); // New method
-        Task<IEnumerable<TransactionDTO>> GetTransactionsByUserId(string userId); // New method
+        Task<TransactionDto> GetTransactionByReference(string reference); // New method
+        Task<IEnumerable<TransactionDto>> GetTransactionsByUserId(string userId); // New method
     }
 
 }

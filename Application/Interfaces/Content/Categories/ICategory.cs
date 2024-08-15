@@ -10,13 +10,13 @@ namespace Application.Interfaces.Content.Categories
 {
     public interface ICategory
     {
-        public Task<List<CategoryDTO>> GetAll();
+        public Task<List<CreateCategoryDto>> GetAll();
 
 
-        Task<CategoryDTO> GetById(int id);
+        Task<CreateCategoryDto> GetById(int id);
 
 
-        Task<CategoryDTO> AddCategory(CategoryDTO model);
+        Task<CreateCategoryDto> AddCategory(CreateCategoryDto model);
 
 
 

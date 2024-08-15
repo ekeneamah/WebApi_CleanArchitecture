@@ -20,10 +20,10 @@ namespace Infrastructure.Content.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<ClaimDetailDTO>> GetAll()
+        public async Task<List<ClaimDetailDto>> GetAll()
         {
             return await _dbContext.Claims
-                .Select(c => new ClaimDetailDTO
+                .Select(c => new ClaimDetailDto
                 {
                     
                     PolicyNo = c.PolicyNo,
@@ -36,10 +36,10 @@ namespace Infrastructure.Content.Services
                 .ToListAsync();
         }
 
-        public async Task<List<ClaimDetailDTO>> GetAllMyClaims(string userid)
+        public async Task<List<ClaimDetailDto>> GetAllMyClaims(string userid)
         {
             return await _dbContext.Claims.Where(u=>u.UserId==userid)
-                .Select(c => new ClaimDetailDTO
+                .Select(c => new ClaimDetailDto
                 {
 
                     PolicyNo = c.PolicyNo,
@@ -55,7 +55,7 @@ namespace Infrastructure.Content.Services
                 .ToListAsync();
         }
 
-        public async Task<ClaimDetailDTO> GetById(string claimId)
+        public async Task<ClaimDetailDto> GetById(string claimId)
         {
             var claim = await _dbContext.Claims.FindAsync(claimId);
             if (claim == null)
@@ -63,7 +63,7 @@ namespace Infrastructure.Content.Services
                 return null;
             }
 
-            return new ClaimDetailDTO
+            return new ClaimDetailDto
             {
                 PolicyNo = claim.PolicyNo,
                 LossDate = claim.LossDate.ToString(),
@@ -96,8 +96,8 @@ namespace Infrastructure.Content.Services
         }
         #region get claims form by insuarance coy
         public async Task<ClaimsForm> GetClaimsForm(int PolicyId)
-        { int InsuranceCompanyId = await _dbContext.Policies.Where(i => i.Id == PolicyId).Select(c => c.Coy_Id).FirstOrDefaultAsync();
-            return await _dbContext.ClaimsForms.FirstOrDefaultAsync(p => p.Coy_id == InsuranceCompanyId);
+        { int InsuranceCompanyId = await _dbContext.Policies.Where(i => i.Id == PolicyId).Select(c => c.CoyId).FirstOrDefaultAsync();
+            return await _dbContext.ClaimsForms.FirstOrDefaultAsync(p => p.CoyId == InsuranceCompanyId);
         }
 
         #endregion
@@ -143,7 +143,7 @@ namespace Infrastructure.Content.Services
             return model;
         }
 
-        public async Task<NotificationDTO> AddNotification(NotificationDTO model)
+        public async Task<NotificationDto> AddNotification(NotificationDto model)
         {
             var claim = await _dbContext.Claims.FirstOrDefaultAsync(c => c.ClaimsId == model.ClaimsId);
             if (claim == null)

@@ -21,3 +21,10 @@ public enum ErrorCode
     UnauthorizedAccess,
     InternalError
 }
+
+public static class ResponseMessage
+{
+    public const string RetrievedSuccessful = "Retrieved Successfully";
+    public const string Success = "Successful";
+    public const string ErrorOccurred = "An Error occurred";
+}

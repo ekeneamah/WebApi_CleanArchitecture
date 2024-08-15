@@ -7,37 +7,55 @@ namespace Domain.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Category_Id { get; set; }
+        public int CategoryId { get; set; }
 
 
         [Required]
         [MaxLength(100)]
         
-        public string? Category_Name { get; set; }
+        public string? CategoryName { get; set; }
         [Required]
-        public string? Category_Description { get; set; }
+        public string? CategoryDescription { get; set; }
         [MaxLength(450)]
-        public string? Category_VideoLink { get; set; }
-        public string? Category_Image {  get; set; }
-     
+        public string? CategoryVideoLink { get; set; }
+        public string? CategoryImage {  get; set; }
 
-
+        public bool IsActive { get; set; } = true;
+        
 
     }
     public class CategoryBenefit
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Benefit_Id { get; set; }
+        public int BenefitId { get; set; }
 
 
         [Required]
         [MaxLength(250)]
 
-        public string? Benefits_Title { get; set; }
+        public string? BenefitsTitle { get; set; }
 
         [Required]
-        public required int Benefit_Category_id { get; set;}
+        public required int BenefitCategoryId { get; set;}
+    }
+
+    public class ProductBenefit
+    {
+        [Key]
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public int BenefitId { get; set; }
+
+
+        [Required]
+        [MaxLength(250)]
+
+        public string? BenefitsTitle { get; set; }
+
+        [Required]
+        [MaxLength(250)]
+
+        public required string BenefitProductId { get; set;}
     }
 
     }

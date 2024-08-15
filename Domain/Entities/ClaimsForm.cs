@@ -7,8 +7,8 @@ namespace Domain.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Form {  get; set; }
-        public string APIEndPoint { get; set; }
-        public int Coy_id {  get; set; }
-        public string Coy_name { get; set; }
+        public string ApiEndPoint { get; set; }
+        public int CoyId {  get; set; }
+        public string CoyName { get; set; }
     }
 }

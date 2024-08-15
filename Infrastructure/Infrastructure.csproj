@@ -41,4 +41,12 @@
     <ProjectReference Include="..\Domain\Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Migrations\AppIdentity\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20240815221003_Init.cs" />
+  </ItemGroup>
+
 </Project>

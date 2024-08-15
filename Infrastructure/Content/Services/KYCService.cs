@@ -19,7 +19,7 @@ namespace Infrastructure.Content.Services
             _context = context;
         }
 
-        public async Task<KYCDTO> CreateKYC(KYCDTO kycDto)
+        public async Task<Kycdto> CreateKYC(Kycdto kycDto)
         {
             kyc kycEntity = new()
             {
@@ -36,7 +36,7 @@ namespace Infrastructure.Content.Services
             await _context.SaveChangesAsync();
 
             // Return the created KYC DTO with its ID populated
-            return new KYCDTO
+            return new Kycdto
             {
                 Id = kycEntity.Id,
                 IdentityType = kycEntity.IdentityType,
@@ -47,9 +47,9 @@ namespace Infrastructure.Content.Services
             };
         }
 
-        public async Task<List<KYCDTO>> GetKYCByUserId(string userid)
+        public async Task<List<Kycdto>> GetKYCByUserId(string userid)
         {
-            List<KYCDTO> result = new();
+            List<Kycdto> result = new();
             List<kyc> kentity = await _context.KYCs.Where(u => u.UserId == userid).ToListAsync();
 
             if (kentity == null)
@@ -58,7 +58,7 @@ namespace Infrastructure.Content.Services
             }
             foreach (kyc entity in kentity)
             {
-                KYCDTO k = new()
+                Kycdto k = new()
                 {
                     Id = entity.Id,
                     IdentityType = entity.IdentityType,
@@ -76,7 +76,7 @@ namespace Infrastructure.Content.Services
            
         }
 
-        public async Task<KYCDTO> GetKYCById(int id)
+        public async Task<Kycdto> GetKYCById(int id)
         {
             var kycEntity = await _context.KYCs.FindAsync(id);
 
@@ -85,7 +85,7 @@ namespace Infrastructure.Content.Services
                 return null;
             }
 
-            return new KYCDTO
+            return new Kycdto
             {
                 Id = kycEntity.Id,
                 IdentityType = kycEntity.IdentityType,
@@ -97,11 +97,11 @@ namespace Infrastructure.Content.Services
             };
         }
 
-        public async Task<IEnumerable<KYCDTO>> GetAllKYC()
+        public async Task<IEnumerable<Kycdto>> GetAllKYC()
         {
             var kycEntities = await _context.KYCs.ToListAsync();
 
-            return kycEntities.Select(kycEntity => new KYCDTO
+            return kycEntities.Select(kycEntity => new Kycdto
             {
                 Id = kycEntity.Id,
                 IdentityType = kycEntity.IdentityType,
@@ -112,7 +112,7 @@ namespace Infrastructure.Content.Services
             }).ToList();
         }
 
-        public async Task<KYCDTO> UpdateKYC(int id, KYCDTO kycDto)
+        public async Task<Kycdto> UpdateKYC(int id, Kycdto kycDto)
         {
             kyc kycEntity = await _context.KYCs.Where(u=>u.UserId==kycDto.UserId && u.Id==id).FirstOrDefaultAsync();
 
@@ -130,7 +130,7 @@ namespace Infrastructure.Content.Services
 
             await _context.SaveChangesAsync();
 
-            return new KYCDTO
+            return new Kycdto
             {
                 Id = kycEntity.Id,
                 IdentityType = kycEntity.IdentityType,

@@ -5,10 +5,11 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Entities;
 
 namespace Application.Dtos
 {
-    public class PolicyDetailDTO
+    public class PolicyDetailDto
     {
         
 
@@ -25,12 +26,13 @@ namespace Application.Dtos
         public required string TransactionRef { get; set; }
         [Required]
         public required string TransactionStatus { get; set; }
-        public required int Coy_Id { get; set; }
-        public InsuranceCoyDTO? InsuranceCoy { get; set; }
-        public ProductDto? Product { get; set; }
+        public required int CoyId { get; set; }
+        public InsuranceCoyDto? InsuranceCoy { get; set; }
+        public CreateProductDto? Product { get; set; }
         public UserProfileDto? UserProfile { get; set; }
         public int PolicyId { get; set; }
         public string PolicyNo { get; set; }
         public string PaymentRef { get; set; }
+        
     }
 }

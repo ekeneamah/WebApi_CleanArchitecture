@@ -56,7 +56,7 @@ namespace API.Controllers.Content
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
-            motorClaim.User_Id = user.Id;
+            motorClaim.UserId = user.Id;
            // motorClaim.Name = user.FirstName+" "+user.LastName;
 
             HttpResponseMessage claimsRes = await SendClaimAsync(motorClaim);

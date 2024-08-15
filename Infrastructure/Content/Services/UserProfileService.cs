@@ -34,14 +34,14 @@ namespace Infrastructure.Content.Services
                 LastName = u.LastName,
                 Email = u.Email,
                 BusinessLocation = u.BusinessLocation,
-                BVN = u.BVN,
+                BVN = u.Bvn,
                 City = u.City,
                 Country = u.Country,
                 DateofBirth = u.DateofBirth,
                 Gender = u.Gender,
                 Maidenname = u.Maidenname,
                 MaritalStatus = u.MaritalStatus,
-                NIN = u.NIN,
+                NIN = u.Nin,
                 Phone = u.Phone,
                 ResidentialAddress = u.ResidentialAddress,
                 Stateoforigin = u.Stateoforigin,
@@ -87,14 +87,14 @@ namespace Infrastructure.Content.Services
                     Email = u.Email,
                     UserId = u.Id,
                     BusinessLocation = u.BusinessLocation,
-                    BVN = u.BVN,
+                    Bvn = u.BVN,
                     City = u.City,
                     Country = u.Country,
                     DateofBirth = u.DateofBirth,
                     Gender = u.Gender,
                     Maidenname = u.Maidenname,
                     MaritalStatus = u.MaritalStatus,
-                    NIN = u.NIN,
+                    Nin = u.NIN,
                     Phone = u.Phone,
                     ResidentialAddress = u.ResidentialAddress,
                     Stateoforigin = u.Stateoforigin,
@@ -119,14 +119,14 @@ namespace Infrastructure.Content.Services
                 LastName = u.LastName,
                 Email = u.Email,
                 BusinessLocation = u.BusinessLocation,
-                BVN = u.BVN,
+                Bvn = u.BVN,
                 City = u.City,
                 Country = u.Country,
                 DateofBirth = u.DateofBirth,
                 Gender = u.Gender,
                 Maidenname = u.Maidenname,
                 MaritalStatus = u.MaritalStatus,
-                NIN = u.NIN,
+                Nin = u.NIN,
                 Phone = u.Phone,
                 ResidentialAddress = u.ResidentialAddress,
                 Stateoforigin = u.Stateoforigin,
@@ -161,13 +161,13 @@ namespace Infrastructure.Content.Services
 
         public async Task<bool> UserHasBVN(string userid)
         {
-            string bvn = await _context.UserProfiles.Where(u => u.UserId == userid).Select(b => b.BVN).FirstOrDefaultAsync();
+            string bvn = await _context.UserProfiles.Where(u => u.UserId == userid).Select(b => b.Bvn).FirstOrDefaultAsync();
             return !string.IsNullOrEmpty(bvn);
         }
 
         public async Task<bool> UserHasNIN(string userid)
         {
-            string nin = await _context.UserProfiles.Where(u => u.UserId == userid).Select(b => b.NIN).FirstOrDefaultAsync();
+            string nin = await _context.UserProfiles.Where(u => u.UserId == userid).Select(b => b.Nin).FirstOrDefaultAsync();
             return !string.IsNullOrEmpty(nin);
         }
 

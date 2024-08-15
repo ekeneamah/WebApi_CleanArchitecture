@@ -48,15 +48,15 @@ namespace API.Controllers.Content
         #region Create Category Endpoint
         // POST: CategoriesController/Create
         [HttpPost("Add_NewCategory")]
-        public async Task<IActionResult> CreateCategory( CategoryDTO model)
+        public async Task<IActionResult> CreateCategory( CreateCategoryDto model)
         {
-            model.Category_Description = model.Category_Description.Replace("\n", "\\n");
+            model.CategoryDescription = model.CategoryDescription.Replace("\n", "\\n");
             if (ModelState.IsValid is false)
             {
                 return BadRequest("Invalid Inputs");
             }
 
-            if (await _categoryService.CategoryIsExist(model.Category_Name))
+            if (await _categoryService.CategoryIsExist(model.CategoryName))
                 return BadRequest(" this CategoryEntity name is already registred");
 
             
@@ -70,25 +70,25 @@ namespace API.Controllers.Content
         #region Update Category
         // POST: CategoriesController/Edit/5
         [HttpPut("Edit_Category")]
-        public async Task<IActionResult> UpdateCategory(int id, CategoryDTO item)
+        public async Task<IActionResult> UpdateCategory(int id, CreateCategoryDto item)
         {
             
 
 
           Category  cat = new()
             {
-                Category_Description = item.Category_Description,
-                Category_Name = item.Category_Name,
-                Category_Image = item.Category_Image,
-                Category_VideoLink = item.Category_VideoLink,
-                Category_Id = id,
+                CategoryDescription = item.CategoryDescription,
+                CategoryName = item.CategoryName,
+                CategoryImage = item.CategoryImage,
+                CategoryVideoLink = item.CategoryVideoLink,
+                CategoryId = id,
                 
                 
             };
 
             ;
 
-            return Ok(await _categoryService.UpdateCategory(cat, id, item.Category_Benefits));
+            return Ok(await _categoryService.UpdateCategory(cat, id, item.CategoryBenefits));
         }
         #endregion
 
@@ -103,7 +103,7 @@ namespace API.Controllers.Content
 
            Category category = await _categoryService.DeleteCategory(id);
 
-            return Ok($"CategoryEntity : {category.Category_Name} with Id : ({category.Category_Id}) is deleted");
+            return Ok($"CategoryEntity : {category.CategoryName} with Id : ({category.CategoryId}) is deleted");
         }
         #endregion
     }

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace Application.Dtos
 {
-    public class KYCDTO
+    public class Kycdto
     {
         [Required]
         public int Id { get; set; }

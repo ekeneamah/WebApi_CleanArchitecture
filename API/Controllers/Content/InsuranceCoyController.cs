@@ -41,7 +41,7 @@ namespace API.Controllers.Content
         // GET: api/InsuranceCompany/5
         [HttpGet("{id}")]
        // [Authorize(Roles = "SuperAdmin")]
-        public async Task<ActionResult<InsuranceCoyDTO>> GetInsuranceCoy(int id)
+        public async Task<ActionResult<InsuranceCoyDto>> GetInsuranceCoy(int id)
         {
             var brand = await _insuranceCoyService.GetById(id);
 
@@ -59,11 +59,11 @@ namespace API.Controllers.Content
 
         // POST: api/InsuranceCompany
         [HttpPost]
-        public async Task<ActionResult<InsuranceCoy>> PostInsuranceCoy([FromForm] InsuranceCoyDTO insuranceCoy, IFormFile logoImageFile, IFormFile displayImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
+        public async Task<ActionResult<InsuranceCoy>> PostInsuranceCoy([FromForm] InsuranceCoyDto insuranceCoy, IFormFile logoImageFile, IFormFile displayImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
-            if (await _insuranceCoyService.CoyIsExist(insuranceCoy.Coy_Name))
+            if (await _insuranceCoyService.CoyIsExist(insuranceCoy.CoyName))
             {
-                return BadRequest($"InsuranceCompany name: {insuranceCoy.Coy_Name} is already registered");
+                return BadRequest($"InsuranceCompany name: {insuranceCoy.CoyName} is already registered");
             }
             // Save logo image file to wwwroot/Images folder
             string wwwrootPath = webHostEnvironment.WebRootPath;
@@ -77,7 +77,7 @@ namespace API.Controllers.Content
             }
 
             // Set logo image URL
-            insuranceCoy.Coy_Logo = $"~/images/{logoImageName}";
+            insuranceCoy.CoyLogo = $"~/images/{logoImageName}";
 
             // Save display image file to wwwroot/Images folder
             string displayImageName = $"{Guid.NewGuid()}_display_{displayImageFile.FileName}";
@@ -89,7 +89,7 @@ namespace API.Controllers.Content
             }
 
             // Set display image URL
-            insuranceCoy.Coy_Image = $"~/images/{displayImageName}";
+            insuranceCoy.CoyImage = $"~/images/{displayImageName}";
 
            
             return Ok( await _insuranceCoyService.Add_Coy(insuranceCoy));
@@ -105,13 +105,13 @@ namespace API.Controllers.Content
             var brand = await _insuranceCoyService.GetById(id);
 
             if (brand == null)
-                return NotFound($"insuranceCoy: {model.Coy_Name} was not found");
+                return NotFound($"insuranceCoy: {model.CoyName} was not found");
 
-            if (await _insuranceCoyService.CoyIsExist(model.Coy_Name))
+            if (await _insuranceCoyService.CoyIsExist(model.CoyName))
                 return BadRequest(" this InsuranceCompany name is already registred");
 
 
-            brand.Coy_Name = model.Coy_Name;
+            brand.CoyName = model.CoyName;
             await _insuranceCoyService.Update_Coy(brand);
 
             return Ok(brand);
@@ -126,10 +126,10 @@ namespace API.Controllers.Content
             {
                 return NotFound();
             }
-            if (!string.IsNullOrEmpty(insuranceCoy.Coy_Logo))
+            if (!string.IsNullOrEmpty(insuranceCoy.CoyLogo))
             {
                 string wwwrootPathold = webHostEnvironment.WebRootPath;
-                string logoImagePathold = Path.Combine(wwwrootPathold, insuranceCoy.Coy_Logo.TrimStart('~', '/'));
+                string logoImagePathold = Path.Combine(wwwrootPathold, insuranceCoy.CoyLogo.TrimStart('~', '/'));
                 if (System.IO.File.Exists(logoImagePathold))
                 {
                     System.IO.File.Delete(logoImagePathold);
@@ -148,7 +148,7 @@ namespace API.Controllers.Content
             }
 
             // Set logo image URL
-            insuranceCoy.Coy_Logo = $"~/images/{logoImageName}";
+            insuranceCoy.CoyLogo = $"~/images/{logoImageName}";
 
             // Update InsuranceCoy in the database with the new logo image URL
             await _insuranceCoyService.Update_Coy(insuranceCoy);
@@ -166,12 +166,12 @@ namespace API.Controllers.Content
             var brand = await _insuranceCoyService.GetById(id);
             if (brand == null)
             {
-                return NotFound($"insuranceCoy:{brand.Coy_Name}  has not found");
+                return NotFound($"insuranceCoy:{brand.CoyName}  has not found");
             }
 
             await _insuranceCoyService.Delete_Coy(brand);
 
-            return Ok($"InsuranceCompany : {brand.Coy_Name} with Id : ({brand.Coy_id}) is deleted");
+            return Ok($"InsuranceCompany : {brand.CoyName} with Id : ({brand.CoyId}) is deleted");
         }
         #endregion
     }

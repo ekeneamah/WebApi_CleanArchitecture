@@ -1,22 +1,43 @@
-﻿using System;
+﻿using Domain.Entities;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Entities
+namespace Application.Dtos
 {
-    public class PolicyGenReturnedDataCornerstone
+    public class CreateProductDto
     {
-        [Key]
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
+        public string? ProductName { get; set; }
+
+        public int InsuranceCoyId { get; set; }
+        public int? CategoryId { get; set; }
+
+        public double ProductPrice { get; set; }
+
+        public int ProductQuantity { get; set; }
+
+
+        public string ProductCode { get; set; }
+        public string ProductDescription { get; set; }
+        public string ProductGroup { get; set; }
+        public int ProductId { get; set; }
+        public InsuranceCoy? InsuranceCoy { get; set; }
+        public Category? ProductCategory { get; set; }
+        public int CoyId { get; set; }
+        public List<ProductBenefit?> Benefit { get; set; } = new List<ProductBenefit?>();
+
+    }
+
+    public class PolicyGenReturnedDataCornerstoneDto
+    {
+        public static int? ProductId { get; set; }
         public string DocumentNo { get; set; }
         public string PolicyNo { get; set; }
         public string NaicomId { get; set; }
-        public string ProductId { get; set; }
+        public string Product_Id { get; set; }
         public string AgentId { get; set; }
         public string Certificate { get; set; }
         public DateTime EntryDate { get; set; }
@@ -28,42 +49,37 @@ namespace Domain.Entities
         public string FxCurrency { get; set; }
         public string CustomerName { get; set; }
         public string CustomerId { get; set; }
-        
+        public Section[] Sections { get; set; }
     }
 
-    public class PolicySection
+    public class Section
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public int PolicyGenReturnedDataCornerstoneId { get; set; }
+        
         public double SectionSumInsured { get; set; }
         public double SectionPremium { get; set; }
+        public Field[] Fields { get; set; }
+        public Rate[] Rates { get; set; }
+        public Smi[] SmIs { get; set; }
+    }
+
+    public class Field
+    {
        
-    }
-
-    public class PolicySectionField
-    {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public required int PolicySectionId { get; set; }
         public string Code { get; set; }
         public string Value { get; set; }
     }
 
-    public class PolicySectionRate
+    public class Rate
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public required int PolicySectionId { get; set; }
+        
         public string Code { get; set; }
         public string Value { get; set; }
     }
 
-    public class PolicySectionSmi
+    public class Smi
     {
-        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Id { get; set; }
-        public required int PolicySectionId { get; set; }
+      
+        
         public string Code { get; set; }
         public int SumInsured { get; set; }
         public int Premium { get; set; }

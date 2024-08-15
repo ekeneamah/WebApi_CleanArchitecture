@@ -49,7 +49,7 @@ namespace API.Controllers.Authentication
             var orgin = Request.Headers["origin"];
             var result = await _authService.SignUpAsync(model, orgin);
 
-            if (!result.ISAuthenticated)
+            if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
 
             //store the refresh token in a cookie
@@ -70,7 +70,7 @@ namespace API.Controllers.Authentication
 
             var result = await _authService.LoginAsync(model);
 
-            if (!result.ISAuthenticated)
+            if (!result.IsAuthenticated)
                 return BadRequest(result.Message);
 
             //check if the user has a refresh token or not , to store it in a cookie
@@ -113,7 +113,7 @@ namespace API.Controllers.Authentication
 
             var result = await _authService.RefreshTokenCheckAsync(refreshToken);
 
-            if (!result.ISAuthenticated)
+            if (!result.IsAuthenticated)
                 return BadRequest(result);
 
             return Ok(result);
@@ -146,7 +146,7 @@ namespace API.Controllers.Authentication
         #region ConfirmOTP
         [HttpPost("confirm-otp")]
         [Authorize]
-        public async Task<IActionResult> ConfirmOTPAsync(OTPDto otp)
+        public async Task<IActionResult> ConfirmOTPAsync(OtpDto otp)
         {
             try
             {
@@ -156,10 +156,10 @@ namespace API.Controllers.Authentication
                     return BadRequest("Invalid User");
 
                 // Prepare the model for OTP confirmation
-                VerifyOTPDto model = new()
+                VerifyOtpDto model = new()
                 {
                     UserId = user.Id,
-                    OTP = otp.OTP,
+                    Otp = otp.Otp,
                     Token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last(),
                     Email = user.Email
                 };
@@ -190,7 +190,7 @@ namespace API.Controllers.Authentication
             if (user == null)
                 return BadRequest("Invalid User");
 
-            VerifyOTPDto model = new()
+            VerifyOtpDto model = new()
             {
                 UserId = user.Id,
                 Token = HttpContext.Request.Headers["Authorization"].FirstOrDefault()?.Split(" ").Last(),

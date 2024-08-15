@@ -37,14 +37,14 @@
             }
 
             [HttpGet]
-            public async Task<ActionResult<List<ClaimDetailDTO>>> GetAllClaims()
+            public async Task<ActionResult<List<ClaimDetailDto>>> GetAllClaims()
             {
                 var claims = await _claimService.GetAll();
                 return Ok(claims);
             }
         #region Get All my claims
         [HttpGet("GetAllMyClaims")]
-        public async Task<ActionResult<List<ClaimDetailDTO>>> GetAllMyClaims()
+        public async Task<ActionResult<List<ClaimDetailDto>>> GetAllMyClaims()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -56,7 +56,7 @@
         #endregion
         #region get claim by id
         [HttpGet("{claimId}")]
-            public async Task<ActionResult<ClaimDetailDTO>> GetClaimById(string claimId)
+            public async Task<ActionResult<ClaimDetailDto>> GetClaimById(string claimId)
             {
                 var claim = await _claimService.GetById(claimId);
                 if (claim == null)
@@ -109,7 +109,7 @@
                     claimsDto.UserId = user.Id;
                     ClaimsDto c = await _claimService.AddClaims(claimsDto);
                     var r = await response.Content.ReadAsStringAsync();
-                    NotificationDTO tokenObject = System.Text.Json.JsonSerializer.Deserialize<NotificationDTO>(r);
+                    NotificationDto tokenObject = System.Text.Json.JsonSerializer.Deserialize<NotificationDto>(r);
                     tokenObject.ClaimsId = c.ClaimId;
                     var addedClaim = await _claimService.AddNotification(tokenObject);
                     return Ok("Claim submitted successfully "+ addedClaim);
@@ -167,7 +167,7 @@
                 var content = await response.Content.ReadAsStringAsync();
 
                 // Deserialize the JSON response into a NotificationDTO object
-                var notificationDTO = JsonConvert.DeserializeObject<NotificationDTO>(content);
+                var notificationDTO = JsonConvert.DeserializeObject<NotificationDto>(content);
                var result = await _claimService.AddNotification(notificationDTO);
 
                 // Return the NotificationDTO object

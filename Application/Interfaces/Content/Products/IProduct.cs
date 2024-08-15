@@ -17,7 +17,7 @@ namespace Application.Interfaces.Content.Products
         Task<Product> GetById(int id);
         Task<ProductDtoDetails> GetDetailsById(int id);
         Task<ProductDtoDetails> GetByCode(string code);
-        Task<ProductDto> GetProductByCode(string code);
+        Task<CreateProductDto> GetProductByCode(string code);
 
         Task<Product> Add(Product model);
 

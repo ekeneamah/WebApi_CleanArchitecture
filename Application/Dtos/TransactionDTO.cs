@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Dtos
 {
-    public class TransactionDTO
+    public class TransactionDto
     {
         
 
@@ -25,7 +25,7 @@ namespace Application.Dtos
         public required string TransactionRef { get; set; }
         [Required]
         public required string TransactionStatus { get; set; }
-        public required int Coy_Id { get; set; }
+        public required int CoyId { get; set; }
        
         public int PolicyId { get; set; }
         public string PolicyNo { get; set; }

@@ -123,10 +123,10 @@ namespace API.Controllers.Content
         // POST: api/Products
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<int>> PostProduct( ProductDto model)
+        public async Task<ActionResult<int>> PostProduct( CreateProductDto model)
         {
 
-            var isExist = await _productServcie.ProductIsExist(model.Product_Code);
+            var isExist = await _productServcie.ProductIsExist(model.ProductCode);
 
             if (isExist is true)
             {
@@ -137,14 +137,14 @@ namespace API.Controllers.Content
             {
                 var product = new Product
                 {
-                    Product_Name = model.Product_Name,
-                    Coy_Id = model.InsuranceCoy_id,
-                    Category_Id = model.Category_Id,
-                    Product_Price = model.Product_Price,
-                    Product_Quantity = model.Product_Quantity,
-                    Product_Code = model.Product_Code,
-                    Product_Description = model.Product_Description,
-                    Product_Group = model.Product_Group,
+                    ProductName = model.ProductName,
+                    CoyId = model.InsuranceCoyId,
+                    CategoryId = model.CategoryId,
+                    ProductPrice = model.ProductPrice,
+                    ProductQuantity = model.ProductQuantity,
+                    ProductCode = model.ProductCode,
+                    ProductDescription = model.ProductDescription,
+                    ProductGroup = model.ProductGroup,
                     
                 };
 
@@ -158,22 +158,22 @@ namespace API.Controllers.Content
         #region Update Product Endpoint
         // PUT: api/Products/5
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateProduct([FromQuery] int id, ProductDto model)
+        public async Task<IActionResult> UpdateProduct([FromQuery] int id, CreateProductDto model)
         {
             var product = await _productServcie.GetById(id);
 
             if (product == null)
             {
-                return NotFound($"brand:{model.Product_Name}  has not found");
+                return NotFound($"brand:{model.ProductName}  has not found");
             }
 
-            product.Product_Name = model.Product_Name;
-            product.Coy_Id = model.InsuranceCoy_id;
-            product.Product_Price = model.Product_Price;
-            product.Product_Quantity = model.Product_Quantity;
-            product.Product_Description = model.Product_Description;
-            product.Category_Id = model.Category_Id;
-            product.Product_Code = model.Product_Code;
+            product.ProductName = model.ProductName;
+            product.CoyId = model.InsuranceCoyId;
+            product.ProductPrice = model.ProductPrice;
+            product.ProductQuantity = model.ProductQuantity;
+            product.ProductDescription = model.ProductDescription;
+            product.CategoryId = model.CategoryId;
+            product.ProductCode = model.ProductCode;
 
 
             _productServcie.Update(product);
@@ -191,7 +191,7 @@ namespace API.Controllers.Content
             var product = await _productServcie.GetById(id);
             if (product is null)
             {
-                return NotFound($"brand:{product.Product_Name} with Id:{product.Product_Id} has not found");
+                return NotFound($"brand:{product.ProductName} with Id:{product.ProductId} has not found");
             }
 
             _productServcie.Delete(product);
@@ -204,11 +204,11 @@ namespace API.Controllers.Content
         [HttpPut("WithDraw")]
         public async Task<IActionResult> WithDrawProduct(WithDrawProducts dto)
         {
-            var exist = _productServcie.GetProductByCode(dto.Product_Code);
+            var exist = _productServcie.GetProductByCode(dto.ProductCode);
 
             if (exist is null)
             {
-                return BadRequest($"No Products found with this Code {dto.Product_Code}");
+                return BadRequest($"No Products found with this Code {dto.ProductCode}");
 
             }
 

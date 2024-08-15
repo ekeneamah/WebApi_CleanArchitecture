@@ -10,10 +10,10 @@ namespace Application.Interfaces.Content.Claim
 {
     public interface IClaim
     {
-        Task<List<ClaimDetailDTO>> GetAll();
-        Task<List<ClaimDetailDTO>> GetAllMyClaims(string userid);
+        Task<List<ClaimDetailDto>> GetAll();
+        Task<List<ClaimDetailDto>> GetAllMyClaims(string userid);
 
-        Task<ClaimDetailDTO> GetById(string ClaimsId);
+        Task<ClaimDetailDto> GetById(string ClaimsId);
 
 
         Task<ClaimsDto> AddClaims(ClaimsDto model);
@@ -25,6 +25,6 @@ namespace Application.Interfaces.Content.Claim
 
 
         Task<ClaimsDto> UpdateClaims(ClaimsDto model);
-        Task<NotificationDTO> AddNotification(NotificationDTO tokenObject);
+        Task<NotificationDto> AddNotification(NotificationDto tokenObject);
     }
 }

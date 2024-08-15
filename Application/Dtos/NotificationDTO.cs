@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Dtos
 {
-    public class NotificationDTO
+    public class NotificationDto
     {
         public string NotificationNo { get; set; }
         public string ClaimNo { get; set; }

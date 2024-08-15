@@ -216,7 +216,7 @@ namespace Infrastructure.Identity.Services
             auth.Email = user.Email;
            // auth.UserId = user.Id;
             auth.Roles = new List<string> { "User" };
-            auth.ISAuthenticated = true;
+            auth.IsAuthenticated = true;
             auth.UserName = user.UserName;
             auth.FirstName = user.FirstName;
             auth.LastName = user.LastName;
@@ -272,7 +272,7 @@ namespace Infrastructure.Identity.Services
             auth.LastName = user.LastName;
             auth.IsEmailConfirmed = user.EmailConfirmed;
             auth.Roles = roles.ToList();
-            auth.ISAuthenticated = true;
+            auth.IsAuthenticated = true;
             auth.UserName = user.UserName;
             auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             auth.TokenExpiresOn = jwtSecurityToken.ValidTo;
@@ -367,7 +367,7 @@ namespace Infrastructure.Identity.Services
 
             auth.Email = user.Email;
             auth.Roles = roles.ToList();
-            auth.ISAuthenticated = true;
+            auth.IsAuthenticated = true;
             auth.UserName = user.UserName;
             auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             auth.TokenExpiresOn = jwtSecurityToken.ValidTo;
@@ -444,7 +444,7 @@ namespace Infrastructure.Identity.Services
         #endregion
 
         #region confirm otp
-        public async Task<string> ConfirmOTPAsync(VerifyOTPDto model)
+        public async Task<string> ConfirmOTPAsync(VerifyOtpDto model)
         {
 
             var user = await _userManager.FindByIdAsync(model.UserId);
@@ -459,7 +459,7 @@ namespace Infrastructure.Identity.Services
             }
 
             // Check if OTP matches
-            if (user.OTP != model.OTP)
+            if (user.OTP != model.Otp)
             {
                 return "Invalid OTP.";
             }
@@ -474,7 +474,7 @@ namespace Infrastructure.Identity.Services
         }
         #endregion confirm otp
         #region resend otp
-        public async Task<string> ResendOTPAsync(VerifyOTPDto model)
+        public async Task<string> ResendOTPAsync(VerifyOtpDto model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
             // code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));

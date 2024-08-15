@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
 using System.Text;
 using System.Text.Json;
-using TransactionDTO = Application.Dtos.TransactionDTO;
+using TransactionDto = Application.Dtos.TransactionDto;
 
 namespace API.Controllers.Content
 {
@@ -30,7 +30,7 @@ namespace API.Controllers.Content
         }
         #region create policy
         [HttpPost]
-        public ActionResult<int> Create(TransactionDTO policyDTO)
+        public ActionResult<int> Create(TransactionDto policyDTO)
         {
             return Ok(_policyService.AddPolicy(policyDTO));
         }
@@ -64,7 +64,7 @@ namespace API.Controllers.Content
         /// <param name="generatePolicyDTO"></param>
         /// <returns></returns>
         [HttpPost("GenPolicyNo")]
-        public async Task<ActionResult<string>> GenPolicyNo(GeneratePolicyDTO generatePolicyDTO)
+        public async Task<ActionResult<string>> GenPolicyNo(GeneratePolicyDto generatePolicyDTO)
         {
             string token = await AuthenticateAndGetToken();
             if (string.IsNullOrEmpty(token))
@@ -82,7 +82,7 @@ namespace API.Controllers.Content
         #endregion
         #region Update policy
         [HttpPut("Update")]
-        public async Task<ActionResult> UpdatePolicies(TransactionDTO policy)
+        public async Task<ActionResult> UpdatePolicies(TransactionDto policy)
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)

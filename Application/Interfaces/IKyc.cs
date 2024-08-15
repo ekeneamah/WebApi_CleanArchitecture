@@ -9,11 +9,11 @@ namespace Application.Interfaces
 {
     public interface IKYC
     {
-        Task<KYCDTO> CreateKYC(KYCDTO kycDto);
-        Task<KYCDTO> GetKYCById(int id);
-        Task<IEnumerable<KYCDTO>> GetAllKYC();
-        Task<KYCDTO> UpdateKYC(int id, KYCDTO kycDto);
+        Task<Kycdto> CreateKYC(Kycdto kycDto);
+        Task<Kycdto> GetKYCById(int id);
+        Task<IEnumerable<Kycdto>> GetAllKYC();
+        Task<Kycdto> UpdateKYC(int id, Kycdto kycDto);
         Task<bool> DeleteKYC(int id);
-        Task<List<KYCDTO>> GetKYCByUserId(string userid);
+        Task<List<Kycdto>> GetKYCByUserId(string userid);
     }
 }

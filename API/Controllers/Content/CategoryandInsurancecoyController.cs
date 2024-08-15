@@ -41,14 +41,14 @@ namespace API.Controllers.Content
 
         // GET: api/CategoryandInsurancecoy/ByCategoryId/5
         [HttpGet("ByCategoryId/{categoryId}")]
-        public Task<List<CategoryandInsurancecoyDTO>> GetByCategoryId(int categoryId)
+        public Task<List<CategoryandInsurancecoyDto>> GetByCategoryId(int categoryId)
         {
             return _service.GetByCategoryId(categoryId);
         }
 
         // GET: api/CategoryandInsurancecoy/ByInsuranceCoyId/5
         [HttpGet("ByInsuranceCoyId/{insuranceCoyId}")]
-        public Task<List<CategoryandInsurancecoyDTO>> GetByInsuranceCoyId(int insuranceCoyId)
+        public Task<List<CategoryandInsurancecoyDto>> GetByInsuranceCoyId(int insuranceCoyId)
         {
             return _service.GetByInsuranceCoyId(insuranceCoyId);
         }

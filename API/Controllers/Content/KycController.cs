@@ -22,7 +22,7 @@ public class KYCController : ControllerBase
 
 
     [HttpPost]
-    public async Task<ActionResult<KYCDTO>> CreateKYC(KYCDTO kycDto)
+    public async Task<ActionResult<Kycdto>> CreateKYC(Kycdto kycDto)
         {
             if (kycDto.IdentityType != "NIN")
             {
@@ -59,7 +59,7 @@ public class KYCController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<KYCDTO>> GetKYCById(int id)
+    public async Task<ActionResult<Kycdto>> GetKYCById(int id)
     {
         var kycDto = await _kycService.GetKYCById(id);
         if (kycDto == null)
@@ -70,7 +70,7 @@ public class KYCController : ControllerBase
     }
 
         [HttpGet("GetKycByUserId")]
-        public async Task<ActionResult<List<KYCDTO>>> GetKYCByUserId()
+        public async Task<ActionResult<List<Kycdto>>> GetKYCByUserId()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -85,14 +85,14 @@ public class KYCController : ControllerBase
         }
 
         [HttpGet]
-    public async Task<ActionResult<IEnumerable<KYCDTO>>> GetAllKYC()
+    public async Task<ActionResult<IEnumerable<Kycdto>>> GetAllKYC()
     {
         var kycDtos = await _kycService.GetAllKYC();
         return Ok(kycDtos);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateKYC(int id, KYCDTO kycDto)
+    public async Task<IActionResult> UpdateKYC(int id, Kycdto kycDto)
     {
         if (id != kycDto.Id)
         {

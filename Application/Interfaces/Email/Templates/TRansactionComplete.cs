@@ -56,7 +56,7 @@ namespace Application.Interfaces.Email.Templates
                     <li>Amount: {transaction?.Amount}</li>
                     <li>Date: {transaction?.DateTime}</li>
                     <li>Stattus: {transaction?.Status}</li>
-                    <li>ProductEntity: {p.Product_Name} </li>
+                    <li>ProductEntity: {p.ProductName} </li>
                    
                 </ul>
                 <p>Thank you for choosing our services!</p>
@@ -115,7 +115,7 @@ namespace Application.Interfaces.Email.Templates
                     <li>Amount: {transaction.Amount}</li>
                     <li>Date: {transaction.DateTime}</li>
                     <li>Stattus: {transaction.Status}</li>
-                    <li>ProductEntity: {p.Product_Name} </li>
+                    <li>ProductEntity: {p.ProductName} </li>
 <li>Payment Ref.: {transaction.PaymentRef} </li>
 
                    

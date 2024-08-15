@@ -20,14 +20,14 @@ namespace Application.Dtos
 
     public class ClaimsErrorDto
     {
-        public int code { get; set; }
-        public string message { get; set; }
-        public List<ValidationError> errors { get; set; }
+        public int Code { get; set; }
+        public string Message { get; set; }
+        public List<ValidationError> Errors { get; set; }
     }
 
     public class ValidationError
     {
-        public string field { get; set; }
-        public string message { get; set; }
+        public string Field { get; set; }
+        public string Message { get; set; }
     }
 }

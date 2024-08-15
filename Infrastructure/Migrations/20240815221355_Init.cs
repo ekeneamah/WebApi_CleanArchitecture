@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class initial : Migration
+    public partial class Init : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -15,16 +15,17 @@ namespace Infrastructure.Migrations
                 name: "Categories",
                 columns: table => new
                 {
-                    Category_Id = table.Column<int>(type: "int", nullable: false)
+                    CategoryId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Category_Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Category_Description = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Category_VideoLink = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
-                    Category_Image = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    CategoryName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CategoryDescription = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CategoryVideoLink = table.Column<string>(type: "nvarchar(450)", maxLength: 450, nullable: true),
+                    CategoryImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Categories", x => x.Category_Id);
+                    table.PrimaryKey("PK_Categories", x => x.CategoryId);
                 });
 
             migrationBuilder.CreateTable(
@@ -44,17 +45,17 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "CategoryBenefit",
+                name: "CategoryBenefits",
                 columns: table => new
                 {
-                    Benefit_Id = table.Column<int>(type: "int", nullable: false)
+                    BenefitId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Benefits_Title = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
-                    Benefit_Category_id = table.Column<int>(type: "int", nullable: false)
+                    BenefitsTitle = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    BenefitCategoryId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CategoryBenefit", x => x.Benefit_Id);
+                    table.PrimaryKey("PK_CategoryBenefits", x => x.BenefitId);
                 });
 
             migrationBuilder.CreateTable(
@@ -86,9 +87,9 @@ namespace Infrastructure.Migrations
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     Form = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    APIEndPoint = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Coy_id = table.Column<int>(type: "int", nullable: false),
-                    Coy_name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    ApiEndPoint = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CoyId = table.Column<int>(type: "int", nullable: false),
+                    CoyName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -99,45 +100,45 @@ namespace Infrastructure.Migrations
                 name: "CoyBenefits",
                 columns: table => new
                 {
-                    Benefit_Id = table.Column<int>(type: "int", nullable: false)
+                    BenefitId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Coy_id = table.Column<int>(type: "int", nullable: false),
-                    Benefits_Title = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
+                    CoyId = table.Column<int>(type: "int", nullable: false),
+                    BenefitsTitle = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_CoyBenefits", x => x.Benefit_Id);
+                    table.PrimaryKey("PK_CoyBenefits", x => x.BenefitId);
                 });
 
             migrationBuilder.CreateTable(
                 name: "InsuranceCompany",
                 columns: table => new
                 {
-                    Coy_Id = table.Column<int>(type: "int", nullable: false)
+                    CoyId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Coy_Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Coy_Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Coy_Status = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
-                    Coy_Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Coy_City = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Coy_Country = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
-                    Coy_Phone = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: true),
-                    Coy_PostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
-                    Coy_State = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
-                    Coy_Street = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
-                    Coy_ZipCode = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: true),
-                    Coy_CityCode = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: true),
-                    Coy_CountryCode = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: true),
-                    Coy_VideoLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Coy_Image = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Coy_Logo = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Coy_AgentId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CoyName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CoyDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CoyStatus = table.Column<string>(type: "nvarchar(5)", maxLength: 5, nullable: true),
+                    CoyEmail = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CoyCity = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    CoyCountry = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: true),
+                    CoyPhone = table.Column<string>(type: "nvarchar(36)", maxLength: 36, nullable: true),
+                    CoyPostalCode = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    CoyState = table.Column<string>(type: "nvarchar(10)", maxLength: 10, nullable: true),
+                    CoyStreet = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: true),
+                    CoyZipCode = table.Column<string>(type: "nvarchar(6)", maxLength: 6, nullable: true),
+                    CoyCityCode = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: true),
+                    CoyCountryCode = table.Column<string>(type: "nvarchar(3)", maxLength: 3, nullable: true),
+                    CoyVideoLink = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CoyImage = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CoyLogo = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    CoyAgentId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     IsOrg = table.Column<bool>(type: "bit", nullable: false),
                     Title = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_InsuranceCompany", x => x.Coy_Id);
+                    table.PrimaryKey("PK_InsuranceCompany", x => x.CoyId);
                 });
 
             migrationBuilder.CreateTable(
@@ -171,7 +172,7 @@ namespace Infrastructure.Migrations
                     AccidentPlace = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     WeatherCondition = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     LossTypeCode = table.Column<int>(type: "int", nullable: false),
-                    User_Id = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -191,7 +192,7 @@ namespace Infrastructure.Migrations
                     Price = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     TransactionRef = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     TransactionStatus = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Coy_Id = table.Column<int>(type: "int", nullable: false),
+                    CoyId = table.Column<int>(type: "int", nullable: false),
                     PolicyNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     PaymentRef = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
@@ -206,21 +207,21 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    documentNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    policyNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    naicomID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    productID = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    agentID = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    DocumentNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PolicyNo = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    NaicomId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    ProductId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AgentId = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Certificate = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    entryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    startDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    endDate = table.Column<DateTime>(type: "datetime2", nullable: false),
-                    sumInsured = table.Column<int>(type: "int", nullable: false),
-                    premium = table.Column<int>(type: "int", nullable: false),
-                    fxRate = table.Column<int>(type: "int", nullable: false),
-                    fxCurrency = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    customerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    customerID = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    EntryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    StartDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    EndDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    SumInsured = table.Column<int>(type: "int", nullable: false),
+                    Premium = table.Column<int>(type: "int", nullable: false),
+                    FxRate = table.Column<int>(type: "int", nullable: false),
+                    FxCurrency = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CustomerId = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -233,9 +234,9 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PolicySection_id = table.Column<int>(type: "int", nullable: false),
-                    code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    value = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PolicySectionId = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -248,9 +249,9 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PolicySection_id = table.Column<int>(type: "int", nullable: false),
-                    code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    value = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PolicySectionId = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Value = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -263,9 +264,9 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PolicyGenReturnedData_cornerstone_Id = table.Column<int>(type: "int", nullable: false),
-                    sectionSumInsured = table.Column<double>(type: "float", nullable: false),
-                    sectionPremium = table.Column<double>(type: "float", nullable: false)
+                    PolicyGenReturnedDataCornerstoneId = table.Column<int>(type: "int", nullable: false),
+                    SectionSumInsured = table.Column<double>(type: "float", nullable: false),
+                    SectionPremium = table.Column<double>(type: "float", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -278,12 +279,12 @@ namespace Infrastructure.Migrations
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    PolicySection_id = table.Column<int>(type: "int", nullable: false),
-                    code = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    sumInsured = table.Column<int>(type: "int", nullable: false),
-                    premium = table.Column<int>(type: "int", nullable: false),
-                    premiumRate = table.Column<int>(type: "int", nullable: false),
-                    description = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    PolicySectionId = table.Column<int>(type: "int", nullable: false),
+                    Code = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    SumInsured = table.Column<int>(type: "int", nullable: false),
+                    Premium = table.Column<int>(type: "int", nullable: false),
+                    PremiumRate = table.Column<int>(type: "int", nullable: false),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -294,24 +295,29 @@ namespace Infrastructure.Migrations
                 name: "Products",
                 columns: table => new
                 {
-                    Product_Id = table.Column<int>(type: "int", nullable: false)
+                    ProductId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Product_Name = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
-                    Coy_Id = table.Column<int>(type: "int", nullable: false),
-                    Category_Id = table.Column<int>(type: "int", nullable: true),
-                    Product_Price = table.Column<double>(type: "float", maxLength: 100, nullable: false),
-                    Product_Quantity = table.Column<int>(type: "int", nullable: false),
-                    Product_Code = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Product_Group = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Product_Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    Is_Approved = table.Column<bool>(type: "bit", nullable: true),
-                    Is_Deleted = table.Column<bool>(type: "bit", nullable: true),
-                    Is_Recommended = table.Column<bool>(type: "bit", nullable: false),
-                    SortingWeight = table.Column<int>(type: "int", nullable: true)
+                    ProductName = table.Column<string>(type: "nvarchar(100)", maxLength: 100, nullable: false),
+                    CoyId = table.Column<int>(type: "int", nullable: false),
+                    CategoryId = table.Column<int>(type: "int", nullable: true),
+                    ProductPrice = table.Column<double>(type: "float", maxLength: 100, nullable: false),
+                    ProductPricePercentatage = table.Column<double>(type: "float", nullable: false),
+                    ProductQuantity = table.Column<int>(type: "int", nullable: false),
+                    ProductCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductGroup = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ProductDescription = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    IsApproved = table.Column<bool>(type: "bit", nullable: true),
+                    IsDeleted = table.Column<bool>(type: "bit", nullable: true),
+                    IsRecommended = table.Column<bool>(type: "bit", nullable: false),
+                    SortingWeight = table.Column<int>(type: "int", nullable: true),
+                    PriceType = table.Column<int>(type: "int", nullable: false),
+                    ThumbNail = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    ImageUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    VideoUrl = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Products", x => x.Product_Id);
+                    table.PrimaryKey("PK_Products", x => x.ProductId);
                 });
 
             migrationBuilder.CreateTable(
@@ -319,7 +325,7 @@ namespace Infrastructure.Migrations
                 columns: table => new
                 {
                     Reference = table.Column<string>(type: "nvarchar(450)", nullable: false),
-                    Authorization_Url = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    AuthorizationUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     AccessCode = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     UserId = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -339,7 +345,7 @@ namespace Infrastructure.Migrations
                 name: "UserProfiles",
                 columns: table => new
                 {
-                    Profile_Id = table.Column<int>(type: "int", nullable: false)
+                    ProfileId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
                     UserId = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
                     DateofBirth = table.Column<string>(type: "nvarchar(50)", maxLength: 50, nullable: false),
@@ -354,18 +360,18 @@ namespace Infrastructure.Migrations
                     ResidentPerminNo = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Maidenname = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Stateoforigin = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    BVN = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Bvn = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     BusinessLocation = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     SignatureUrl = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Gender = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     FirstName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     LastName = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    NIN = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Nin = table.Column<string>(type: "nvarchar(max)", nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UserProfiles", x => x.Profile_Id);
+                    table.PrimaryKey("PK_UserProfiles", x => x.ProfileId);
                 });
 
             migrationBuilder.CreateTable(
@@ -383,6 +389,31 @@ namespace Infrastructure.Migrations
                 {
                     table.PrimaryKey("PK_VehiclePremiums", x => x.Id);
                 });
+
+            migrationBuilder.CreateTable(
+                name: "ProductBenefits",
+                columns: table => new
+                {
+                    BenefitId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    BenefitsTitle = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    BenefitProductId = table.Column<string>(type: "nvarchar(250)", maxLength: 250, nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductBenefits", x => x.BenefitId);
+                    table.ForeignKey(
+                        name: "FK_ProductBenefits_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId");
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductBenefits_ProductId",
+                table: "ProductBenefits",
+                column: "ProductId");
         }
 
         /// <inheritdoc />
@@ -395,7 +426,7 @@ namespace Infrastructure.Migrations
                 name: "CategoryandInsurancecoys");
 
             migrationBuilder.DropTable(
-                name: "CategoryBenefit");
+                name: "CategoryBenefits");
 
             migrationBuilder.DropTable(
                 name: "Claims");
@@ -434,7 +465,7 @@ namespace Infrastructure.Migrations
                 name: "PolicySectionSmis");
 
             migrationBuilder.DropTable(
-                name: "Products");
+                name: "ProductBenefits");
 
             migrationBuilder.DropTable(
                 name: "Transactions");
@@ -444,6 +475,9 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "VehiclePremiums");
+
+            migrationBuilder.DropTable(
+                name: "Products");
         }
     }
 }

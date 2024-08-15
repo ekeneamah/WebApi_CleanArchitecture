@@ -40,15 +40,15 @@ namespace Infrastructure.Content.Services
             return _dbContext.CategoryandInsurancecoys.ToList();
         }
 
-        public async Task<List<CategoryandInsurancecoyDTO>> GetByCategoryId(int categoryId)
+        public async Task<List<CategoryandInsurancecoyDto>> GetByCategoryId(int categoryId)
         {
-            List<CategoryandInsurancecoyDTO> result = new();
+            List<CategoryandInsurancecoyDto> result = new();
 
             List<CategoryandInsurancecoy> ci =  await _dbContext.CategoryandInsurancecoys.Where(x => x.CategoryId == categoryId).ToListAsync();
             foreach (CategoryandInsurancecoy item in ci)
             {
 
-                CategoryandInsurancecoyDTO cd = new()
+                CategoryandInsurancecoyDto cd = new()
                 {
                     CategoryId = item.CategoryId,
                     CategoryName = item.CategoryName,
@@ -61,15 +61,15 @@ namespace Infrastructure.Content.Services
             return result;
         }
 
-        public async Task<List<CategoryandInsurancecoyDTO>> GetByInsuranceCoyId(int insuranceCoyId)
+        public async Task<List<CategoryandInsurancecoyDto>> GetByInsuranceCoyId(int insuranceCoyId)
         {
-            List<CategoryandInsurancecoyDTO> result = new();
+            List<CategoryandInsurancecoyDto> result = new();
 
             List<CategoryandInsurancecoy> ci = await _dbContext.CategoryandInsurancecoys.Where(x => x.InsuranceCoyId == insuranceCoyId).ToListAsync();
             foreach (CategoryandInsurancecoy item in ci)
             {
 
-                CategoryandInsurancecoyDTO cd = new()
+                CategoryandInsurancecoyDto cd = new()
                 {
                     CategoryId = item.CategoryId,
                     CategoryName = item.CategoryName,

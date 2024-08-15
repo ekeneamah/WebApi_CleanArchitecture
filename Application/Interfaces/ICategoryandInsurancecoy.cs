@@ -16,8 +16,8 @@ namespace Application.Interfaces
         // Read operation
         CategoryandInsurancecoy GetById(int id);
         IEnumerable<CategoryandInsurancecoy> GetAll();
-        Task<List<CategoryandInsurancecoyDTO>> GetByCategoryId(int categoryId);
-        Task<List<CategoryandInsurancecoyDTO>> GetByInsuranceCoyId(int insuranceCoyId);
+        Task<List<CategoryandInsurancecoyDto>> GetByCategoryId(int categoryId);
+        Task<List<CategoryandInsurancecoyDto>> GetByInsuranceCoyId(int insuranceCoyId);
 
         // Update operation
         void Update(CategoryandInsurancecoy item);

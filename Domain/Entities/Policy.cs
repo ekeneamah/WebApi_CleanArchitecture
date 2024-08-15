@@ -30,7 +30,7 @@ namespace Domain.Entities
         [Required]
         public string? TransactionStatus { get; set; }
 
-        public int Coy_Id { get; set; }
+        public int CoyId { get; set; }
 
         [Required]
         public string? PolicyNo { get; set; }

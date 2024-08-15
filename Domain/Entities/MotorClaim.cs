@@ -24,6 +24,6 @@ namespace Domain.Entities
         public string WeatherCondition { get; set; }
 
         public int LossTypeCode { get; set; } = 1;
-        public  string? User_Id { get; set; }
+        public  string? UserId { get; set; }
     }
 }

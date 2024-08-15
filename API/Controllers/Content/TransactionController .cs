@@ -82,8 +82,8 @@ namespace API.Controllers.Content
                 // Save relevant data to database
                 var transactionData = new Transaction
                 {
-                    Authorization_Url = responseObj.Data.Authorization_Url,
-                    AccessCode = responseObj.Data.Access_Code,
+                    AuthorizationUrl = responseObj.Data.AuthorizationUrl,
+                    AccessCode = responseObj.Data.AccessCode,
                     Reference = responseObj.Data.Reference,
 					Amount =double.Parse(request.Amount),
 					UserId = user.Id,
@@ -195,7 +195,7 @@ namespace API.Controllers.Content
     {
         public bool Status { get; set; }
         public string Message { get; set; }
-        public TransactionDTO Data { get; set; }
+        public TransactionDto Data { get; set; }
     }
 
    

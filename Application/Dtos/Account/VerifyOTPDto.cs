@@ -6,17 +6,17 @@ using System.Threading.Tasks;
 
 namespace Application.Dtos.Account
 {
-    public class VerifyOTPDto
+    public class VerifyOtpDto
     {
         public string? UserId { get; set; }
 
         public string? Email { get; set; }
-        public string OTP { get; set; }
+        public string Otp { get; set; }
         public string Token { get; set; } = string.Empty;
     }
 
-    public class OTPDto
+    public class OtpDto
     {
-        public string OTP { get; set; }
+        public string Otp { get; set; }
     }
 }

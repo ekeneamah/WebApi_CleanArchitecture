@@ -8,9 +8,9 @@ namespace Application.Dtos
 {
     public class WithDrawProducts
     {
-        public string Product_Code { get; set; }
+        public string ProductCode { get; set; }
 
-        public int Product_Quantity { get; set; }
+        public int ProductQuantity { get; set; }
 
     }
 }

@@ -10,24 +10,24 @@ namespace Application.Interfaces.Content.Policy
 {
     public interface IPolicy
     {
-        Task<List<PolicyDetailDTO>> GetAll();
+        Task<List<PolicyDetailDto>> GetAll();
 
 
-        Task<PolicyDetailDTO> GetById(int id);
-        Task<List<PolicyDetailDTO>> GetAllPolicyByUserId(string userid);
-        Task<List<PolicyDetailDTO>> GetByUserName(string username);
-        Task<string> GeneratePolicyNumber(GeneratePolicyDTO ret );
+        Task<PolicyDetailDto> GetById(int id);
+        Task<List<PolicyDetailDto>> GetAllPolicyByUserId(string userid);
+        Task<List<PolicyDetailDto>> GetByUserName(string username);
+        Task<string> GeneratePolicyNumber(GeneratePolicyDto ret );
 
 
-        Task<int> AddPolicy(Dtos.TransactionDTO model);
-
-
-
-        PolicyDetailDTO UpdatePolicy(Dtos.TransactionDTO model);
+        Task<int> AddPolicy(Dtos.TransactionDto model);
 
 
 
-        Dtos.TransactionDTO DeletePolicy(Dtos.TransactionDTO model);
+        PolicyDetailDto UpdatePolicy(Dtos.TransactionDto model);
+
+
+
+        Dtos.TransactionDto DeletePolicy(Dtos.TransactionDto model);
 
 
 
