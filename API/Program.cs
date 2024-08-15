@@ -25,6 +25,7 @@ using System.Collections;
 using System.Text;
 using System.Text.Json.Serialization;
 using API.Filters;
+using Application.Mapping;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -91,6 +92,8 @@ builder.Services.AddScoped<IAuthResponse, AuthResponseService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IKYC, KYCService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 
 builder.Services.AddAuthentication(options =>
 {
