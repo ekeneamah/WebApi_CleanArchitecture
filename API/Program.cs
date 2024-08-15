@@ -23,6 +23,9 @@ using Microsoft.OpenApi.Models;
 using Prometheus;
 using System.Collections;
 using System.Text;
+using System.Text.Json.Serialization;
+using API.Filters;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -64,6 +67,11 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<AppIdentityContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddHttpClient(); // UpdateUser HttpClient and IHttpClientFactory
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+    options.SuppressInferBindingSourcesForParameters = true;
+});
 
 builder.Services.AddScoped<IInsuranceCoy, InsuranceCoyService>();
 builder.Services.AddScoped<ICategory, CategoryService>();
@@ -110,7 +118,16 @@ builder.Services.AddAuthentication(options =>
 
 // UpdateUser services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(typeof(ValidatorActionFilter));
+}).AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {

@@ -25,7 +25,7 @@ namespace Infrastructure.Identity.Seeds
                 var user = await userManager.FindByEmailAsync(defaultUser1.Email);
                 if (user == null)
                 {
-                    await userManager.CreateAsync(defaultUser1, "123456");
+                    await userManager.CreateAsync(defaultUser1, "123456Ab!");
                     await userManager.AddToRoleAsync(defaultUser1, Roles.SuperAdmin.ToString());
                 }
             }
@@ -50,7 +50,7 @@ namespace Infrastructure.Identity.Seeds
                 var user = await userManager.FindByEmailAsync(defaultUser2.Email);
                 if (user == null)
                 {
-                    await userManager.CreateAsync(defaultUser2, "123456");
+                    await userManager.CreateAsync(defaultUser2, "123456Ab!");
                     await userManager.AddToRoleAsync(defaultUser2, Roles.User.ToString());
                 }
             }
