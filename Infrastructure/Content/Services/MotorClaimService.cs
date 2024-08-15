@@ -1,10 +1,9 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Application.Interfaces;
-using Domain.Models;
+﻿using Application.Interfaces;
+using Domain.Entities;
 using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Content.Services;
 
 public class MotorClaimService : IMotorClaimRepository
 {

@@ -25,6 +25,7 @@ using System.Collections;
 using System.Text;
 using System.Text.Json.Serialization;
 using API.Filters;
+using Application.Interfaces.Email;
 using Application.Mapping;
 using Microsoft.AspNetCore.Mvc;
 

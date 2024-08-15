@@ -1,7 +1,7 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.Content;
 using Application.Interfaces.Content.Brands;
-using Domain.Models;
+using Domain.Entities;
 using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

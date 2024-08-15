@@ -1,6 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.Content.Categories;
-using Domain.Models;
+using Domain.Entities;
 using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
 

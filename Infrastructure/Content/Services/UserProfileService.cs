@@ -1,7 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.Content.UserProfiles;
 using Application.POCO;
-using Domain.Models;
 using Infrastructure.Content.Data;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
@@ -10,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Domain.Entities;
 
 namespace Infrastructure.Content.Services
 {

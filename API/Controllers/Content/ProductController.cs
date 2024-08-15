@@ -2,13 +2,13 @@
 using Application.Dtos;
 using Application.Interfaces.Content.Products;
 using Domain;
-using Domain.Models;
 using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Configuration;
 using System.Drawing.Printing;
+using Domain.Entities;
 
 namespace API.Controllers.Content
 {

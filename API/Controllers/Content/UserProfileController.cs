@@ -1,7 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.Content.Products;
 using Application.Interfaces.Content.UserProfiles;
-using Domain.Models;
 using Infrastructure;
 using Infrastructure.Content.Services;
 using Infrastructure.Identity.Models;

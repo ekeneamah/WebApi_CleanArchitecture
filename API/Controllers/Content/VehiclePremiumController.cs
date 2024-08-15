@@ -1,9 +1,9 @@
 ﻿using Application.Interfaces;
-using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Domain.Entities;
 
 namespace API.Controllers.Content
 {

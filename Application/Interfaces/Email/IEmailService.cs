@@ -1,7 +1,6 @@
-﻿using Application.Dtos.Account;
-using Application.Dtos.Email;
+﻿using Application.Dtos.Email;
 
-namespace Application.Interfaces
+namespace Application.Interfaces.Email
 {
     public interface IEmailService
     {

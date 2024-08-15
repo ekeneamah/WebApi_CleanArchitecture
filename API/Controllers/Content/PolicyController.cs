@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
 using System.Text;
 using System.Text.Json;
+using TransactionDTO = Application.Dtos.TransactionDTO;
 
 namespace API.Controllers.Content
 {

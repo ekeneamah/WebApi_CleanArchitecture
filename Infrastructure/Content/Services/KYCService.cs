@@ -4,7 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Dtos;
 using Application.Interfaces;
-using Domain.Models;
+using Domain.Entities;
 using Infrastructure.Content.Data;
 using Infrastructure.Identity.Services;
 using Microsoft.EntityFrameworkCore;

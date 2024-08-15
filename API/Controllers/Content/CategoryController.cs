@@ -1,6 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.Content.Categories;
-using Domain.Models;
+using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;

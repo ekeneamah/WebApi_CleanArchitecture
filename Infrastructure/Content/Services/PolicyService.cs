@@ -1,7 +1,6 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.Content.Policy;
 using Domain.Entities;
-using Domain.Models;
 using Infrastructure.Content.Data;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;

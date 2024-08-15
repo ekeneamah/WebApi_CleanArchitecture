@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Application.Interfaces.Content.Brands;
 using Domain.Entities;
-using Domain.Models;
 using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
 using System;

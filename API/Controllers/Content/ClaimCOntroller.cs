@@ -3,7 +3,6 @@
     using Application.Dtos;
     using Application.Dtos.Account;
     using Application.Interfaces.Content.Claim;
-    using Domain.Models;
     using Infrastructure.Identity.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;

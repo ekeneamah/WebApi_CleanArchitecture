@@ -1,16 +1,13 @@
-﻿using Application.Interfaces;
-using Domain.Models;
+﻿using System.Net.Http.Headers;
+using System.Text;
+using Application.Interfaces;
+using Domain.Entities;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace API.Controllers.Content
 {
     [ApiController]
     [Route("api/[controller]")]

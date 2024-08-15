@@ -1,9 +1,9 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.Content.Products;
-using Domain.Models;
 using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing.Printing;
+using Domain.Entities;
 
 namespace Infrastructure.Content.Services
 {

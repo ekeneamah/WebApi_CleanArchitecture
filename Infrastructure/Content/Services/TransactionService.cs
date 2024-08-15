@@ -1,7 +1,5 @@
 ﻿using Application.Dtos.Email;
 using Application.Interfaces;
-using Application.Interfaces.Email.Templates;
-using Domain.Models;
 using Infrastructure.Content.Data;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Identity;
@@ -11,6 +9,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Interfaces.Email;
+using Application.Interfaces.Email.Templates;
+using Domain.Entities;
 
 namespace Infrastructure.Content.Services
 {

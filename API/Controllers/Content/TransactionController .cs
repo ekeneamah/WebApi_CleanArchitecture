@@ -1,8 +1,9 @@
-﻿namespace API.Controllers.Content
+﻿using Domain.Entities;
+
+namespace API.Controllers.Content
 {
     using Application.Interfaces;
     using Application.Interfaces.Content.Policy;
-    using Domain.Models;
     using Infrastructure.Content.Services;
 	using Infrastructure.Identity.Models;
 	using Microsoft.AspNetCore.Authorization;

@@ -1,6 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
-using Domain.Models;
 using Domain.Entities;
 
 namespace Infrastructure.Content.Data
