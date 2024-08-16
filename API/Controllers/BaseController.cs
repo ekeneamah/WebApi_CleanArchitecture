@@ -7,16 +7,27 @@ namespace API.Controllers;
 [ApiController]
 public abstract class BaseController : ControllerBase
 {
-    protected IActionResult HandleOperationResult<T>(ApiResult<T> result)
+    
+    protected ActionResult<ApiResult<T>> HandleOperationResult<T>(ApiResult<T> response)
     {
-        if (result.Success)
+        if (response.Success)
         {
-            return Ok(result.Data);
+            return Ok(response);
         }
 
-        var statusCode = ErrorCodeToHttpStatusMapper.MapErrorCodeToHttpStatus(result.ErrorCode);
-        return StatusCode((int)statusCode, result);
+        var statusCode = ErrorCodeToHttpStatusMapper.MapErrorCodeToHttpStatus(response.ErrorCode);
+        return StatusCode((int)statusCode, response);
     }
+    
+    // protected ActionResult HandleOperationResult<T>(ApiResult<T> response)
+    // {
+    //     if (response.Success)
+    //     {
+    //         return Ok(response);
+    //     }
+    //
+    //     return StatusCode((int)response.ErrorCode, response);
+    // }
 }
 
 public static class ErrorCodeToHttpStatusMapper

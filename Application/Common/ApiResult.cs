@@ -10,8 +10,17 @@ public class ApiResult<T>
     
     [JsonIgnore]
     public ErrorCode ErrorCode { get; set; } = ErrorCode.None;
+    
+    public static ApiResult<T> Successful(T result)
+    {
+        var response = new ApiResult<T> { Success = true, Data = result, Message = ResponseMessage.Success };
+
+        return response;
+    }
 
 }
+
+
 
 public enum ErrorCode
 {

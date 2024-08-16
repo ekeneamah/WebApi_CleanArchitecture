@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common;
 
 namespace Infrastructure.Content.Services
 {
@@ -35,12 +36,15 @@ namespace Infrastructure.Content.Services
             return _dbContext.CategoryandInsurancecoys.FirstOrDefault(x => x.Id == id);
         }
 
-        public IEnumerable<CategoryandInsurancecoy> GetAll()
+        public ApiResult<List<CategoryandInsurancecoy>> GetAll()
         {
-            return _dbContext.CategoryandInsurancecoys.ToList();
+            var result =  _dbContext.CategoryandInsurancecoys.ToList();
+            return ApiResult<List<CategoryandInsurancecoy>>.Successful(result);
+
         }
 
-        public async Task<List<CategoryandInsurancecoyDto>> GetByCategoryId(int categoryId)
+
+        public async Task<ApiResult<List<CategoryandInsurancecoyDto>>> GetByCategoryId(int categoryId)
         {
             List<CategoryandInsurancecoyDto> result = new();
 
@@ -58,7 +62,7 @@ namespace Infrastructure.Content.Services
                 };
                 result.Add(cd);
             }
-            return result;
+            return ApiResult<List<CategoryandInsurancecoyDto>>.Successful(result);
         }
 
         public async Task<List<CategoryandInsurancecoyDto>> GetByInsuranceCoyId(int insuranceCoyId)
