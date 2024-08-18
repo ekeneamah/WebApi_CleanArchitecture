@@ -1,4 +1,5 @@
-﻿using Application.Dtos;
+﻿using Application.Common;
+using Application.Dtos;
 using Application.Interfaces.Content.Categories;
 using Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,7 @@ namespace API.Controllers.Content
     [Route("api/[controller]")]
     [ApiController]
    
-    public class CategoryController : ControllerBase
+    public class CategoryController : BaseController
     {
         private readonly ICategory _categoryService;
 
@@ -22,55 +23,49 @@ namespace API.Controllers.Content
         #region Get All Categories Endpoint
         // GET: CategoriesController
         [HttpGet("GET_ALLCategories")]
-        public async Task<IActionResult> GetAllCategories()
+        public async Task<ActionResult<ApiResult<List<CreateCategoryDto>>>> GetAllCategories()
         {
             var categries = await _categoryService.GetAll();
-            if (categries is null)
-                return NotFound("No data here!");
-            return Ok(categries);
+            return HandleOperationResult(categries);
+
         }
         #endregion
 
         #region Get Category Endpoint
         // GET: CategoriesController/Details/5
         [HttpGet("GET_Category")]
-        public async Task<ActionResult> Details(int id)
+        public async Task<ActionResult<ApiResult<CreateCategoryDto>>> Details(int id)
         {
             var category = await _categoryService.GetById(id);
 
-            if (category == null)
-                return NotFound($"No CategoryEntity has found with this {id} ");
+            return HandleOperationResult(category);
 
-            return Ok(category);
         }
         #endregion
 
         #region Create Category Endpoint
         // POST: CategoriesController/Create
         [HttpPost("Add_NewCategory")]
-        public async Task<IActionResult> CreateCategory( CreateCategoryDto model)
+        public async Task<ActionResult<ApiResult<List<CreateCategoryDto>>>> CreateCategory( CreateCategoryDto model)
         {
             model.CategoryDescription = model.CategoryDescription.Replace("\n", "\\n");
-            if (ModelState.IsValid is false)
-            {
-                return BadRequest("Invalid Inputs");
-            }
-
+         
             if (await _categoryService.CategoryIsExist(model.CategoryName))
                 return BadRequest(" this CategoryEntity name is already registred");
 
             
 
-          await  _categoryService.AddCategory(model);
+            await  _categoryService.AddCategory(model);
 
-            return Ok(await _categoryService.GetAll());
+            return HandleOperationResult(await _categoryService.GetAll());
+
         }
         #endregion
 
         #region Update Category
         // POST: CategoriesController/Edit/5
         [HttpPut("Edit_Category")]
-        public async Task<IActionResult> UpdateCategory(int id, CreateCategoryDto item)
+        public async Task<ActionResult<ApiResult<List<CategoryBenefit>>>> UpdateCategory(int id, CreateCategoryDto item)
         {
             
 
@@ -86,24 +81,24 @@ namespace API.Controllers.Content
                 
             };
 
-            ;
+          
 
-            return Ok(await _categoryService.UpdateCategory(cat, id, item.CategoryBenefits));
+            await _categoryService.UpdateCategory(cat, id, item.CategoryBenefits);
+            return HandleOperationResult(ApiResult<List<CategoryBenefit>>.Successful(null));
         }
         #endregion
 
         #region Delete Category
         // POST: CategoriesController/Delete/5
         [HttpDelete("Delete_Category")]
-        public async Task<IActionResult> Delete(int id)
+        public async Task<ActionResult<ApiResult<Category>>> Delete(int id)
         {
            // var category = await _categoryService.GetById(id);
 
+           
+           var category = await _categoryService.DeleteCategory(id);
+            return HandleOperationResult(category);
             
-
-           Category category = await _categoryService.DeleteCategory(id);
-
-            return Ok($"CategoryEntity : {category.CategoryName} with Id : ({category.CategoryId}) is deleted");
         }
         #endregion
     }

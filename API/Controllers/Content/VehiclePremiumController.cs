@@ -3,13 +3,14 @@ using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Common;
 using Domain.Entities;
 
 namespace API.Controllers.Content
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class VehiclePremiumsController : ControllerBase
+    public class VehiclePremiumsController : BaseController
     {
         private readonly IVehiclePremiumRepository _vehiclePremiumRepository;
 
@@ -19,49 +20,28 @@ namespace API.Controllers.Content
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<VehiclePremium>>> GetAllVehiclePremiums()
+        public async Task<ActionResult<ApiResult<List<VehiclePremium>>>> GetAllVehiclePremiums()
         {
-            try
-            {
+           
                 var vehiclePremiums = await _vehiclePremiumRepository.GetAllVehiclePremiumsAsync();
-                return Ok(vehiclePremiums);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+                return HandleOperationResult(vehiclePremiums);
+            
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<VehiclePremium>> GetVehiclePremiumById(int id)
+        public async Task<ActionResult<ApiResult<VehiclePremium>>> GetVehiclePremiumById(int id)
         {
-            try
-            {
                 var vehiclePremium = await _vehiclePremiumRepository.GetVehiclePremiumByIdAsync(id);
-                if (vehiclePremium == null)
-                {
-                    return NotFound();
-                }
-                return Ok(vehiclePremium);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+              
+                return HandleOperationResult(vehiclePremium);
+          
         }
 
         [HttpPost]
-        public async Task<ActionResult<VehiclePremium>> AddVehiclePremium(VehiclePremium vehiclePremium)
+        public async Task<ActionResult<ApiResult<VehiclePremium>>> AddVehiclePremium(VehiclePremium vehiclePremium)
         {
-            try
-            {
-                await _vehiclePremiumRepository.AddVehiclePremiumAsync(vehiclePremium);
-                return CreatedAtAction(nameof(GetVehiclePremiumById), new { id = vehiclePremium.Id }, vehiclePremium);
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, $"Internal server error: {ex.Message}");
-            }
+               return HandleOperationResult(await _vehiclePremiumRepository.GetVehiclePremiumByIdAsync(vehiclePremium.Id));
+          
         }
 
         [HttpPut("{id}")]

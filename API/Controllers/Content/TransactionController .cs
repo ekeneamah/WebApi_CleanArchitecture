@@ -1,4 +1,5 @@
-﻿using Domain.Entities;
+﻿using Application.Common;
+using Domain.Entities;
 
 namespace API.Controllers.Content
 {
@@ -19,7 +20,7 @@ namespace API.Controllers.Content
 	[ApiController]
 	[Route("api/[controller]")]
 	[Authorize]
-	public class TransactionController : ControllerBase
+	public class TransactionController : BaseController
 	{
 	
 	private const string ApiBaseUrl = "https://api.budpay.com/api/v2/";
@@ -156,32 +157,22 @@ namespace API.Controllers.Content
         }
         #endregion
         [HttpGet("{reference}")]
-        public async Task<ActionResult<Transaction>> GetTransactionByReference(string reference)
+        public async Task<ActionResult<ApiResult<TransactionDto>>> GetTransactionByReference(string reference)
         {
             var transaction = await _transactionService.GetTransactionByReference(reference);
 
-            if (transaction == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(transaction);
+            return HandleOperationResult(transaction);
         }
 
         [HttpGet("GetTransactionsByUserId")]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionsByUserId()
+        public async Task<ActionResult<ApiResult<List<TransactionDto>>>> GetTransactionsByUserId()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
             var transactions = await _transactionService.GetTransactionsByUserId(user.Id);
 
-            if (transactions == null || !transactions.Any())
-            {
-                return NotFound();
-            }
-
-            return Ok(transactions);
+            return HandleOperationResult(transactions);
         }
     }
 

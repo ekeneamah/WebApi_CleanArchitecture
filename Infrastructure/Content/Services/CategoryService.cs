@@ -1,4 +1,5 @@
-﻿using Application.Dtos;
+﻿using Application.Common;
+using Application.Dtos;
 using Application.Interfaces.Content.Categories;
 using Domain.Entities;
 using Infrastructure.Content.Data;
@@ -16,7 +17,7 @@ namespace Infrastructure.Content.Services
         }
 
         #region GetAll
-        public async Task<List<CreateCategoryDto>> GetAll()
+        public async Task<ApiResult<List<CreateCategoryDto>>> GetAll()
         {
             List<CreateCategoryDto> result = new List<CreateCategoryDto>();
             List<Category> c =  await _context.Categories
@@ -35,32 +36,37 @@ namespace Infrastructure.Content.Services
                 };
                 result.Add(cd);
             }
-            return result;
+            return ApiResult<List<CreateCategoryDto>>.Successful(result);
+
         }
         #endregion
 
         #region GetById
-        public async Task<CreateCategoryDto> GetById(int id)
+        public async Task<ApiResult<CreateCategoryDto>> GetById(int id)
         {
-            Category item =  await _context.Categories
+            var item =  await _context.Categories
               .FindAsync(id);
-            
-                CreateCategoryDto cd = new()
-                {
-                    CategoryDescription = item.CategoryDescription,
-                    CategoryName = item.CategoryName,
-                    CategoryBenefits = await _context.CategoryBenefits.Where(c => c.BenefitCategoryId == item.CategoryId).ToListAsync(),
-                    CategoryImage = item.CategoryImage,
-                    CategoryVideoLink = item.CategoryVideoLink,
-                    CategoryId = item.CategoryId
-                };
+            if (item is null)
+                return ApiResult<CreateCategoryDto>.NotFound("Category not found");
 
-            return cd;
+            
+            CreateCategoryDto cd = new()
+            {
+                CategoryDescription = item.CategoryDescription,
+                CategoryName = item.CategoryName,
+                CategoryBenefits = await _context.CategoryBenefits.Where(c => c.BenefitCategoryId == item.CategoryId).ToListAsync(),
+                CategoryImage = item.CategoryImage,
+                CategoryVideoLink = item.CategoryVideoLink,
+                CategoryId = item.CategoryId
+            };
+
+            return ApiResult<CreateCategoryDto>.Successful(cd);
+
         }
         #endregion
 
         #region AddCategory
-        public async Task<CreateCategoryDto> AddCategory(CreateCategoryDto item)
+        public async Task<ApiResult<CreateCategoryDto>> AddCategory(CreateCategoryDto item)
         {
 
             Category model = new()
@@ -79,7 +85,8 @@ namespace Infrastructure.Content.Services
                await _context.SaveChangesAsync();
             }
 
-            return item;
+            return ApiResult<CreateCategoryDto>.Successful(item);
+
         }
         #endregion
 
@@ -128,10 +135,10 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region DeleteCategory
-        public async Task<Category> DeleteCategory(int category_id)
+        public async Task<ApiResult<Category>> DeleteCategory(int category_id)
         {
-            CategoryBenefit cb = await _context.CategoryBenefits.Where(b=>b.BenefitCategoryId==category_id).FirstOrDefaultAsync();
-            Category model = await _context.Categories.FindAsync(category_id);
+            var cb = await _context.CategoryBenefits.Where(b=>b.BenefitCategoryId==category_id).FirstOrDefaultAsync();
+            var model = await _context.Categories.FindAsync(category_id);
             if (cb != null)
             {
                 _context.Remove(cb);
@@ -139,7 +146,7 @@ namespace Infrastructure.Content.Services
             }
             _context.Remove(model);
             await _context.SaveChangesAsync();
-            return model;
+            return ApiResult<Category>.Successful(model);
         }
         #endregion
 

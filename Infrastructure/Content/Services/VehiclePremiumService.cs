@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common;
 using Domain.Entities;
 
 namespace Infrastructure.Content.Services
@@ -19,14 +20,18 @@ namespace Infrastructure.Content.Services
             _dbContext = dbContext;
         }
 
-        public async Task<IEnumerable<VehiclePremium>> GetAllVehiclePremiumsAsync()
+        public async Task<ApiResult<List<VehiclePremium>>> GetAllVehiclePremiumsAsync()
         {
-            return await _dbContext.VehiclePremiums.ToListAsync();
+            var model = await _dbContext.VehiclePremiums.ToListAsync();
+            return ApiResult<List<VehiclePremium>>.Successful(model);
+
         }
 
-        public async Task<VehiclePremium> GetVehiclePremiumByIdAsync(int id)
+        public async Task<ApiResult<VehiclePremium>> GetVehiclePremiumByIdAsync(int id)
         {
-            return await _dbContext.VehiclePremiums.FindAsync(id);
+            var model = await _dbContext.VehiclePremiums.FindAsync(id);
+            return ApiResult<VehiclePremium>.Successful(model);
+
         }
 
         public async Task AddVehiclePremiumAsync(VehiclePremium vehiclePremium)

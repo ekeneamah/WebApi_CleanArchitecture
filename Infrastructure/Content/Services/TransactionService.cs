@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common;
 using Application.Interfaces.Email;
 using Application.Interfaces.Email.Templates;
 using Domain.Entities;
@@ -32,13 +33,13 @@ namespace Infrastructure.Content.Services
         public async Task<int> SaveResponse(Transaction transactionResponse)
         {
             _dbContext.Transactions.Add(transactionResponse);
-            return await _dbContext.SaveChangesAsync(); ;
+            return await _dbContext.SaveChangesAsync(); 
         }
 
         public async Task<int> DeleteResponse(Transaction transactionResponse)
         {
             _dbContext.Transactions.Remove(transactionResponse);
-            return await _dbContext.SaveChangesAsync(); ;
+            return await _dbContext.SaveChangesAsync();
         }
 
         public async Task<int> UpdateResponse(Transaction transactionResponse)
@@ -58,9 +59,9 @@ namespace Infrastructure.Content.Services
             return await _dbContext.SaveChangesAsync();
         }
 
-        public async Task<TransactionDto> GetTransactionByReference(string reference)
+        public async Task<ApiResult<TransactionDto>> GetTransactionByReference(string reference)
         {
-            Transaction t =  await _dbContext.Transactions.FirstOrDefaultAsync(t => t.Reference == reference);
+            var t =  await _dbContext.Transactions.FirstOrDefaultAsync(t => t.Reference == reference);
             TransactionDto td = new()
             {
                 Reference = reference,
@@ -75,10 +76,11 @@ namespace Infrastructure.Content.Services
                 Product = _dbContext.Products.FirstOrDefault(i => i.ProductId == t.ProductId)
 
             };
-            return td;
+            return ApiResult<TransactionDto>.Successful(td);
+
         }
 
-        public async Task<IEnumerable<TransactionDto>> GetTransactionsByUserId(string userId)
+        public async Task<ApiResult<List<TransactionDto>>> GetTransactionsByUserId(string userId)
         {
             List<TransactionDto> td = new();
             List<Transaction> transactions = await _dbContext.Transactions.Where(t => t.UserId == userId).ToListAsync();
@@ -100,7 +102,7 @@ namespace Infrastructure.Content.Services
                 };
                 td.Add(tdto);
             }
-            return td;
+            return ApiResult<List<TransactionDto>>.Successful(td);
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using Application.Dtos;
+﻿using Application.Common;
+using Application.Dtos;
 using Application.Interfaces.Content;
 using Application.Interfaces.Content.Brands;
 using Domain.Entities;
@@ -11,7 +12,7 @@ namespace API.Controllers.Content
     [Route("api/[controller]")]
     [ApiController]
     
-    public class InsuranceCoyController : ControllerBase
+    public class InsuranceCoyController : BaseController
     {
         private readonly IInsuranceCoy _insuranceCoyService;
 
@@ -24,14 +25,14 @@ namespace API.Controllers.Content
 
         // GET: api/InsuranceCompany
         [HttpGet]
-        public async Task<ActionResult<List<InsuranceCoy>>> GetAllInsuranceCoy(int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<ApiResult<List<InsuranceCoyDto>>>> GetAllInsuranceCoy(int pageNumber = 1, int pageSize = 10)
         {
             var brands = await _insuranceCoyService.GetAll(pageNumber, pageSize);
 
             if (brands is null)
                 return BadRequest("No Data here !");
 
-            return Ok(brands);
+            return HandleOperationResult(brands);
         }
 
         #endregion Get All Brands Endpoint
@@ -41,16 +42,12 @@ namespace API.Controllers.Content
         // GET: api/InsuranceCompany/5
         [HttpGet("{id}")]
        // [Authorize(Roles = "SuperAdmin")]
-        public async Task<ActionResult<InsuranceCoyDto>> GetInsuranceCoy(int id)
+        public async Task<ActionResult<ApiResult<InsuranceCoyDto>>> GetInsuranceCoy(int id)
         {
             var brand = await _insuranceCoyService.GetById(id);
 
-            if (brand == null)
-            {
-                return NotFound($"No insuranceCoy was found with this {id} ");
-            }
+            return HandleOperationResult(brand);
 
-            return brand;
         }
 
         #endregion Get Brand Endpoint
@@ -59,7 +56,7 @@ namespace API.Controllers.Content
 
         // POST: api/InsuranceCompany
         [HttpPost]
-        public async Task<ActionResult<InsuranceCoy>> PostInsuranceCoy([FromForm] InsuranceCoyDto insuranceCoy, IFormFile logoImageFile, IFormFile displayImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
+        public async Task<ActionResult<ApiResult<InsuranceCoyDto>>> PostInsuranceCoy([FromForm] InsuranceCoyDto insuranceCoy, IFormFile logoImageFile, IFormFile displayImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
             if (await _insuranceCoyService.CoyIsExist(insuranceCoy.CoyName))
             {
@@ -92,7 +89,7 @@ namespace API.Controllers.Content
             insuranceCoy.CoyImage = $"~/images/{displayImageName}";
 
            
-            return Ok( await _insuranceCoyService.Add_Coy(insuranceCoy));
+            return HandleOperationResult( await _insuranceCoyService.Add_Coy(insuranceCoy));
         }
 
         #endregion Create Brand Endpoint
@@ -100,9 +97,9 @@ namespace API.Controllers.Content
         #region Update Category
         // PUT: api/InsuranceCompany/5
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateBrand(int id, InsuranceCoy model)
+        public async Task<ActionResult<ApiResult<InsuranceCoyDto>>> UpdateBrand(int id, InsuranceCoy model)
         {
-            var brand = await _insuranceCoyService.GetById(id);
+            var brand = (await _insuranceCoyService.GetById(id)).Data;
 
             if (brand == null)
                 return NotFound($"insuranceCoy: {model.CoyName} was not found");
@@ -114,14 +111,14 @@ namespace API.Controllers.Content
             brand.CoyName = model.CoyName;
             await _insuranceCoyService.Update_Coy(brand);
 
-            return Ok(brand);
+            return HandleOperationResult(ApiResult<InsuranceCoyDto>.Successful(null));
         }
         #endregion
         #region update only logo
         [HttpPut("{id}/logo")]
         public async Task<IActionResult> UpdateLogoImage(int id, IFormFile logoImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
-            var insuranceCoy = await _insuranceCoyService.GetById(id);
+            var insuranceCoy = (await _insuranceCoyService.GetById(id)).Data;
             if (insuranceCoy == null)
             {
                 return NotFound();
@@ -161,17 +158,16 @@ namespace API.Controllers.Content
         #region Delete Category
         // DELETE: api/InsuranceCompany/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteBrand(int id)
+        public async Task<ActionResult<ApiResult<InsuranceCoy>>> DeleteBrand(int id)
         {
-            var brand = await _insuranceCoyService.GetById(id);
+            var brand = (await _insuranceCoyService.GetById(id)).Data;
             if (brand == null)
             {
                 return NotFound($"insuranceCoy:{brand.CoyName}  has not found");
             }
 
-            await _insuranceCoyService.Delete_Coy(brand);
+            return HandleOperationResult(await _insuranceCoyService.Delete_Coy(brand));
 
-            return Ok($"InsuranceCompany : {brand.CoyName} with Id : ({brand.CoyId}) is deleted");
         }
         #endregion
     }

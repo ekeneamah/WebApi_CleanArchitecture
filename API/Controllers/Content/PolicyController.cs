@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using NuGet.Protocol;
 using System.Text;
 using System.Text.Json;
+using Application.Common;
 using TransactionDto = Application.Dtos.TransactionDto;
 
 namespace API.Controllers.Content
@@ -16,7 +17,7 @@ namespace API.Controllers.Content
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class PolicyController : ControllerBase
+    public class PolicyController : BaseController
     {
         private readonly IPolicy _policyService;
         private readonly UserManager<AppUser> _userManager;
@@ -38,22 +39,22 @@ namespace API.Controllers.Content
 
         #region get my policies
         [HttpGet("GetMyPolicies")]
-        public async Task<ActionResult> GetMyPolicies()
+        public async Task<ActionResult<ApiResult<List<PolicyDetailDto>>>> GetMyPolicies()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
-            return Ok(await _policyService.GetAllPolicyByUserId(user.Id));
+            return HandleOperationResult(await _policyService.GetAllPolicyByUserId(user.Id));
         }
         #endregion
         #region get policy by customer name
         [HttpGet("GetByUserName")]
-        public async Task<ActionResult> GetByUserName()
+        public async Task<ActionResult<ApiResult<List<PolicyDetailDto>>>> GetByUserName()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
-            return Ok(await _policyService.GetByUserName(user.Id));
+            return HandleOperationResult(await _policyService.GetByUserName(user.Id));
         }
         #endregion
         #region get policy number from insurance

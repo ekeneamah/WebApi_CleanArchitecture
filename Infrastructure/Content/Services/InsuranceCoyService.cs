@@ -1,4 +1,5 @@
-﻿using Application.Dtos;
+﻿using Application.Common;
+using Application.Dtos;
 using Application.Interfaces.Content.Brands;
 using Domain.Entities;
 using Infrastructure.Content.Data;
@@ -15,7 +16,7 @@ namespace Infrastructure.Content.Services
             _context = context;
         }
 
-        public async Task<List<InsuranceCoyDto>> GetAll(int pageNumber, int pageSize)
+        public async Task<ApiResult<List<InsuranceCoyDto>>> GetAll(int pageNumber, int pageSize)
         {
             List<InsuranceCoyDto> result = new List<InsuranceCoyDto>();
             List<InsuranceCoy> InsuranceCoy = await _context.InsuranceCompany
@@ -48,14 +49,19 @@ namespace Infrastructure.Content.Services
                     Title = i.Title==null?"":i.Title,
                 };
                 result.Add(insuranceCoyDTO);
-            }
-            return result;
+            } 
+            return ApiResult<List<InsuranceCoyDto>>.Successful(result);
+
         }
 
 
-        public async Task<InsuranceCoyDto> GetById(int id)
+        public async Task<ApiResult<InsuranceCoyDto>> GetById(int id)
         {
-            InsuranceCoy i = await _context.InsuranceCompany.Where(m => m.CoyId == id).FirstOrDefaultAsync();
+            var i = await _context.InsuranceCompany.Where(m => m.CoyId == id).FirstOrDefaultAsync();
+            if (i is null)
+            {
+                return ApiResult<InsuranceCoyDto>.NotFound("Insurance Company not found");
+            }
             InsuranceCoyDto insuranceCoyDTO = new()
             {
                 CoyName = i.CoyName,
@@ -80,11 +86,12 @@ namespace Infrastructure.Content.Services
                 Title = i.Title,
                 CoyZipCode = i.CoyZipCode
             };
-            return insuranceCoyDTO;
+            return ApiResult<InsuranceCoyDto>.Successful(insuranceCoyDTO);
+
         }
 
 
-        public async Task<InsuranceCoyDto> Add_Coy(InsuranceCoyDto model)
+        public async Task<ApiResult<InsuranceCoyDto>> Add_Coy(InsuranceCoyDto model)
         {
             InsuranceCoy i = new()
             {
@@ -120,7 +127,8 @@ namespace Infrastructure.Content.Services
                 _context.CoyBenefits.Add(cb);
                 await _context.SaveChangesAsync();
             }
-            return model;
+            return ApiResult<InsuranceCoyDto>.Successful(model);
+
         }
 
 
@@ -160,7 +168,7 @@ namespace Infrastructure.Content.Services
         }
 
 
-        public async Task<InsuranceCoy> Delete_Coy(InsuranceCoyDto model)
+        public async Task<ApiResult<InsuranceCoy>> Delete_Coy(InsuranceCoyDto model)
         {
             InsuranceCoy coy = new()
             {
@@ -173,7 +181,8 @@ namespace Infrastructure.Content.Services
             };
             _context.InsuranceCompany.Remove(coy);
             await _context.SaveChangesAsync();
-            return coy;
+            return ApiResult<InsuranceCoy>.Successful(coy);
+
         }
 
 

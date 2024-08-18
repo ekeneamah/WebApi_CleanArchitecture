@@ -9,6 +9,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Common;
 using Domain.Entities;
 
 namespace Infrastructure.Content.Services
@@ -25,7 +26,7 @@ namespace Infrastructure.Content.Services
             _userManager = userManager;
         }
 
-        public async Task<UserProfileDto> UpdateUser(UserProfileDto u)
+        public async Task<ApiResult<UserProfileDto>> UpdateUser(UserProfileDto u)
         {
            var user = await _userManager.FindByIdAsync(u.UserId);
             AppUser au = new()
@@ -55,7 +56,7 @@ namespace Infrastructure.Content.Services
                 await _context.SaveChangesAsync();
             } 
            
-            return u;
+            return ApiResult<UserProfileDto>.Successful(u);
         }
 
         public async Task<int> Delete_UserProfile(UserProfileDto m)
@@ -73,7 +74,7 @@ namespace Infrastructure.Content.Services
             }
         }
 
-        public async Task<List<UserProfileDto>> GetAll()
+        public async Task<ApiResult<List<UserProfileDto>>> GetAll()
         {
             List<UserProfileDto> result = new();
             List<AppUser> uprofile =  await _userManager.Users.ToListAsync();
@@ -106,10 +107,10 @@ namespace Infrastructure.Content.Services
                 result.Add(au);
                 
             }
-            return result;
+            return ApiResult<List<UserProfileDto>>.Successful(result);
         }
 
-        public async Task<UserProfileDto> GetProfilebyUserid(string id)
+        public async Task<ApiResult<UserProfileDto>> GetProfilebyUserid(string id)
         {
             
             AppUser u = await _userManager.FindByIdAsync(id);
@@ -135,17 +136,17 @@ namespace Infrastructure.Content.Services
                 SignatureUrl = u.SignatureUrl
             };
 
-            return au;
+            return ApiResult<UserProfileDto>.Successful(au);
         }
 
-        public async Task<UserProfileDto> Update_UserProfile(UserProfileDto model)
+        public async Task<ApiResult<UserProfileDto>> Update_UserProfile(UserProfileDto model)
         {
             _userProfilePoco = new UserProfilePoco();
             UserProfile userProfile = await _context.UserProfiles.Where(u=>u.UserId==model.UserId).SingleOrDefaultAsync();
             userProfile = _userProfilePoco.UserProfilePocoDto(model);
             _context.UserProfiles.Update(userProfile);
             await _context.SaveChangesAsync();
-            return model;
+            return ApiResult<UserProfileDto>.Successful(model);
         }
 
         public async Task<Boolean> Update_UserProfilePix(string profilePix, string id)

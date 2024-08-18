@@ -31,14 +31,11 @@ namespace API.Controllers.Content
 
         // GET: api/CategoryandInsurancecoy/5
         [HttpGet("{id}", Name = "Get")]
-        public IActionResult Get(int id)
+        public ActionResult<ApiResult<CategoryandInsurancecoy>> Get(int id)
         {
             var item = _service.GetById(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            return Ok(item);
+            return HandleOperationResult(item);
+
         }
         
 
@@ -53,9 +50,11 @@ namespace API.Controllers.Content
 
         // GET: api/CategoryandInsurancecoy/ByInsuranceCoyId/5
         [HttpGet("ByInsuranceCoyId/{insuranceCoyId}")]
-        public Task<List<CategoryandInsurancecoyDto>> GetByInsuranceCoyId(int insuranceCoyId)
+        public async Task<ActionResult<ApiResult<List<CategoryandInsurancecoyDto>>>> GetByInsuranceCoyId(int insuranceCoyId)
         {
-            return _service.GetByInsuranceCoyId(insuranceCoyId);
+            var response = await _service.GetByInsuranceCoyId(insuranceCoyId);
+            return HandleOperationResult(response);
+
         }
 
         #endregion

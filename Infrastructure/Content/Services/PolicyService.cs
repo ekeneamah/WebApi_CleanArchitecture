@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common;
 
 namespace Infrastructure.Content.Services
 {
@@ -72,7 +73,7 @@ namespace Infrastructure.Content.Services
             throw new NotImplementedException();
         }
 
-        public async Task<List<PolicyDetailDto>> GetAll()
+        public async Task<ApiResult<List<PolicyDetailDto>>> GetAll()
         {
             List<Policy> p = await _context.Policies
                  .AsNoTracking()
@@ -91,17 +92,18 @@ namespace Infrastructure.Content.Services
                     TransactionRef = x.TransactionRef,
                     TransactionStatus = x.TransactionStatus,
                     UserId = x.UserId,
-                    InsuranceCoy = await _insuranceCoyService.GetById(x.CoyId),
-                    Product = await productService.GetProductByCode(x.ProductCode),
-                    UserProfile = await userProfileService.GetProfilebyUserid(x.UserId)
+                    InsuranceCoy = (await _insuranceCoyService.GetById(x.CoyId)).Data,
+                    Product = (await productService.GetProductByCode(x.ProductCode)).Data,
+                    UserProfile = (await userProfileService.GetProfilebyUserid(x.UserId)).Data
                 };
                 result.Add(pd);
             }
-            return result;
+            return ApiResult<List<PolicyDetailDto>>.Successful(result);
+
 
         }
 
-        public async Task<PolicyDetailDto> GetById(int id)
+        public async Task<ApiResult<PolicyDetailDto>> GetById(int id)
         {
             Policy x = await _context.Policies.FirstOrDefaultAsync(x => x.Id == id);
             PolicyDetailDto pd = new()
@@ -116,15 +118,16 @@ namespace Infrastructure.Content.Services
                 TransactionStatus = x.TransactionStatus,
                 UserId = x.UserId,
                 PaymentRef = x.PaymentRef,
-                InsuranceCoy = await _insuranceCoyService.GetById(x.CoyId),
-                Product = await productService.GetProductByCode(x.ProductCode),
-                UserProfile = await userProfileService.GetProfilebyUserid(x.UserId)
+                InsuranceCoy = (await _insuranceCoyService.GetById(x.CoyId)).Data,
+                Product = (await productService.GetProductByCode(x.ProductCode)).Data,
+                UserProfile = (await userProfileService.GetProfilebyUserid(x.UserId)).Data
             };
-            return pd;
+            return ApiResult<PolicyDetailDto>.Successful(pd);
+
 
         }
 
-        public async Task<List<PolicyDetailDto>> GetAllPolicyByUserId(string userId)
+        public async Task<ApiResult<List<PolicyDetailDto>>> GetAllPolicyByUserId(string userId)
         {
             List<Policy> p = await _context.Policies.Where(u => u.UserId == userId)
                   .ToListAsync();
@@ -147,21 +150,23 @@ namespace Infrastructure.Content.Services
                         TransactionStatus = x.TransactionStatus,
                         UserId = x.UserId,
                         PaymentRef = x.PaymentRef,
-                        InsuranceCoy = await _insuranceCoyService.GetById(x.CoyId),
-                        Product = await productService.GetProductByCode(x.ProductCode),
-                        UserProfile = await userProfileService.GetProfilebyUserid(x.UserId)
+                        InsuranceCoy = (await _insuranceCoyService.GetById(x.CoyId)).Data,
+                        Product = (await productService.GetProductByCode(x.ProductCode)).Data,
+                        UserProfile = (await userProfileService.GetProfilebyUserid(x.UserId)).Data
                     };
                     result.Add(pd);
                 }
-                return result;
+                return ApiResult<List<PolicyDetailDto>>.Successful(result);
+
             }
             else
             {
-              return   new List<PolicyDetailDto>();
+              return ApiResult<List<PolicyDetailDto>>.Successful(null);
+
             }
         }
 
-        public async Task<List<PolicyDetailDto>> GetByUserName(string userid)
+        public async Task<ApiResult<List<PolicyDetailDto>>> GetByUserName(string userid)
         {
             List<PolicyDetailDto> result = new();
             List<Policy> policies = await _context.Policies.Where(u=>u.UserId==userid).ToListAsync();
@@ -179,13 +184,14 @@ namespace Infrastructure.Content.Services
                     PaymentRef = x.PaymentRef,
                     TransactionStatus = x.TransactionStatus,
                     UserId = x.UserId,
-                    InsuranceCoy = await _insuranceCoyService.GetById(x.CoyId),
-                    Product = await productService.GetProductByCode(x.ProductCode),
-                    UserProfile = await userProfileService.GetProfilebyUserid(x.UserId)
+                    InsuranceCoy = (await _insuranceCoyService.GetById(x.CoyId)).Data,
+                    Product = (await productService.GetProductByCode(x.ProductCode)).Data,
+                    UserProfile = (await userProfileService.GetProfilebyUserid(x.UserId)).Data
                 };
                 result.Add(pd);
             }
-            return result;
+            return ApiResult<List<PolicyDetailDto>>.Successful(result);
+
 
         }
 
@@ -201,9 +207,9 @@ namespace Infrastructure.Content.Services
 
         public async Task<string> GeneratePolicyNumber(GeneratePolicyDto generatePolicyDTO)
         {
-            ProductDtoDetails productDetails = await productService.GetDetailsById(generatePolicyDTO.ProductId);
+            var productDetails = (await productService.GetDetailsById(generatePolicyDTO.ProductId)).Data;
             UserProfileDto userProfileDto = await userProfileService.GetProfilebyUserid(generatePolicyDTO.Userid);
-            Kycdto kYCDTO = await _kYCService.GetKYCById(generatePolicyDTO.Kycid);
+            var kYCDTO = (await _kYCService.GetKYCById(generatePolicyDTO.Kycid)).Data;
             InsuredDto insured = new InsuredDto()
             {
                 Address = userProfileDto.ResidentialAddress,

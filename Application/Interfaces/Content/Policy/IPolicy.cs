@@ -5,17 +5,18 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common;
 
 namespace Application.Interfaces.Content.Policy
 {
     public interface IPolicy
     {
-        Task<List<PolicyDetailDto>> GetAll();
+        Task<ApiResult<List<PolicyDetailDto>>> GetAll();
 
 
-        Task<PolicyDetailDto> GetById(int id);
-        Task<List<PolicyDetailDto>> GetAllPolicyByUserId(string userid);
-        Task<List<PolicyDetailDto>> GetByUserName(string username);
+        Task<ApiResult<PolicyDetailDto>> GetById(int id);
+        Task<ApiResult<List<PolicyDetailDto>>> GetAllPolicyByUserId(string userid);
+        Task<ApiResult<List<PolicyDetailDto>>> GetByUserName(string username);
         Task<string> GeneratePolicyNumber(GeneratePolicyDto ret );
 
 

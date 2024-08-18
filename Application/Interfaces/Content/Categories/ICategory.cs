@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common;
 using Application.Dtos;
 using Domain.Entities;
 
@@ -10,13 +11,13 @@ namespace Application.Interfaces.Content.Categories
 {
     public interface ICategory
     {
-        public Task<List<CreateCategoryDto>> GetAll();
+        public Task<ApiResult<List<CreateCategoryDto>>> GetAll();
 
 
-        Task<CreateCategoryDto> GetById(int id);
+        Task<ApiResult<CreateCategoryDto>> GetById(int id);
 
 
-        Task<CreateCategoryDto> AddCategory(CreateCategoryDto model);
+        Task<ApiResult<CreateCategoryDto>> AddCategory(CreateCategoryDto model);
 
 
 
@@ -24,7 +25,7 @@ namespace Application.Interfaces.Content.Categories
 
 
 
-        Task<Category> DeleteCategory(int category_id);
+        Task<ApiResult<Category>> DeleteCategory(int category_id);
 
 
 

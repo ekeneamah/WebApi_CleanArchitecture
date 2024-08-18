@@ -1,4 +1,5 @@
-﻿using Application.Dtos.Account;
+﻿using Application.Common;
+using Application.Dtos.Account;
 using Application.Interfaces.Authentication;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -10,7 +11,7 @@ namespace API.Controllers.Authentication
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class AuthController : ControllerBase
+    public class AuthController : BaseController
     {
         private readonly IAuthResponse _authService;
         private readonly ILogger<AuthController> _logger;
@@ -42,20 +43,19 @@ namespace API.Controllers.Authentication
         #region SignUp Endpoint
 
         [HttpPost("signUp")]
-        public async Task<IActionResult> SignUpAsync(SignUp model)
+        public async Task<ActionResult<ApiResult<AuthResponse>>> SignUpAsync(SignUp model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var orgin = Request.Headers["origin"];
             var result = await _authService.SignUpAsync(model, orgin);
-
-            if (!result.IsAuthenticated)
-                return BadRequest(result.Message);
-
-            //store the refresh token in a cookie
-            SetRefreshTokenInCookies(result.RefreshToken??"invalid", result.RefreshTokenExpiration);
-
-            return Ok(result);
+            if (result.Success)
+            {
+                //store the refresh token in a cookie
+                SetRefreshTokenInCookies(result.Data?.RefreshToken??"invalid", result.Data!.RefreshTokenExpiration);
+            }
+          
+            return HandleOperationResult(result);
         }
 
         #endregion
@@ -63,21 +63,20 @@ namespace API.Controllers.Authentication
         #region Login Endpoint
 
         [HttpPost("login")]
-        public async Task<IActionResult> LoginAsync([FromForm] Login model)
+        public async Task<ActionResult<ApiResult<AuthResponse>>> LoginAsync([FromForm] Login model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
 
             var result = await _authService.LoginAsync(model);
 
-            if (!result.IsAuthenticated)
-                return BadRequest(result.Message);
-
-            //check if the user has a refresh token or not , to store it in a cookie
-            if (!string.IsNullOrEmpty(result.RefreshToken))
-                SetRefreshTokenInCookies(result.RefreshToken, result.RefreshTokenExpiration);
-
-            return Ok(result);
+            if (result.Success && result.Data?.RefreshToken != null)
+            {
+                //check if the user has a refresh token or not , to store it in a cookie
+                SetRefreshTokenInCookies(result.Data.RefreshToken, result.Data.RefreshTokenExpiration);
+            }
+         
+            return HandleOperationResult(result);
         }
 
         #endregion
@@ -89,7 +88,7 @@ namespace API.Controllers.Authentication
 /// <param name="model"></param>
 /// <returns></returns>
         [HttpPost("AddRole")]
-        public async Task<IActionResult> AddRoleAsync(AssignRolesDto model)
+        public async Task<ActionResult<ApiResult<AssignRolesDto>>> AddRoleAsync(AssignRolesDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -97,9 +96,9 @@ namespace API.Controllers.Authentication
             var result = await _authService.AssignRolesAsync(model);
 
             if (!string.IsNullOrEmpty(result))
-                return BadRequest(result);
+                return HandleOperationResult(ApiResult<AssignRolesDto>.Failed(result));
 
-            return Ok(model);
+            return HandleOperationResult(ApiResult<AssignRolesDto>.Successful(model));
         }
 
         #endregion
@@ -107,16 +106,12 @@ namespace API.Controllers.Authentication
         #region RefreshTokenCheck Endpoint
 
         [HttpGet("refreshToken")]
-        public async Task<IActionResult> RefreshTokenCheckAsync()
+        public async Task<ActionResult<ApiResult<AuthResponse>>> RefreshTokenCheckAsync()
         {
             var refreshToken = Request.Cookies["refreshTokenKey"];
 
             var result = await _authService.RefreshTokenCheckAsync(refreshToken);
-
-            if (!result.IsAuthenticated)
-                return BadRequest(result);
-
-            return Ok(result);
+            return HandleOperationResult(result);
         }
 
         #endregion
@@ -124,21 +119,16 @@ namespace API.Controllers.Authentication
         #region RevokeTokenAsync
 
         [HttpPost("revokeToken")]
-        public async Task<IActionResult> RevokeTokenAsync(RevokeToken model)
+        public async Task<ActionResult<ApiResult<bool>>> RevokeTokenAsync(RevokeToken model)
         {
             var refreshToken = model.Token ?? Request.Cookies["refreshTokenKey"];
 
             //check if there is no token
             if (string.IsNullOrEmpty(refreshToken))
-                return BadRequest("Token is required");
+                return HandleOperationResult(ApiResult<bool>.Failed("Invalid Token"));
 
             var result = await _authService.RevokeTokenAsync(refreshToken);
-
-            //check if there is a problem with "result"
-            if (!result)
-               return BadRequest("Token is Invalid");
-
-            return Ok("Done Logout");
+            return HandleOperationResult(result);
         }
 
         #endregion
@@ -146,14 +136,16 @@ namespace API.Controllers.Authentication
         #region ConfirmOTP
         [HttpPost("confirm-otp")]
         [Authorize]
-        public async Task<IActionResult> ConfirmOTPAsync(OtpDto otp)
+        public async Task<ActionResult<ApiResult<string>>> ConfirmOTPAsync(OtpDto otp)
         {
             try
             {
                 // Retrieve user from UserManager using the UserId claim
                 var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId")?.Value);
                 if (user == null)
-                    return BadRequest("Invalid User");
+                    return HandleOperationResult(ApiResult<string>.Failed("Invalid User"));
+
+                    // return BadRequest("Invalid User");
 
                 // Prepare the model for OTP confirmation
                 VerifyOtpDto model = new()
@@ -166,7 +158,7 @@ namespace API.Controllers.Authentication
 
                 // Call the service to confirm OTP
                 var result = await _authService.ConfirmOTPAsync(model);
-                return Ok(result);
+                return HandleOperationResult(result);
             }
             catch (Exception ex)
             {
@@ -204,18 +196,16 @@ namespace API.Controllers.Authentication
 
         #region signout
         [HttpGet("signout")]
-        public async Task<IActionResult> Signout()
+        public async Task<ActionResult<ApiResult<string>>> Signout()
         {
-
-            return Ok(await _authService.Signout());
+            return HandleOperationResult(await _authService.Signout());
         }
         #endregion
         #region signout
         [HttpDelete("DeleteAllUser")]
-        public async Task<IActionResult> DeleteAllUser()
+        public async Task<ActionResult<ApiResult<string>>> DeleteAllUser()
         {
-
-            return Ok(await _authService.DeleteAllUserAsync());
+            return HandleOperationResult(await _authService.DeleteAllUserAsync());
         }
         #endregion
     }

@@ -31,9 +31,14 @@ namespace Infrastructure.Content.Services
         }
 
       
-        public CategoryandInsurancecoy GetById(int id)
+        public ApiResult<CategoryandInsurancecoy> GetById(int id)
         {
-            return _dbContext.CategoryandInsurancecoys.FirstOrDefault(x => x.Id == id);
+            var result = _dbContext.CategoryandInsurancecoys.FirstOrDefault(x => x.Id == id);
+            if (result is null)
+                return ApiResult<CategoryandInsurancecoy>.NotFound();
+                
+            return ApiResult<CategoryandInsurancecoy>.Successful(result);
+
         }
 
         public ApiResult<List<CategoryandInsurancecoy>> GetAll()
@@ -57,7 +62,7 @@ namespace Infrastructure.Content.Services
                     CategoryId = item.CategoryId,
                     CategoryName = item.CategoryName,
                     InsuranceCoyId = item.InsuranceCoyId,
-                    InsuranceCoy = await _insuranceCoyService.GetById(item.InsuranceCoyId),
+                    InsuranceCoy = (await _insuranceCoyService.GetById(item.InsuranceCoyId)).Data,
                     Id = item.Id
                 };
                 result.Add(cd);
@@ -65,7 +70,7 @@ namespace Infrastructure.Content.Services
             return ApiResult<List<CategoryandInsurancecoyDto>>.Successful(result);
         }
 
-        public async Task<List<CategoryandInsurancecoyDto>> GetByInsuranceCoyId(int insuranceCoyId)
+        public async Task<ApiResult<List<CategoryandInsurancecoyDto>>> GetByInsuranceCoyId(int insuranceCoyId)
         {
             List<CategoryandInsurancecoyDto> result = new();
 
@@ -78,12 +83,13 @@ namespace Infrastructure.Content.Services
                     CategoryId = item.CategoryId,
                     CategoryName = item.CategoryName,
                     InsuranceCoyId = item.InsuranceCoyId,
-                    InsuranceCoy = await _insuranceCoyService.GetById(item.InsuranceCoyId),
+                    InsuranceCoy = (await _insuranceCoyService.GetById(item.InsuranceCoyId)).Data,
                     Id = item.Id
                 };
                 result.Add(cd);
             }
-            return result;
+            return ApiResult<List<CategoryandInsurancecoyDto>>.Successful(result);
+
         }
 
         // Update operation
@@ -93,7 +99,7 @@ namespace Infrastructure.Content.Services
             _dbContext.SaveChanges();
         }
 
-        // Delete operation
+        // Delete operation 
         public void Delete(int id)
         {
             var itemToDelete = _dbContext.CategoryandInsurancecoys.FirstOrDefault(x => x.Id == id);

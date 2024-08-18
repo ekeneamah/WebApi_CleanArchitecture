@@ -15,10 +15,10 @@ namespace Application.Interfaces
         void Add(CategoryandInsurancecoy item);
 
         // Read operation
-        CategoryandInsurancecoy GetById(int id);
+        ApiResult<CategoryandInsurancecoy> GetById(int id);
         ApiResult<List<CategoryandInsurancecoy>> GetAll();
         Task<ApiResult<List<CategoryandInsurancecoyDto>>> GetByCategoryId(int categoryId);
-        Task<List<CategoryandInsurancecoyDto>> GetByInsuranceCoyId(int insuranceCoyId);
+        Task<ApiResult<List<CategoryandInsurancecoyDto>>> GetByInsuranceCoyId(int insuranceCoyId);
 
         // Update operation
         void Update(CategoryandInsurancecoy item);

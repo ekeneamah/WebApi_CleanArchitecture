@@ -3,6 +3,7 @@ using Application.Interfaces.Content.Products;
 using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Drawing.Printing;
+using Application.Common;
 using Domain.Entities;
 
 namespace Infrastructure.Content.Services
@@ -17,7 +18,7 @@ namespace Infrastructure.Content.Services
         }
 
         #region GetAll
-        public async Task<List<ProductDtoDetails>> GetAll(int pageNumber, int pageSize)
+        public async Task<ApiResult<List<ProductDtoDetails>>> GetAll(int pageNumber, int pageSize)
         {
             List<ProductDtoDetails> result = new List<ProductDtoDetails>();
             var p = await _context.Products
@@ -49,14 +50,16 @@ namespace Infrastructure.Content.Services
                 result.Add(pd);
             }
 
-            return result;
+            return ApiResult<List<ProductDtoDetails>>.Successful(null);
+            return ApiResult<List<ProductDtoDetails>>.Successful(null);
+
         }
 
         #endregion
 
         # region GetByCode
         //return Dto : (ProductDtoDetails)
-        public async Task<ProductDtoDetails> GetByCode(string code)
+        public async Task<ApiResult<ProductDtoDetails>> GetByCode(string code)
         {
             var x = await _context.Products
                 .Where(c => c.ProductCode == code)               
@@ -77,13 +80,14 @@ namespace Infrastructure.Content.Services
                   ProductDescription = x.ProductDescription
               };
 
-            return pd;
+            return ApiResult<ProductDtoDetails>.Successful(pd);
+
         }
         #endregion
 
         #region GetProductByCode
         // return entity/model : (ProductEntity)
-        public async Task<CreateProductDto> GetProductByCode(string code)
+        public async Task<ApiResult<CreateProductDto>> GetProductByCode(string code)
         {
             var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductCode == code);
             CreateProductDto pd = new CreateProductDto()
@@ -97,12 +101,12 @@ namespace Infrastructure.Content.Services
 
             };
 
-            return pd;
+            return ApiResult<CreateProductDto>.Successful(pd);
         }
         #endregion
 
         #region GetDetailsById
-        public async Task<ProductDtoDetails> GetDetailsById(int id)
+        public async Task<ApiResult<ProductDtoDetails>> GetDetailsById(int id)
         {
             Product x = await _context.Products.FindAsync(id);
             ProductDtoDetails pd = new()
@@ -119,7 +123,7 @@ namespace Infrastructure.Content.Services
                 ProductCode = x.ProductCode,
                 ProductGroup = x.ProductGroup
             };
-            return pd;
+            return ApiResult<ProductDtoDetails>.Successful(pd);
         }
         #endregion
 
@@ -170,7 +174,7 @@ namespace Infrastructure.Content.Services
         #region WithDraw
         public async void WithDraw(WithDrawProducts dto)
         {
-            CreateProductDto createProduct = await GetProductByCode(dto.ProductCode);
+            var createProduct = (await GetProductByCode(dto.ProductCode)).Data;
 
             createProduct.ProductQuantity = dto.ProductQuantity - createProduct.ProductQuantity;
 
@@ -185,7 +189,8 @@ namespace Infrastructure.Content.Services
         }
         #endregion
         #region GetAllProductsByCategory
-        public async Task<List<ProductDtoDetails>> GetAllProductsByCategory(int pageNumber, int pageSize, int product_categoryId)
+        public async Task<ApiResult<List<ProductDtoDetails>>> GetAllProductsByCategory(int pageNumber, int pageSize,
+            int product_categoryId)
         {
             var p = await _context.Products.Where(g => g.CategoryId == product_categoryId)
                  
@@ -215,12 +220,13 @@ namespace Infrastructure.Content.Services
                 result.Add(pd);
             }
 
-            return result;
+            return ApiResult<List<ProductDtoDetails>>.Successful(result);
+
         }
         #endregion
         #region GetAllProductsGroup
 
-        public async Task<List<ProductGroupDto>> GetAllProductsGroup()
+        public async Task<ApiResult<List<ProductGroupDto>>> GetAllProductsGroup()
         {
             var productGroups = await _context.Products
             .GroupBy(p => p.ProductGroup)
@@ -231,11 +237,13 @@ namespace Infrastructure.Content.Services
                 AveragePrice = g.Average(p => p.ProductPrice)
             })
             .ToListAsync();
-            return productGroups;
+            return ApiResult<List<ProductGroupDto>>.Successful(productGroups);
+
           }
         #endregion
         #region GetAllProductsByGroup
-        public async Task<List<ProductDtoDetails>> GetAllProductsByGroup(int pageNumber, int pageSize, string product_groupname)
+        public async Task<ApiResult<List<ProductDtoDetails>>> GetAllProductsByGroup(int pageNumber, int pageSize,
+            string product_groupname)
         {
             var p = await _context.Products.Where(g=>g.ProductGroup== product_groupname)
                  
@@ -267,34 +275,41 @@ namespace Infrastructure.Content.Services
                 result.Add(pd);
             }
 
-            return result;
+            return ApiResult<List<ProductDtoDetails>>.Successful(result);
+
+            
         }
         #endregion
         #region get products by insurance coy id
 
-        public async Task<List<Product>> GetProductsByInsuranceCoyId(int pageNumber, int pageSize, int insuranceCoyId)
+        public async Task<ApiResult<List<Product>>> GetProductsByInsuranceCoyId(int pageNumber, int pageSize,
+            int insuranceCoyId)
         {
-          return  await _context.Products.Where(g => g.CoyId == insuranceCoyId)
+          var result =   await _context.Products.Where(g => g.CoyId == insuranceCoyId)
 
                   .Skip((pageNumber - 1) * pageSize)
                   .Take(pageSize)
                  .OrderBy(x => x.ProductName)
                  .AsNoTracking()
                  .ToListAsync();
+          return ApiResult<List<Product>>.Successful(result);
+
         }
         #endregion
 
         #region get products by insurance coy id
 
-        public async Task<List<Product>> GetRecommendedProducts(int pageNumber, int pageSize)
+        public async Task<ApiResult<List<Product>>> GetRecommendedProducts(int pageNumber, int pageSize)
         {
-            return await _context.Products.Where(g => g.IsRecommended==true)
+            var result =  await _context.Products.Where(g => g.IsRecommended==true)
 
                     .Skip((pageNumber - 1) * pageSize)
                     .Take(pageSize)
                    .OrderBy(x => x.ProductName)
                    .AsNoTracking()
                    .ToListAsync();
+            return ApiResult<List<Product>>.Successful(result);
+
         }
         #endregion
 

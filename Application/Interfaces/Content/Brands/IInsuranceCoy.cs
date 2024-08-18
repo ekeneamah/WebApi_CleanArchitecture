@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common;
 using Application.Dtos;
 using Domain.Entities;
 
@@ -10,15 +11,15 @@ namespace Application.Interfaces.Content.Brands
 {
     public interface IInsuranceCoy
     {
-        Task<List<InsuranceCoyDto>> GetAll(int pageNumber, int pageSize);
+        Task<ApiResult<List<InsuranceCoyDto>>> GetAll(int pageNumber, int pageSize);
 
-        Task<InsuranceCoyDto> GetById(int id);
+        Task<ApiResult<InsuranceCoyDto>> GetById(int id);
 
-        Task<InsuranceCoyDto> Add_Coy(InsuranceCoyDto model);
+        Task<ApiResult<InsuranceCoyDto>> Add_Coy(InsuranceCoyDto model);
 
         Task<int> Update_Coy(InsuranceCoyDto model);
 
-        Task<InsuranceCoy> Delete_Coy(InsuranceCoyDto model);
+        Task<ApiResult<InsuranceCoy>> Delete_Coy(InsuranceCoyDto model);
 
         Task<bool> CoyIsExist(string code);
 
