@@ -23,8 +23,8 @@ Default Roles are as follows.
 - User
 Here are the credentials for the default users.
 
-Email - haitham.abass49@gmail.com / Password - 123456
-Email - Maged.sobhy50@gmail.com / Password - 123456
+Email - haitham.abass49@gmail.com / Password - 123456Ab!
+Email - Maged.sobhy50@gmail.com / Password - 123456Ab!
 
 
 ## **Features:**
