@@ -1,8 +1,10 @@
-﻿namespace API.Controllers.Content
+﻿using Application.Common;
+using Domain.Entities;
+
+namespace API.Controllers.Content
 {
     using Application.Interfaces;
     using Application.Interfaces.Content.Policy;
-    using Domain.Models;
     using Infrastructure.Content.Services;
 	using Infrastructure.Identity.Models;
 	using Microsoft.AspNetCore.Authorization;
@@ -18,7 +20,7 @@
 	[ApiController]
 	[Route("api/[controller]")]
 	[Authorize]
-	public class TransactionController : ControllerBase
+	public class TransactionController : BaseController
 	{
 	
 	private const string ApiBaseUrl = "https://api.budpay.com/api/v2/";
@@ -81,8 +83,8 @@
                 // Save relevant data to database
                 var transactionData = new Transaction
                 {
-                    Authorization_Url = responseObj.Data.Authorization_Url,
-                    AccessCode = responseObj.Data.Access_Code,
+                    AuthorizationUrl = responseObj.Data.AuthorizationUrl,
+                    AccessCode = responseObj.Data.AccessCode,
                     Reference = responseObj.Data.Reference,
 					Amount =double.Parse(request.Amount),
 					UserId = user.Id,
@@ -155,32 +157,22 @@
         }
         #endregion
         [HttpGet("{reference}")]
-        public async Task<ActionResult<Transaction>> GetTransactionByReference(string reference)
+        public async Task<ActionResult<ApiResult<TransactionDto>>> GetTransactionByReference(string reference)
         {
             var transaction = await _transactionService.GetTransactionByReference(reference);
 
-            if (transaction == null)
-            {
-                return NotFound();
-            }
-
-            return Ok(transaction);
+            return HandleOperationResult(transaction);
         }
 
         [HttpGet("GetTransactionsByUserId")]
-        public async Task<ActionResult<IEnumerable<Transaction>>> GetTransactionsByUserId()
+        public async Task<ActionResult<ApiResult<List<TransactionDto>>>> GetTransactionsByUserId()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
             var transactions = await _transactionService.GetTransactionsByUserId(user.Id);
 
-            if (transactions == null || !transactions.Any())
-            {
-                return NotFound();
-            }
-
-            return Ok(transactions);
+            return HandleOperationResult(transactions);
         }
     }
 
@@ -194,7 +186,7 @@
     {
         public bool Status { get; set; }
         public string Message { get; set; }
-        public TransactionDTO Data { get; set; }
+        public TransactionDto Data { get; set; }
     }
 
    

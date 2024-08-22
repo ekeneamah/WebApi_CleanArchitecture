@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
-namespace Domain.Models
+namespace Domain.Entities
 {
     public class Transaction
     {
-        public string? Authorization_Url { get; set; }
+        public string? AuthorizationUrl { get; set; }
         public string? AccessCode { get; set; }
         [Key]
         public required string Reference { get; set; }
@@ -23,10 +18,10 @@ namespace Domain.Models
         public string? PaymentRef { get; set; }
     }
 
-    public class TransactionDTO
+    public class TransactionDto
     {
-        public string? Authorization_Url { get; set; }
-        public string? Access_Code { get; set; }
+        public string? AuthorizationUrl { get; set; }
+        public string? AccessCode { get; set; }
         [Key]
         public required string Reference { get; set; }
         public string? Status { get; set; } = "Open";

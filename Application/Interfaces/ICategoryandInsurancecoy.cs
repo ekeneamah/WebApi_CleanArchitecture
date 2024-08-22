@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common;
 
 namespace Application.Interfaces
 {
@@ -14,10 +15,10 @@ namespace Application.Interfaces
         void Add(CategoryandInsurancecoy item);
 
         // Read operation
-        CategoryandInsurancecoy GetById(int id);
-        IEnumerable<CategoryandInsurancecoy> GetAll();
-        Task<List<CategoryandInsurancecoyDTO>> GetByCategoryId(int categoryId);
-        Task<List<CategoryandInsurancecoyDTO>> GetByInsuranceCoyId(int insuranceCoyId);
+        ApiResult<CategoryandInsurancecoy> GetById(int id);
+        ApiResult<List<CategoryandInsurancecoy>> GetAll();
+        Task<ApiResult<List<CategoryandInsurancecoyDto>>> GetByCategoryId(int categoryId);
+        Task<ApiResult<List<CategoryandInsurancecoyDto>>> GetByInsuranceCoyId(int insuranceCoyId);
 
         // Update operation
         void Update(CategoryandInsurancecoy item);

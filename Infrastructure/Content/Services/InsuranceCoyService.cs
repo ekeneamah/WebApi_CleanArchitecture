@@ -1,6 +1,7 @@
-﻿using Application.Dtos;
+﻿using Application.Common;
+using Application.Dtos;
 using Application.Interfaces.Content.Brands;
-using Domain.Models;
+using Domain.Entities;
 using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
 
@@ -15,139 +16,146 @@ namespace Infrastructure.Content.Services
             _context = context;
         }
 
-        public async Task<List<InsuranceCoyDTO>> GetAll(int pageNumber, int pageSize)
+        public async Task<ApiResult<List<InsuranceCoyDto>>> GetAll(int pageNumber, int pageSize)
         {
-            List<InsuranceCoyDTO> result = new List<InsuranceCoyDTO>();
+            List<InsuranceCoyDto> result = new List<InsuranceCoyDto>();
             List<InsuranceCoy> InsuranceCoy = await _context.InsuranceCompany
                 .Skip((pageNumber - 1) * pageSize)
                   .Take(pageSize)
                   .ToListAsync();
             foreach (InsuranceCoy i in InsuranceCoy)
             {
-                InsuranceCoyDTO insuranceCoyDTO = new()
+                InsuranceCoyDto insuranceCoyDTO = new()
                 {
-                    Coy_Name = i.Coy_Name,
-                    Coy_id = i.Coy_Id,
-                    Coy_Email = i.Coy_Email,
-                    Coy_Image = i.Coy_Image,
-                    Coy_Benefits = await _context.CoyBenefits.Where(c => c.Coy_id == i.Coy_Id).ToListAsync(),
-                    Coy_Logo = i.Coy_Logo,
-                    Coy_City = i.Coy_City,
-                    Coy_VideoLink = i.Coy_VideoLink,
-                    Coy_Description = i.Coy_Description,
-                    Coy_Country = i.Coy_Country,
-                    Coy_Phone = i.Coy_Phone,
-                    Coy_CityCode = i.Coy_CityCode,
-                    Coy_Street = i.Coy_Street,
-                    Coy_CountryCode = i.Coy_CountryCode,
-                    Coy_PostalCode = i.Coy_PostalCode,
-                    Coy_State = i.Coy_State,
-                    Coy_Status = i.Coy_Status,
-                    Coy_AgentId = i.Coy_AgentId,
+                    CoyName = i.CoyName,
+                    CoyId = i.CoyId,
+                    CoyEmail = i.CoyEmail,
+                    CoyImage = i.CoyImage,
+                    CoyBenefits = await _context.CoyBenefits.Where(c => c.CoyId == i.CoyId).ToListAsync(),
+                    CoyLogo = i.CoyLogo,
+                    CoyCity = i.CoyCity,
+                    CoyVideoLink = i.CoyVideoLink,
+                    CoyDescription = i.CoyDescription,
+                    CoyCountry = i.CoyCountry,
+                    CoyPhone = i.CoyPhone,
+                    CoyCityCode = i.CoyCityCode,
+                    CoyStreet = i.CoyStreet,
+                    CoyCountryCode = i.CoyCountryCode,
+                    CoyPostalCode = i.CoyPostalCode,
+                    CoyState = i.CoyState,
+                    CoyStatus = i.CoyStatus,
+                    CoyAgentId = i.CoyAgentId,
                     IsOrg = i.IsOrg,
                     Title = i.Title==null?"":i.Title,
                 };
                 result.Add(insuranceCoyDTO);
-            }
-            return result;
+            } 
+            return ApiResult<List<InsuranceCoyDto>>.Successful(result);
+
         }
 
 
-        public async Task<InsuranceCoyDTO> GetById(int id)
+        public async Task<ApiResult<InsuranceCoyDto>> GetById(int id)
         {
-            InsuranceCoy i = await _context.InsuranceCompany.Where(m => m.Coy_Id == id).FirstOrDefaultAsync();
-            InsuranceCoyDTO insuranceCoyDTO = new()
+            var i = await _context.InsuranceCompany.Where(m => m.CoyId == id).FirstOrDefaultAsync();
+            if (i is null)
             {
-                Coy_Name = i.Coy_Name,
-                Coy_id = i.Coy_Id,
-                Coy_Email = i.Coy_Email,
-                Coy_Image = i.Coy_Image,
-                Coy_Benefits = await _context.CoyBenefits.Where(c => c.Coy_id == i.Coy_Id).ToListAsync(),
-                Coy_Logo = i.Coy_Logo,
-                Coy_City = i.Coy_City,
-                Coy_VideoLink = i.Coy_VideoLink,
-                Coy_Description = i.Coy_Description,
-                Coy_Country = i.Coy_Country,
-                Coy_Phone = i.Coy_Phone,
-                Coy_CityCode = i.Coy_CityCode,
-                Coy_Street = i.Coy_Street,
-                Coy_CountryCode = i.Coy_CountryCode,
-                Coy_PostalCode = i.Coy_PostalCode,
-                Coy_State = i.Coy_State,
-                Coy_Status = i.Coy_Status,
-                Coy_AgentId = i.Coy_AgentId,
+                return ApiResult<InsuranceCoyDto>.NotFound("Insurance Company not found");
+            }
+            InsuranceCoyDto insuranceCoyDTO = new()
+            {
+                CoyName = i.CoyName,
+                CoyId = i.CoyId,
+                CoyEmail = i.CoyEmail,
+                CoyImage = i.CoyImage,
+                CoyBenefits = await _context.CoyBenefits.Where(c => c.CoyId == i.CoyId).ToListAsync(),
+                CoyLogo = i.CoyLogo,
+                CoyCity = i.CoyCity,
+                CoyVideoLink = i.CoyVideoLink,
+                CoyDescription = i.CoyDescription,
+                CoyCountry = i.CoyCountry,
+                CoyPhone = i.CoyPhone,
+                CoyCityCode = i.CoyCityCode,
+                CoyStreet = i.CoyStreet,
+                CoyCountryCode = i.CoyCountryCode,
+                CoyPostalCode = i.CoyPostalCode,
+                CoyState = i.CoyState,
+                CoyStatus = i.CoyStatus,
+                CoyAgentId = i.CoyAgentId,
                 IsOrg = i.IsOrg,
                 Title = i.Title,
-                Coy_ZipCode = i.Coy_ZipCode
+                CoyZipCode = i.CoyZipCode
             };
-            return insuranceCoyDTO;
+            return ApiResult<InsuranceCoyDto>.Successful(insuranceCoyDTO);
+
         }
 
 
-        public async Task<InsuranceCoyDTO> Add_Coy(InsuranceCoyDTO model)
+        public async Task<ApiResult<InsuranceCoyDto>> Add_Coy(InsuranceCoyDto model)
         {
             InsuranceCoy i = new()
             {
-                Coy_Email = model.Coy_Email,
-                Coy_City = model.Coy_City,
-                Coy_CityCode = model.Coy_CityCode,
-                Coy_Country = model.Coy_Country,
-                Coy_CountryCode = model.Coy_CountryCode,
-                Coy_Description = model.Coy_Description,
-                Coy_Street = model.Coy_Street,
-                Coy_Name = model.Coy_Name,
-                Coy_State = model.Coy_State,
-                Coy_Image = model.Coy_Image,
-                Coy_Logo = model.Coy_Logo,
-                Coy_Phone = model.Coy_Phone,
-                Coy_VideoLink = model.Coy_VideoLink,
-                Coy_Status = model.Coy_Status,
-                Coy_PostalCode = model.Coy_PostalCode,
-                Coy_AgentId = model.Coy_AgentId,
+                CoyEmail = model.CoyEmail,
+                CoyCity = model.CoyCity,
+                CoyCityCode = model.CoyCityCode,
+                CoyCountry = model.CoyCountry,
+                CoyCountryCode = model.CoyCountryCode,
+                CoyDescription = model.CoyDescription,
+                CoyStreet = model.CoyStreet,
+                CoyName = model.CoyName,
+                CoyState = model.CoyState,
+                CoyImage = model.CoyImage,
+                CoyLogo = model.CoyLogo,
+                CoyPhone = model.CoyPhone,
+                CoyVideoLink = model.CoyVideoLink,
+                CoyStatus = model.CoyStatus,
+                CoyPostalCode = model.CoyPostalCode,
+                CoyAgentId = model.CoyAgentId,
                 Title = model.Title,
                 IsOrg = model.IsOrg,
-                Coy_Id = model.Coy_id,
-                Coy_ZipCode = model.Coy_ZipCode
+                CoyId = model.CoyId,
+                CoyZipCode = model.CoyZipCode
 
 
             };
 
             await _context.InsuranceCompany.AddAsync(i);
             await _context.SaveChangesAsync();
-            foreach (CoyBenefitEntity cb in model.Coy_Benefits)
+            foreach (CoyBenefitEntity cb in model.CoyBenefits)
             {
-                cb.Coy_id = i.Coy_Id;
+                cb.CoyId = i.CoyId;
                 _context.CoyBenefits.Add(cb);
                 await _context.SaveChangesAsync();
             }
-            return model;
+            return ApiResult<InsuranceCoyDto>.Successful(model);
+
         }
 
 
-        public async Task<int> Update_Coy(InsuranceCoyDTO model)
+        public async Task<int> Update_Coy(InsuranceCoyDto model)
         {
             InsuranceCoy insuranceCoy = new()
             {
-                Coy_Id = model.Coy_id,
-                Coy_Name = model.Coy_Name,
-                Coy_Email = model.Coy_Email,
-                Coy_City = model.Coy_City,
-                Coy_CityCode = model.Coy_CityCode,
-                Coy_Country = model.Coy_Country,
-                Coy_CountryCode = model.Coy_CountryCode,
-                Coy_Description = model.Coy_Description,
-                Coy_Phone = model.Coy_Phone,
-                Coy_PostalCode = model.Coy_PostalCode,
-                Coy_State = model.Coy_State,
-                Coy_Status = model.Coy_Status,
-                Coy_Street = model.Coy_Street,
-                Coy_ZipCode = model.Coy_ZipCode,
-                Coy_AgentId = model.Coy_AgentId,
+                CoyId = model.CoyId,
+                CoyName = model.CoyName,
+                CoyEmail = model.CoyEmail,
+                CoyCity = model.CoyCity,
+                CoyCityCode = model.CoyCityCode,
+                CoyCountry = model.CoyCountry,
+                CoyCountryCode = model.CoyCountryCode,
+                CoyDescription = model.CoyDescription,
+                CoyPhone = model.CoyPhone,
+                CoyPostalCode = model.CoyPostalCode,
+                CoyState = model.CoyState,
+                CoyStatus = model.CoyStatus,
+                CoyStreet = model.CoyStreet,
+                CoyZipCode = model.CoyZipCode,
+                CoyAgentId = model.CoyAgentId,
                 IsOrg = model.IsOrg,
                 Title = model.Title,
-                Coy_Image = model.Coy_Image,
-                Coy_Logo = model.Coy_Logo,
-                Coy_VideoLink = model.Coy_VideoLink
+                CoyImage = model.CoyImage,
+                CoyLogo = model.CoyLogo,
+                CoyVideoLink = model.CoyVideoLink
 
 
 
@@ -160,26 +168,27 @@ namespace Infrastructure.Content.Services
         }
 
 
-        public async Task<InsuranceCoy> Delete_Coy(InsuranceCoyDTO model)
+        public async Task<ApiResult<InsuranceCoy>> Delete_Coy(InsuranceCoyDto model)
         {
             InsuranceCoy coy = new()
             {
-                Coy_Id = model.Coy_id,
-                Coy_Name = model.Coy_Name,
-                Coy_Email = model.Coy_Email,
-                Coy_City = model.Coy_City,
-                Coy_AgentId = model.Coy_AgentId,
+                CoyId = model.CoyId,
+                CoyName = model.CoyName,
+                CoyEmail = model.CoyEmail,
+                CoyCity = model.CoyCity,
+                CoyAgentId = model.CoyAgentId,
 
             };
             _context.InsuranceCompany.Remove(coy);
             await _context.SaveChangesAsync();
-            return coy;
+            return ApiResult<InsuranceCoy>.Successful(coy);
+
         }
 
 
         public async Task<bool> CoyIsExist(string coy_Name)
         {
-            return await _context.InsuranceCompany.AnyAsync(b => b.Coy_Name == coy_Name);
+            return await _context.InsuranceCompany.AnyAsync(b => b.CoyName == coy_Name);
         }
 
 

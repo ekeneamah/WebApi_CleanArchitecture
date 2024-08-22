@@ -1,44 +1,44 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Models
+namespace Domain.Entities
 {
     public class InsuranceCoy
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Coy_Id { get; set; }
+        public int CoyId { get; set; }
 
 
         [Required]
         [MaxLength(100)]
-        public string Coy_Name { get; set; }
-        public string? Coy_Description { get; set; }
+        public string CoyName { get; set; }
+        public string? CoyDescription { get; set; }
         [MaxLength(5)]
-        public string? Coy_Status { get; set; }
-        public required string Coy_Email { get; set; }
+        public string? CoyStatus { get; set; }
+        public required string CoyEmail { get; set; }
         [MaxLength(50)]
-        public string? Coy_City { get; set; }
+        public string? CoyCity { get; set; }
         [MaxLength(50)]
-        public string? Coy_Country { get; set; }
+        public string? CoyCountry { get; set; }
         [MaxLength(36)]
-        public string? Coy_Phone { get; set; }
+        public string? CoyPhone { get; set; }
         [MaxLength(10)]
-        public string? Coy_PostalCode { get; set; }
+        public string? CoyPostalCode { get; set; }
         [MaxLength(10)]
-        public string? Coy_State { get; set; }
+        public string? CoyState { get; set; }
         [MaxLength(100)]
-        public string? Coy_Street { get; set; }
+        public string? CoyStreet { get; set; }
         [MaxLength(6)]
-        public string? Coy_ZipCode { get; set; }
+        public string? CoyZipCode { get; set; }
         [MaxLength(3)]
-        public string? Coy_CityCode { get; set; }
+        public string? CoyCityCode { get; set; }
         [MaxLength(3)]
-        public string? Coy_CountryCode { get; set; }
-        public string? Coy_VideoLink { get; set; }
-        public string? Coy_Image { get; set; }
-        public string? Coy_Logo { get; set; }
-        public required string Coy_AgentId { get; set; } = "ABC";
+        public string? CoyCountryCode { get; set; }
+        public string? CoyVideoLink { get; set; }
+        public string? CoyImage { get; set; }
+        public string? CoyLogo { get; set; }
+        public required string CoyAgentId { get; set; } = "ABC";
         public bool IsOrg { get; set; }
         public string? Title { get; set; }
     }
@@ -47,15 +47,15 @@ namespace Domain.Models
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Benefit_Id { get; set; }
+        public int BenefitId { get; set; }
 
         [Required]
-        public int Coy_id { get; set; }
+        public int CoyId { get; set; }
 
 
         [Required]
         [MaxLength(100)]
 
-        public string? Benefits_Title { get; set; }
+        public string? BenefitsTitle { get; set; }
     }
 }

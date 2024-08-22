@@ -1,13 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-
-namespace Domain.Models
+namespace Domain.Entities
 {
     public class Policy
     {
@@ -36,7 +30,7 @@ namespace Domain.Models
         [Required]
         public string? TransactionStatus { get; set; }
 
-        public int Coy_Id { get; set; }
+        public int CoyId { get; set; }
 
         [Required]
         public string? PolicyNo { get; set; }

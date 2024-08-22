@@ -1,10 +1,10 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using Application.Common;
 using Application.Interfaces;
-using Domain.Models;
+using Domain.Entities;
 using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
+
+namespace Infrastructure.Content.Services;
 
 public class MotorClaimService : IMotorClaimRepository
 {
@@ -15,21 +15,26 @@ public class MotorClaimService : IMotorClaimRepository
         _context = context;
     }
 
-    public async Task<MotorClaim> CreateMotorClaim(MotorClaim motorClaim)
+    public async Task<ApiResult<MotorClaim>> CreateMotorClaim(MotorClaim motorClaim)
     {
         _context.MotorClaims.Add(motorClaim);
         await _context.SaveChangesAsync();
-        return motorClaim;
+        return ApiResult<MotorClaim>.Successful(motorClaim);
+
     }
 
-    public async Task<MotorClaim> GetMotorClaimById(int id)
+    public async Task<ApiResult<MotorClaim>> GetMotorClaimById(int id)
     {
-        return await _context.MotorClaims.FindAsync(id);
+        var motorClaim =  await _context.MotorClaims.FindAsync(id);
+        return ApiResult<MotorClaim>.Successful(motorClaim);
+
     }
 
-    public async Task<IEnumerable<MotorClaim>> GetAllMotorClaims(string userid)
+    public async Task<ApiResult<List<MotorClaim>>> GetAllMotorClaims(string userid)
     {
-        return await _context.MotorClaims.Where(u=>u.User_Id==userid).ToListAsync();
+        var result = await _context.MotorClaims.Where(u=>u.UserId==userid).ToListAsync();
+        return ApiResult<List<MotorClaim>>.Successful(result);
+
     }
 
     public async Task UpdateMotorClaim(MotorClaim motorClaim)

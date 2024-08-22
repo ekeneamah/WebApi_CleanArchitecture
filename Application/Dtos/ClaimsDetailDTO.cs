@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Application.Dtos
 {
-    public class ClaimDetailDTO
+    public class ClaimDetailDto
     {
         public int Id { get; set; }
         public Guid ClaimsId { get; set; }

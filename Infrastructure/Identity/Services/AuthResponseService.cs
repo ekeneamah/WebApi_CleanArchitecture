@@ -15,6 +15,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using Application.Common;
+using Application.Interfaces.Email;
 using static System.Net.WebRequestMethods;
 
 namespace Infrastructure.Identity.Services
@@ -110,7 +112,7 @@ namespace Infrastructure.Identity.Services
         #region SignUp Method
 
         //SignUp
-        public async Task<AuthResponse> SignUpAsync(SignUp model, string orgin)
+        public async Task<ApiResult<AuthResponse>> SignUpAsync(SignUp model, string orgin)
         {
             var auth = new AuthResponse();
 
@@ -119,10 +121,12 @@ namespace Infrastructure.Identity.Services
 
             //checking the Email and username
             if (userEmail is not null)
-                return new AuthResponse { Message = "Email is Already used ! " };
+                return ApiResult<AuthResponse>.Failed("Email is Already used ! ");
+            
 
-            if (userName is not null)
-                return new AuthResponse { Message = "Username is Already used ! " };
+            if (userName is not null) 
+                return ApiResult<AuthResponse>.Failed("Username is Already used ! ");
+
 
             //fill
             var user = new AppUser
@@ -149,7 +153,8 @@ namespace Infrastructure.Identity.Services
                     errors += $"{error.Description}, ";
                 }
 
-                return new AuthResponse { Message = errors };
+                return ApiResult<AuthResponse>.Failed(errors);
+
             }
 
             //assign role to user by default
@@ -215,7 +220,7 @@ namespace Infrastructure.Identity.Services
             auth.Email = user.Email;
            // auth.UserId = user.Id;
             auth.Roles = new List<string> { "User" };
-            auth.ISAuthenticated = true;
+            auth.IsAuthenticated = true;
             auth.UserName = user.UserName;
             auth.FirstName = user.FirstName;
             auth.LastName = user.LastName;
@@ -231,24 +236,25 @@ namespace Infrastructure.Identity.Services
 
             user.RefreshTokens.Add(newRefreshToken);
             await _userManager.UpdateAsync(user);
+            
+            return ApiResult<AuthResponse>.Successful(auth);
 
-            return auth;
         }
 
         #endregion SignUp Method
 
         #region logout 
-        public async Task<string> Signout()
+        public async Task<ApiResult<string>> Signout()
         {
             await _signInManager.SignOutAsync();
-            return  "Logged out successfully.";
+            return ApiResult<string>.Failed("Logged out successfully.");
         }
         #endregion logout
 
         #region Login Method
 
         //login
-        public async Task<AuthResponse> LoginAsync(Login model)
+        public async Task<ApiResult<AuthResponse>> LoginAsync(Login model)
         {
             var auth = new AuthResponse();
 
@@ -257,8 +263,7 @@ namespace Infrastructure.Identity.Services
 
             if (user == null || !userpass)
             {
-                auth.Message = "Email or Password is incorrect";
-                return auth;
+                return ApiResult<AuthResponse>.Failed("Email or Password is incorrect");
             }
 
             var jwtSecurityToken = await CreateJwtAsync(user);
@@ -271,7 +276,7 @@ namespace Infrastructure.Identity.Services
             auth.LastName = user.LastName;
             auth.IsEmailConfirmed = user.EmailConfirmed;
             auth.Roles = roles.ToList();
-            auth.ISAuthenticated = true;
+            auth.IsAuthenticated = true;
             auth.UserName = user.UserName;
             auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             auth.TokenExpiresOn = jwtSecurityToken.ValidTo;
@@ -296,7 +301,8 @@ namespace Infrastructure.Identity.Services
                 await _userManager.UpdateAsync(user);
             }
 
-            return auth;
+            return ApiResult<AuthResponse>.Successful(auth);
+
         }
 
         #endregion Login Method
@@ -331,7 +337,7 @@ namespace Infrastructure.Identity.Services
         #region check Refresh Tokens method
 
         //check Refresh Tokens
-        public async Task<AuthResponse> RefreshTokenCheckAsync(string token)
+        public async Task<ApiResult<AuthResponse>> RefreshTokenCheckAsync(string token)
         {
             var auth = new AuthResponse();
 
@@ -340,8 +346,7 @@ namespace Infrastructure.Identity.Services
 
             if (user == null)
             {
-                auth.Message = "Invalid Token";
-                return auth;
+                return ApiResult<AuthResponse>.Failed("Invalid Token");
             }
 
             // check if the refreshtoken is active
@@ -349,8 +354,7 @@ namespace Infrastructure.Identity.Services
 
             if (!refreshToken.IsActive)
             {
-                auth.Message = "Inactive Token";
-                return auth;
+                return ApiResult<AuthResponse>.Failed("Inactive Token");
             }
 
             //revoke the sent Refresh Tokens
@@ -366,14 +370,15 @@ namespace Infrastructure.Identity.Services
 
             auth.Email = user.Email;
             auth.Roles = roles.ToList();
-            auth.ISAuthenticated = true;
+            auth.IsAuthenticated = true;
             auth.UserName = user.UserName;
             auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
             auth.TokenExpiresOn = jwtSecurityToken.ValidTo;
             auth.RefreshToken = newRefreshToken.Token;
             auth.RefreshTokenExpiration = newRefreshToken.ExpireOn;
 
-            return auth;
+            return ApiResult<AuthResponse>.Successful(auth);
+
         }
 
         #endregion check Refresh Tokens method
@@ -381,18 +386,18 @@ namespace Infrastructure.Identity.Services
         #region revoke Refresh Tokens method
 
         //revoke Refresh token
-        public async Task<bool> RevokeTokenAsync(string token)
+        public async Task<ApiResult<bool>> RevokeTokenAsync(string token)
         {
             var user = await _userManager.Users.FirstOrDefaultAsync(u => u.RefreshTokens.Any(t => t.Token == token));
 
             if (user == null)
-                return false;
+                return ApiResult<bool>.Failed("Invalid Token");
 
             // check if the refreshtoken is active
             var refreshToken = user.RefreshTokens.Single(t => t.Token == token);
 
             if (!refreshToken.IsActive)
-                return false;
+                return ApiResult<bool>.Failed("Inactive Token");
 
             //revoke the sent Refresh Tokens
             refreshToken.RevokedOn = DateTime.UtcNow;
@@ -401,7 +406,7 @@ namespace Infrastructure.Identity.Services
 
             await _userManager.UpdateAsync(user);
 
-            return true;
+            return ApiResult<bool>.Successful(true);
         }
 
         #endregion revoke Refresh Tokens method
@@ -443,24 +448,25 @@ namespace Infrastructure.Identity.Services
         #endregion
 
         #region confirm otp
-        public async Task<string> ConfirmOTPAsync(VerifyOTPDto model)
+        public async Task<ApiResult<string>> ConfirmOTPAsync(VerifyOtpDto model)
         {
 
             var user = await _userManager.FindByIdAsync(model.UserId);
             // code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             if (user == null)
-                return "Invalid userid.";
+                return ApiResult<string>.Failed("Invalid userid.");
 
             // Check if OTP is expired (1 hour)
             if (!user.OtpTimestamp.ToString().IsNullOrEmpty() && DateTime.Now.AddHours(1).Subtract(user.OtpTimestamp).TotalHours > 4)
             {
-                return "OTP has expired.";
+                return ApiResult<string>.Failed("OTP has expired.");
             }
 
             // Check if OTP matches
-            if (user.OTP != model.OTP)
+            if (user.OTP != model.Otp)
             {
-                return "Invalid OTP.";
+                return ApiResult<string>.Failed("Invalid OTP.");
+
             }
             user.IsActivated = true;
             await _userManager.UpdateAsync(user);
@@ -469,16 +475,16 @@ namespace Infrastructure.Identity.Services
             // Mark the email as confirmed
            // code = Encoding.UTF8.GetString(code);
             await _userManager.ConfirmEmailAsync(user, model.Token);
-            return "Email verified successfully. You can now login.";
+            return ApiResult<string>.Successful("Email verified successfully. You can now login.");
         }
         #endregion confirm otp
         #region resend otp
-        public async Task<string> ResendOTPAsync(VerifyOTPDto model)
+        public async Task<ApiResult<string>> ResendOTPAsync(VerifyOtpDto model)
         {
             var user = await _userManager.FindByIdAsync(model.UserId);
             // code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             if (user == null)
-                return "Invalid userid.";
+                return ApiResult<string>.Failed("Invalid userid.");
             user.OTP = GenerateAndStoreOTP();
             user.OtpTimestamp = DateTime.Now.AddHours(1);
             await _userManager.UpdateAsync(user);
@@ -538,10 +544,10 @@ namespace Infrastructure.Identity.Services
 
             #endregion SendVerificationEmail
 
-            return "OTP re-sent to your e-mail";
+            return ApiResult<string>.Successful("OTP re-sent to your e-mail");
         }
 
-        public Task<string> DeleteAllUserAsync()
+        public Task<ApiResult<string>> DeleteAllUserAsync()
         {
             throw new NotImplementedException();
         }

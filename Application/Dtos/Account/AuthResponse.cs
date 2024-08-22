@@ -9,7 +9,7 @@ namespace Application.Dtos.Account
         public string? Message { get; set; }
 
         //by default false
-        public bool ISAuthenticated { get; set; }
+        public bool IsAuthenticated { get; set; }
 
         public string? UserName { get; set; }
 

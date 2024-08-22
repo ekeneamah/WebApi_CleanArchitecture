@@ -1,33 +1,35 @@
-﻿using Domain.Models;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Entities;
 
 namespace Application.Dtos
 {
     public class ProductDtoDetails
     {
-        public string? Product_description { get; set; }
+        public string? ProductDescription { get; set; }
 
-        public int? Product_Id { get; set; }
+        public int? ProductId { get; set; }
 
-        public string Product_Name { get; set; }
+        public string ProductName { get; set; }
 
-        public int Coy_Id { get; set; }
-        public string Coy_Name { get; set; }
-        public int? Category_Id { get; set; }
-        public string Category_Name { get; set; }
+        public int CoyId { get; set; }
+        public string CoyName { get; set; }
+        public int? CategoryId { get; set; }
+        public string CategoryName { get; set; }
 
-        public double Product_Price { get; set; }
+        public double ProductPrice { get; set; }
 
-        public int Product_Quantity { get; set; }
+        public int ProductQuantity { get; set; }
 
-        public string Product_Code { get; set; }
-        public object Product_Group { get; set; }
-        public Category Product_Category { get; set;}
+        public string ProductCode { get; set; }
+        public object ProductGroup { get; set; }
+        public Category ProductCategory { get; set;}
         public InsuranceCoy InsuranceCoy { get; set; }
+        public List<ProductBenefit?> Benefit { get; set; } = new List<ProductBenefit?>();
+
     }
 
 }

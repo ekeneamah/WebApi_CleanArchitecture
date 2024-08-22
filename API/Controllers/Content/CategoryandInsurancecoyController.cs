@@ -1,4 +1,6 @@
-﻿using Application.Dtos;
+﻿using Application.Common;
+using Application.Dtos;
+using Application.Interfaces;
 using Domain.Entities;
 using Infrastructure.Content.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -9,11 +11,11 @@ namespace API.Controllers.Content
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CategoryandInsurancecoyController : ControllerBase
+    public class CategoryandInsurancecoyController : BaseController
     {
-        private readonly CategoryandInsurancecoyService _service;
+        private readonly ICategoryandInsurancecoy _service;
 
-        public CategoryandInsurancecoyController(CategoryandInsurancecoyService service)
+        public CategoryandInsurancecoyController(ICategoryandInsurancecoy service)
         {
             _service = service;
         }
@@ -22,35 +24,37 @@ namespace API.Controllers.Content
 
         // GET: api/CategoryandInsurancecoy
         [HttpGet]
-        public IEnumerable<CategoryandInsurancecoy> Get()
+        public  ActionResult<ApiResult<List<CategoryandInsurancecoy>>> Get()
         {
-            return _service.GetAll();
+            return  HandleOperationResult(_service.GetAll());
         }
 
         // GET: api/CategoryandInsurancecoy/5
         [HttpGet("{id}", Name = "Get")]
-        public IActionResult Get(int id)
+        public ActionResult<ApiResult<CategoryandInsurancecoy>> Get(int id)
         {
             var item = _service.GetById(id);
-            if (item == null)
-            {
-                return NotFound();
-            }
-            return Ok(item);
+            return HandleOperationResult(item);
+
         }
+        
+
 
         // GET: api/CategoryandInsurancecoy/ByCategoryId/5
         [HttpGet("ByCategoryId/{categoryId}")]
-        public Task<List<CategoryandInsurancecoyDTO>> GetByCategoryId(int categoryId)
+        public async Task<ActionResult<ApiResult<List<CategoryandInsurancecoyDto>>>> GetByCategoryId(int categoryId)
         {
-            return _service.GetByCategoryId(categoryId);
+           var response = await _service.GetByCategoryId(categoryId);
+            return HandleOperationResult(response);
         }
 
         // GET: api/CategoryandInsurancecoy/ByInsuranceCoyId/5
         [HttpGet("ByInsuranceCoyId/{insuranceCoyId}")]
-        public Task<List<CategoryandInsurancecoyDTO>> GetByInsuranceCoyId(int insuranceCoyId)
+        public async Task<ActionResult<ApiResult<List<CategoryandInsurancecoyDto>>>> GetByInsuranceCoyId(int insuranceCoyId)
         {
-            return _service.GetByInsuranceCoyId(insuranceCoyId);
+            var response = await _service.GetByInsuranceCoyId(insuranceCoyId);
+            return HandleOperationResult(response);
+
         }
 
         #endregion

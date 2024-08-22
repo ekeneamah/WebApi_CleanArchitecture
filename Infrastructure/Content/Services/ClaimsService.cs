@@ -1,6 +1,5 @@
 ﻿using Application.Dtos;
 using Application.Interfaces.Content.Claim;
-using Domain.Models;
 using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -8,6 +7,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common;
+using Domain.Entities;
 
 namespace Infrastructure.Content.Services
 {
@@ -20,10 +21,10 @@ namespace Infrastructure.Content.Services
             _dbContext = dbContext;
         }
 
-        public async Task<List<ClaimDetailDTO>> GetAll()
+        public async Task<ApiResult<List<ClaimDetailDto>>> GetAll()
         {
-            return await _dbContext.Claims
-                .Select(c => new ClaimDetailDTO
+            var result =  await _dbContext.Claims
+                .Select(c => new ClaimDetailDto
                 {
                     
                     PolicyNo = c.PolicyNo,
@@ -34,12 +35,15 @@ namespace Infrastructure.Content.Services
                    
                 })
                 .ToListAsync();
+            
+            return ApiResult<List<ClaimDetailDto>>.Successful(result);
+
         }
 
-        public async Task<List<ClaimDetailDTO>> GetAllMyClaims(string userid)
+        public async Task<ApiResult<List<ClaimDetailDto>>> GetAllMyClaims(string userid)
         {
-            return await _dbContext.Claims.Where(u=>u.UserId==userid)
-                .Select(c => new ClaimDetailDTO
+            var result = await _dbContext.Claims.Where(u=>u.UserId==userid)
+                .Select(c => new ClaimDetailDto
                 {
 
                     PolicyNo = c.PolicyNo,
@@ -53,17 +57,20 @@ namespace Infrastructure.Content.Services
 
                 })
                 .ToListAsync();
+            
+            return ApiResult<List<ClaimDetailDto>>.Successful(result);
+
         }
 
-        public async Task<ClaimDetailDTO> GetById(string claimId)
+        public async Task<ApiResult<ClaimDetailDto>> GetById(string claimId)
         {
             var claim = await _dbContext.Claims.FindAsync(claimId);
             if (claim == null)
             {
-                return null;
+                return ApiResult<ClaimDetailDto>.NotFound("Claim not found");
             }
 
-            return new ClaimDetailDTO
+            var result = new ClaimDetailDto
             {
                 PolicyNo = claim.PolicyNo,
                 LossDate = claim.LossDate.ToString(),
@@ -75,9 +82,12 @@ namespace Infrastructure.Content.Services
                 Status = claim.Status
                
             };
+            
+            return ApiResult<ClaimDetailDto>.Successful(result);
+
         }
 
-        public async Task<ClaimsDto> AddClaims(ClaimsDto model)
+        public async Task<ApiResult<ClaimsDto>> AddClaims(ClaimsDto model)
         {
             var claim = new Claim
             {
@@ -92,12 +102,14 @@ namespace Infrastructure.Content.Services
             _dbContext.Claims.Add(claim);
             await _dbContext.SaveChangesAsync();
             model.ClaimId = claim.ClaimsId;
-            return model;
+            return ApiResult<ClaimsDto>.Successful(model);
         }
         #region get claims form by insuarance coy
-        public async Task<ClaimsForm> GetClaimsForm(int PolicyId)
-        { int InsuranceCompanyId = await _dbContext.Policies.Where(i => i.Id == PolicyId).Select(c => c.Coy_Id).FirstOrDefaultAsync();
-            return await _dbContext.ClaimsForms.FirstOrDefaultAsync(p => p.Coy_id == InsuranceCompanyId);
+        public async Task<ApiResult<ClaimsForm>> GetClaimsForm(int PolicyId)
+        { int InsuranceCompanyId = await _dbContext.Policies.Where(i => i.Id == PolicyId).Select(c => c.CoyId).FirstOrDefaultAsync();
+            var result =  await _dbContext.ClaimsForms.FirstOrDefaultAsync(p => p.CoyId == InsuranceCompanyId);
+            return ApiResult<ClaimsForm>.Successful(result);
+
         }
 
         #endregion
@@ -123,12 +135,12 @@ namespace Infrastructure.Content.Services
         #endregion
        
 
-        public async Task<ClaimsDto> UpdateClaims(ClaimsDto model)
+        public async Task<ApiResult<ClaimsDto>> UpdateClaims(ClaimsDto model)
         {
             var claim = await _dbContext.Claims.FirstOrDefaultAsync(c => c.PolicyNo == model.PolicyNo);
             if (claim == null)
             {
-                return null; // ClaimEntity not found
+                return ApiResult<ClaimsDto>.NotFound("Claim not found");
             }
 
             // Update claim properties
@@ -139,16 +151,16 @@ namespace Infrastructure.Content.Services
             claim.Reference = model.Reference;
             _dbContext.Update(claim);
             await _dbContext.SaveChangesAsync();
-
-            return model;
+            
+            return ApiResult<ClaimsDto>.Successful(model);
         }
 
-        public async Task<NotificationDTO> AddNotification(NotificationDTO model)
+        public async Task<ApiResult<NotificationDto>> AddNotification(NotificationDto model)
         {
             var claim = await _dbContext.Claims.FirstOrDefaultAsync(c => c.ClaimsId == model.ClaimsId);
             if (claim == null)
             {
-                return null; // ClaimEntity not found
+                return ApiResult<NotificationDto>.Successful(model);
             }
 
             // Update claim properties
@@ -158,7 +170,8 @@ namespace Infrastructure.Content.Services
             _dbContext.Update(claim);
             await _dbContext.SaveChangesAsync();
 
-            return model;
+            return ApiResult<NotificationDto>.Successful(model);
+
         }
     }
 }

@@ -23,6 +23,11 @@ using Microsoft.OpenApi.Models;
 using Prometheus;
 using System.Collections;
 using System.Text;
+using System.Text.Json.Serialization;
+using API.Filters;
+using Application.Interfaces.Email;
+using Application.Mapping;
+using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
 //var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
@@ -40,6 +45,8 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
+builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
+
 builder.Services.UseHttpClientMetrics();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
@@ -64,6 +71,11 @@ builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
     .AddEntityFrameworkStores<AppIdentityContext>()
     .AddDefaultTokenProviders();
 builder.Services.AddHttpClient(); // UpdateUser HttpClient and IHttpClientFactory
+builder.Services.Configure<ApiBehaviorOptions>(options =>
+{
+    options.SuppressModelStateInvalidFilter = true;
+    options.SuppressInferBindingSourcesForParameters = true;
+});
 
 builder.Services.AddScoped<IInsuranceCoy, InsuranceCoyService>();
 builder.Services.AddScoped<ICategory, CategoryService>();
@@ -81,6 +93,8 @@ builder.Services.AddScoped<IAuthResponse, AuthResponseService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IKYC, KYCService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
+builder.Services.AddAutoMapper(typeof(MappingProfile));
+
 
 builder.Services.AddAuthentication(options =>
 {
@@ -110,12 +124,21 @@ builder.Services.AddAuthentication(options =>
 
 // UpdateUser services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers(options =>
+{
+    options.Filters.Add(typeof(ValidatorActionFilter));
+}).AddJsonOptions(options =>
+{
+    options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+    options.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
+    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+});
+
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen(c =>
 {
     // Other Swagger configurations...
-
+    c.DescribeAllParametersInCamelCase();
     c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
     {
         Description = "JWT Authorization header using the Bearer scheme",

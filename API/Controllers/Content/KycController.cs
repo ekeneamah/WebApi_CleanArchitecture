@@ -5,11 +5,13 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Application.Common;
+
 namespace API.Controllers.Content
 {
     [Route("api/[controller]")]
 [ApiController]
-public class KYCController : ControllerBase
+public class KYCController : BaseController
 {
     private readonly IKYC _kycService;
         private readonly UserManager<AppUser> _userManager;
@@ -22,7 +24,7 @@ public class KYCController : ControllerBase
 
 
     [HttpPost]
-    public async Task<ActionResult<KYCDTO>> CreateKYC(KYCDTO kycDto)
+    public async Task<ActionResult<ApiResult<Kycdto>>> CreateKYC(Kycdto kycDto)
         {
             if (kycDto.IdentityType != "NIN")
             {
@@ -55,44 +57,37 @@ public class KYCController : ControllerBase
                 return BadRequest("Invalid User");
             kycDto.UserId = user.Id;
             var createdKYC = await _kycService.CreateKYC(kycDto);
-        return CreatedAtAction(nameof(GetKYCById), new { id = createdKYC.Id }, createdKYC);
+        return HandleOperationResult(createdKYC);
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<KYCDTO>> GetKYCById(int id)
+    public async Task<ActionResult<ApiResult<Kycdto>>> GetKYCById(int id)
     {
         var kycDto = await _kycService.GetKYCById(id);
-        if (kycDto == null)
-        {
-            return NotFound();
-        }
-        return kycDto;
+     
+        return HandleOperationResult(kycDto);
     }
 
         [HttpGet("GetKycByUserId")]
-        public async Task<ActionResult<List<KYCDTO>>> GetKYCByUserId()
+        public async Task<ActionResult<ApiResult<List<Kycdto>>>> GetKYCByUserId()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
             var kycDto = await _kycService.GetKYCByUserId(user.Id);
-            if (kycDto == null)
-            {
-                return NotFound();
-            }
 
-            return kycDto;
+            return HandleOperationResult(kycDto);
         }
 
         [HttpGet]
-    public async Task<ActionResult<IEnumerable<KYCDTO>>> GetAllKYC()
+    public async Task<ActionResult<ApiResult<List<Kycdto>>>> GetAllKYC()
     {
         var kycDtos = await _kycService.GetAllKYC();
-        return Ok(kycDtos);
+        return HandleOperationResult(kycDtos);
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateKYC(int id, KYCDTO kycDto)
+    public async Task<ActionResult<ApiResult<Kycdto>>> UpdateKYC(int id, Kycdto kycDto)
     {
         if (id != kycDto.Id)
         {
@@ -125,12 +120,7 @@ public class KYCController : ControllerBase
                 return BadRequest("Invalid User");
             kycDto.UserId = user.Id;
             var updatedKYC = await _kycService.UpdateKYC(id, kycDto);
-        if (updatedKYC == null)
-        {
-            return NotFound();
-        }
-
-        return NoContent();
+            return HandleOperationResult(updatedKYC);
     }
 
     [HttpDelete("{id}")]

@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Common;
 using Application.Dtos;
 using Application.Interfaces;
-using Domain.Models;
+using Domain.Entities;
 using Infrastructure.Content.Data;
 using Infrastructure.Identity.Services;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,7 @@ namespace Infrastructure.Content.Services
             _context = context;
         }
 
-        public async Task<KYCDTO> CreateKYC(KYCDTO kycDto)
+        public async Task<ApiResult<Kycdto>> CreateKYC(Kycdto kycDto)
         {
             kyc kycEntity = new()
             {
@@ -36,7 +37,7 @@ namespace Infrastructure.Content.Services
             await _context.SaveChangesAsync();
 
             // Return the created KYC DTO with its ID populated
-            return new KYCDTO
+            var result = new Kycdto
             {
                 Id = kycEntity.Id,
                 IdentityType = kycEntity.IdentityType,
@@ -45,20 +46,22 @@ namespace Infrastructure.Content.Services
                 ToExpiryDate = kycEntity.ToExpiryDate,
                 IdentityNumber = kycEntity.IdentityNumber
             };
+            return ApiResult<Kycdto>.Successful(result);
+
         }
 
-        public async Task<List<KYCDTO>> GetKYCByUserId(string userid)
+        public async Task<ApiResult<List<Kycdto>>> GetKYCByUserId(string userid)
         {
-            List<KYCDTO> result = new();
+            List<Kycdto> result = new();
             List<kyc> kentity = await _context.KYCs.Where(u => u.UserId == userid).ToListAsync();
 
             if (kentity == null)
             {
-                return null;
+                return ApiResult<List<Kycdto>>.NotFound("KYC not found");
             }
             foreach (kyc entity in kentity)
             {
-                KYCDTO k = new()
+                Kycdto k = new()
                 {
                     Id = entity.Id,
                     IdentityType = entity.IdentityType,
@@ -70,22 +73,24 @@ namespace Infrastructure.Content.Services
                 }; 
                 result.Add(k);
             }
+            
+            return ApiResult<List<Kycdto>>.Successful(result);
 
-            return result;
 
            
         }
 
-        public async Task<KYCDTO> GetKYCById(int id)
+        public async Task<ApiResult<Kycdto>> GetKYCById(int id)
         {
             var kycEntity = await _context.KYCs.FindAsync(id);
 
             if (kycEntity == null)
             {
-                return null;
+                return ApiResult<Kycdto>.NotFound();
+
             }
 
-            return new KYCDTO
+            var result =  new Kycdto
             {
                 Id = kycEntity.Id,
                 IdentityType = kycEntity.IdentityType,
@@ -95,13 +100,15 @@ namespace Infrastructure.Content.Services
                 IdentityNumber = kycEntity.IdentityNumber
 
             };
+            return ApiResult<Kycdto>.Successful(result);
+
         }
 
-        public async Task<IEnumerable<KYCDTO>> GetAllKYC()
+        public async Task<ApiResult<List<Kycdto>>> GetAllKYC()
         {
             var kycEntities = await _context.KYCs.ToListAsync();
 
-            return kycEntities.Select(kycEntity => new KYCDTO
+            var result = kycEntities.Select(kycEntity => new Kycdto
             {
                 Id = kycEntity.Id,
                 IdentityType = kycEntity.IdentityType,
@@ -110,15 +117,17 @@ namespace Infrastructure.Content.Services
                 ToExpiryDate = kycEntity.ToExpiryDate,
                 IdentityNumber = kycEntity.IdentityNumber
             }).ToList();
+            return ApiResult<List<Kycdto>>.Successful(result);
+
         }
 
-        public async Task<KYCDTO> UpdateKYC(int id, KYCDTO kycDto)
+        public async Task<ApiResult<Kycdto>> UpdateKYC(int id, Kycdto kycDto)
         {
             kyc kycEntity = await _context.KYCs.Where(u=>u.UserId==kycDto.UserId && u.Id==id).FirstOrDefaultAsync();
 
             if (kycEntity == null)
             {
-                return null;
+                return ApiResult<Kycdto>.NotFound();
             }
 
             kycEntity.IdentityType = kycDto.IdentityType;
@@ -130,7 +139,7 @@ namespace Infrastructure.Content.Services
 
             await _context.SaveChangesAsync();
 
-            return new KYCDTO
+            var result =  new Kycdto
             {
                 Id = kycEntity.Id,
                 IdentityType = kycEntity.IdentityType,
@@ -139,6 +148,8 @@ namespace Infrastructure.Content.Services
                 ToExpiryDate = kycEntity.ToExpiryDate,
                 IdentityNumber = kycEntity.IdentityNumber,
             };
+            return ApiResult<Kycdto>.Successful(result);
+
         }
 
         public async Task<bool> DeleteKYC(int id)

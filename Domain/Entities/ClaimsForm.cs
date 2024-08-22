@@ -1,19 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations.Schema;
 
-namespace Domain.Models
+namespace Domain.Entities
 {
     public class ClaimsForm
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
         public string Form {  get; set; }
-        public string APIEndPoint { get; set; }
-        public int Coy_id {  get; set; }
-        public string Coy_name { get; set; }
+        public string ApiEndPoint { get; set; }
+        public int CoyId {  get; set; }
+        public string CoyName { get; set; }
     }
 }

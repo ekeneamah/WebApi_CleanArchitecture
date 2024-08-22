@@ -1,7 +1,7 @@
-﻿using Application.Dtos;
+﻿using Application.Common;
+using Application.Dtos;
 using Application.Interfaces.Content.Products;
 using Application.Interfaces.Content.UserProfiles;
-using Domain.Models;
 using Infrastructure;
 using Infrastructure.Content.Services;
 using Infrastructure.Identity.Models;
@@ -14,7 +14,7 @@ namespace API.Controllers.Content
     [Route("api/[controller]")]
     [ApiController]
     [Authorize]
-    public class UserProfileController : ControllerBase
+    public class UserProfileController : BaseController
     {
         private readonly IUserProfile _profileservice;
         private readonly UserManager<AppUser> _userManager;
@@ -29,25 +29,25 @@ namespace API.Controllers.Content
         #region GetAllProducts Endpoint
         // GET: api/Products
         [HttpGet("GetAll")]
-        public async Task<ActionResult<List<UserProfileDto>>> GetUserPrifiles()
+        public async Task<ActionResult<ApiResult<List<UserProfileDto>>>> GetUserPrifiles()
         {
-            return Ok(await _profileservice.GetAll());
+            return HandleOperationResult(await _profileservice.GetAll());
         }
         #endregion
         #region getbyuserid
         [HttpGet("GetUserid")]
-        public async Task<ActionResult<UserProfileDto>> GetUserPrifilebyid()
+        public async Task<ActionResult<ApiResult<UserProfileDto>>> GetUserPrifilebyid()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
-            return Ok(await _profileservice.GetProfilebyUserid(user.Id));
+            return HandleOperationResult(await _profileservice.GetProfilebyUserid(user.Id));
         }
         #endregion
 
         #region create profile
         [HttpPut]
-        public async Task<ActionResult> UpdateProfile( UserProfileDto u)
+        public async Task<ActionResult<ApiResult<UserProfileDto>>> UpdateProfile( UserProfileDto u)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -57,13 +57,13 @@ namespace API.Controllers.Content
                 return BadRequest("Invalid User");
             u.UserId = user.Id;
             var result = await _profileservice.UpdateUser(u);
-            return new JsonResult(result);
+            return HandleOperationResult(result);
         }
         #endregion create profile
 
         #region update only logo
         [HttpPut("{id}/profilepix")]
-        public async Task<ActionResult<Boolean>> UpdateProfileImage(int id, IFormFile profileImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
+        public async Task<ActionResult<ApiResult<bool>>> UpdateProfileImage(int id, IFormFile profileImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -96,14 +96,14 @@ namespace API.Controllers.Content
             // Update InsuranceCoy in the database with the new logo image URL
            
 
-            return  await _profileservice.Update_UserProfilePix(user.ProfilePix,user.Id);
+            return HandleOperationResult(ApiResult<bool>.Successful(await _profileservice.Update_UserProfilePix(user.ProfilePix,user.Id)));
         }
 
         #endregion
 
         #region delete profile pix
         [HttpDelete("{id}/profilepix")]
-        public async Task<ActionResult<Boolean>> DeleteProfileImage(int id, IFormFile profileImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
+        public async Task<ActionResult<ApiResult<bool>>> DeleteProfileImage(int id, IFormFile profileImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -127,7 +127,7 @@ namespace API.Controllers.Content
             // Update InsuranceCoy in the database with the new logo image URL
 
 
-            return await _profileservice.Update_UserProfilePix(user.ProfilePix, user.Id);
+            return HandleOperationResult(ApiResult<bool>.Successful(await _profileservice.Update_UserProfilePix(user.ProfilePix, user.Id)));
         }
 
         #endregion

@@ -2,7 +2,6 @@
 using Application.Interfaces;
 using Application.Interfaces.Content.Brands;
 using Domain.Entities;
-using Domain.Models;
 using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -10,6 +9,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common;
 
 namespace Infrastructure.Content.Services
 {
@@ -31,56 +31,65 @@ namespace Infrastructure.Content.Services
         }
 
       
-        public CategoryandInsurancecoy GetById(int id)
+        public ApiResult<CategoryandInsurancecoy> GetById(int id)
         {
-            return _dbContext.CategoryandInsurancecoys.FirstOrDefault(x => x.Id == id);
+            var result = _dbContext.CategoryandInsurancecoys.FirstOrDefault(x => x.Id == id);
+            if (result is null)
+                return ApiResult<CategoryandInsurancecoy>.NotFound();
+                
+            return ApiResult<CategoryandInsurancecoy>.Successful(result);
+
         }
 
-        public IEnumerable<CategoryandInsurancecoy> GetAll()
+        public ApiResult<List<CategoryandInsurancecoy>> GetAll()
         {
-            return _dbContext.CategoryandInsurancecoys.ToList();
+            var result =  _dbContext.CategoryandInsurancecoys.ToList();
+            return ApiResult<List<CategoryandInsurancecoy>>.Successful(result);
+
         }
 
-        public async Task<List<CategoryandInsurancecoyDTO>> GetByCategoryId(int categoryId)
+
+        public async Task<ApiResult<List<CategoryandInsurancecoyDto>>> GetByCategoryId(int categoryId)
         {
-            List<CategoryandInsurancecoyDTO> result = new();
+            List<CategoryandInsurancecoyDto> result = new();
 
             List<CategoryandInsurancecoy> ci =  await _dbContext.CategoryandInsurancecoys.Where(x => x.CategoryId == categoryId).ToListAsync();
             foreach (CategoryandInsurancecoy item in ci)
             {
 
-                CategoryandInsurancecoyDTO cd = new()
+                CategoryandInsurancecoyDto cd = new()
                 {
                     CategoryId = item.CategoryId,
                     CategoryName = item.CategoryName,
                     InsuranceCoyId = item.InsuranceCoyId,
-                    InsuranceCoy = await _insuranceCoyService.GetById(item.InsuranceCoyId),
+                    InsuranceCoy = (await _insuranceCoyService.GetById(item.InsuranceCoyId)).Data,
                     Id = item.Id
                 };
                 result.Add(cd);
             }
-            return result;
+            return ApiResult<List<CategoryandInsurancecoyDto>>.Successful(result);
         }
 
-        public async Task<List<CategoryandInsurancecoyDTO>> GetByInsuranceCoyId(int insuranceCoyId)
+        public async Task<ApiResult<List<CategoryandInsurancecoyDto>>> GetByInsuranceCoyId(int insuranceCoyId)
         {
-            List<CategoryandInsurancecoyDTO> result = new();
+            List<CategoryandInsurancecoyDto> result = new();
 
             List<CategoryandInsurancecoy> ci = await _dbContext.CategoryandInsurancecoys.Where(x => x.InsuranceCoyId == insuranceCoyId).ToListAsync();
             foreach (CategoryandInsurancecoy item in ci)
             {
 
-                CategoryandInsurancecoyDTO cd = new()
+                CategoryandInsurancecoyDto cd = new()
                 {
                     CategoryId = item.CategoryId,
                     CategoryName = item.CategoryName,
                     InsuranceCoyId = item.InsuranceCoyId,
-                    InsuranceCoy = await _insuranceCoyService.GetById(item.InsuranceCoyId),
+                    InsuranceCoy = (await _insuranceCoyService.GetById(item.InsuranceCoyId)).Data,
                     Id = item.Id
                 };
                 result.Add(cd);
             }
-            return result;
+            return ApiResult<List<CategoryandInsurancecoyDto>>.Successful(result);
+
         }
 
         // Update operation
@@ -90,7 +99,7 @@ namespace Infrastructure.Content.Services
             _dbContext.SaveChanges();
         }
 
-        // Delete operation
+        // Delete operation 
         public void Delete(int id)
         {
             var itemToDelete = _dbContext.CategoryandInsurancecoys.FirstOrDefault(x => x.Id == id);

@@ -1,11 +1,11 @@
 ﻿using Application.Dtos;
-using Domain.Models;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Domain.Entities;
 
 namespace Application.POCO
 {
@@ -22,11 +22,11 @@ namespace Application.POCO
                 ResidentialAddress = u.ResidentialAddress,
                 Town = u.Town,
                 BusinessLocation = u.BusinessLocation,
-                BVN = u.BVN,
+                Bvn = u.Bvn,
                 City = u.City,
                 Country = u.Country,
                 Maidenname = u.Maidenname,
-                NIN = u.NIN,
+                Nin = u.Nin,
                 Phone = u.Phone,
                 PostalCode = u.PostalCode,
                 Region = u.Region,
@@ -51,11 +51,11 @@ namespace Application.POCO
                 ResidentialAddress = u.ResidentialAddress,
                 Town = u.Town,
                 BusinessLocation = u.BusinessLocation,
-                BVN = u.BVN,
+                Bvn = u.Bvn,
                 City = u.City,
                 Country = u.Country,
                 Maidenname = u.Maidenname,
-                NIN = u.NIN,
+                Nin = u.Nin,
                 Phone = u.Phone,
                 PostalCode = u.PostalCode,
                 Region = u.Region,
@@ -81,11 +81,11 @@ namespace Application.POCO
                 ResidentialAddress = "",
                 Town = "",
                 BusinessLocation = "",
-                BVN = "",
+                Bvn = "",
                 City = "",
                 Country = "",
                 Maidenname = "",
-                NIN = "",
+                Nin = "",
                 Phone = "",
                 PostalCode = "",
                 Region = "",
@@ -107,11 +107,11 @@ namespace Application.POCO
                 ResidentialAddress = "",
                 Town = "",
                 BusinessLocation = "",
-                BVN = "",
+                Bvn = "",
                 City = "",
                 Country = "",
                 Maidenname = "",
-                NIN = "",
+                Nin = "",
                 Phone = "",
                 PostalCode = "",
                 Region = "",

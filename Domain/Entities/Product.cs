@@ -1,50 +1,57 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.ComponentModel.DataAnnotations;
-using System.Linq;
-using System.Numerics;
-using System.Text;
-using System.Text.Json.Serialization;
-using System.Threading.Tasks;
 
-namespace Domain.Models
+namespace Domain.Entities
 {
     public class Product
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Product_Id { get; set; }
+        public int ProductId { get; set; }
 
 
         [Required]
         [MaxLength(100)]
-        public string? Product_Name { get; set; }
+        public string? ProductName { get; set; }
 
 
         [ForeignKey("InsuranceCompany")]
-        public int Coy_Id { get; set; }
+        public int CoyId { get; set; }
        
 
         [ForeignKey("CategoryEntity")]
-        public int? Category_Id { get; set; }
+        public int? CategoryId { get; set; }
        
 
 
 
         [Required]
         [MaxLength(100)]
-        public double Product_Price { get; set; }
+        public double ProductPrice { get; set; }
+        public double ProductPricePercentatage { get; set; }
 
-        public int Product_Quantity { get; set; }
+        public int ProductQuantity { get; set; }
 
-        public string? Product_Code { get; set; }
-        public string? Product_Group { get; set; }
-        public string? Product_Description { get; set; }
-        public bool? Is_Approved { get; set;}
-        public bool? Is_Deleted { get; set;}
-        public bool Is_Recommended { get; set; } = false;
+        public string? ProductCode { get; set; }
+        public string? ProductGroup { get; set; }
+        public string? ProductDescription { get; set; }
+        public bool? IsApproved { get; set;}
+        public bool? IsDeleted { get; set;}
+        public bool IsRecommended { get; set; } = false;
         public int? SortingWeight { get; set; }
+        public PriceType PriceType { get; set; }
+        public string? ThumbNail { get; set; }
+        public string? ImageUrl { get; set; }
+        public string? VideoUrl { get; set; }
+        public List<ProductBenefit?> Benefit { get; set; } = new List<ProductBenefit?>();
+
+    }
+    
+    
+    public enum PriceType
+    {
+        Fixed,
+        Percentage
     }
 
 

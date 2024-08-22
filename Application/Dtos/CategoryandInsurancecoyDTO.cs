@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Dtos
 {
-    public class CategoryandInsurancecoyDTO
+    public class CategoryandInsurancecoyDto
     {
        
         public int Id { get; set; }
@@ -16,7 +16,7 @@ namespace Application.Dtos
         public string CategoryName { get; set; }
         public int InsuranceCoyId { get; set; }
         public string InsuranceCoyName { get; set; }
-        public InsuranceCoyDTO InsuranceCoy { get; set; }
-        public CategoryDTO Category { get; set; }
+        public InsuranceCoyDto InsuranceCoy { get; set; }
+        public CreateCategoryDto CreateCategory { get; set; }
     }
 }

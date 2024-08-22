@@ -1,12 +1,6 @@
-﻿using Domain.Models;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Domain.Entities;
 
-
-namespace Infrastructure.Content.Services
+namespace Application.Interfaces.Email.Templates
 {
     public class TRansactionComplete
     {
@@ -62,7 +56,7 @@ namespace Infrastructure.Content.Services
                     <li>Amount: {transaction?.Amount}</li>
                     <li>Date: {transaction?.DateTime}</li>
                     <li>Stattus: {transaction?.Status}</li>
-                    <li>ProductEntity: {p.Product_Name} </li>
+                    <li>ProductEntity: {p.ProductName} </li>
                    
                 </ul>
                 <p>Thank you for choosing our services!</p>
@@ -121,7 +115,7 @@ namespace Infrastructure.Content.Services
                     <li>Amount: {transaction.Amount}</li>
                     <li>Date: {transaction.DateTime}</li>
                     <li>Stattus: {transaction.Status}</li>
-                    <li>ProductEntity: {p.Product_Name} </li>
+                    <li>ProductEntity: {p.ProductName} </li>
 <li>Payment Ref.: {transaction.PaymentRef} </li>
 
                    

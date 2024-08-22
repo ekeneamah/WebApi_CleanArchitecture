@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
+﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace Domain.Models
+namespace Domain.Entities
 {
     public class UserProfile
     {
@@ -14,7 +9,7 @@ namespace Domain.Models
 
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int Profile_Id { get; set; }
+        public int ProfileId { get; set; }
 
         [Required]
         [MaxLength(50)]
@@ -42,13 +37,13 @@ namespace Domain.Models
         public string? Maidenname { get; set; }
         public string? Stateoforigin { get; set; }
        
-        public string? BVN { get; set; }
+        public string? Bvn { get; set; }
         public string? BusinessLocation { get; set; }
         public string? SignatureUrl { get; set; }
         public string? Gender { get; set;}
         public string? FirstName { get; set; }
         public string? LastName { get; set; }
         public string? Email { get; set; }
-        public string? NIN { get; set; }
+        public string? Nin { get; set; }
     }
 }

@@ -4,16 +4,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Common;
 
 namespace Application.Interfaces
 {
     public interface IKYC
     {
-        Task<KYCDTO> CreateKYC(KYCDTO kycDto);
-        Task<KYCDTO> GetKYCById(int id);
-        Task<IEnumerable<KYCDTO>> GetAllKYC();
-        Task<KYCDTO> UpdateKYC(int id, KYCDTO kycDto);
+        Task<ApiResult<Kycdto>> CreateKYC(Kycdto kycDto);
+        Task<ApiResult<Kycdto>> GetKYCById(int id);
+        Task<ApiResult<List<Kycdto>>> GetAllKYC();
+        Task<ApiResult<Kycdto>> UpdateKYC(int id, Kycdto kycDto);
         Task<bool> DeleteKYC(int id);
-        Task<List<KYCDTO>> GetKYCByUserId(string userid);
+        Task<ApiResult<List<Kycdto>>> GetKYCByUserId(string userid);
     }
 }

@@ -1,9 +1,10 @@
-﻿namespace API.Controllers.Content
+﻿using Application.Common;
+
+namespace API.Controllers.Content
 {
     using Application.Dtos;
     using Application.Dtos.Account;
     using Application.Interfaces.Content.Claim;
-    using Domain.Models;
     using Infrastructure.Identity.Models;
     using Microsoft.AspNetCore.Authorization;
     using Microsoft.AspNetCore.Identity;
@@ -21,7 +22,7 @@
         [Route("api/[controller]")]
         [ApiController]
         [Authorize]
-        public class ClaimController : ControllerBase
+        public class ClaimController : BaseController
         {
             private readonly IClaim _claimService;
             private readonly UserManager<AppUser> _userManager;
@@ -38,33 +39,30 @@
             }
 
             [HttpGet]
-            public async Task<ActionResult<List<ClaimDetailDTO>>> GetAllClaims()
+            public async Task<ActionResult<ApiResult<List<ClaimDetailDto>>>> GetAllClaims()
             {
                 var claims = await _claimService.GetAll();
-                return Ok(claims);
+                return HandleOperationResult(claims);
             }
         #region Get All my claims
         [HttpGet("GetAllMyClaims")]
-        public async Task<ActionResult<List<ClaimDetailDTO>>> GetAllMyClaims()
+        public async Task<ActionResult<ApiResult<List<ClaimDetailDto>>>> GetAllMyClaims()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
 
             var claims = await _claimService.GetAllMyClaims(user.Id);
-            return Ok(claims);
+            return HandleOperationResult(claims);
         }
         #endregion
         #region get claim by id
         [HttpGet("{claimId}")]
-            public async Task<ActionResult<ClaimDetailDTO>> GetClaimById(string claimId)
+            public async Task<ActionResult<ApiResult<ClaimDetailDto>>> GetClaimById(string claimId)
             {
                 var claim = await _claimService.GetById(claimId);
-                if (claim == null)
-                {
-                    return NotFound(); // 404 Not Found if claim not found
-                }
-                return Ok(claim);
+                return HandleOperationResult(claim);
+
             }
 #endregion
        
@@ -108,9 +106,9 @@
                 if (response.IsSuccessStatusCode)
                 {
                     claimsDto.UserId = user.Id;
-                    ClaimsDto c = await _claimService.AddClaims(claimsDto);
+                    var c = (await _claimService.AddClaims(claimsDto)).Data;
                     var r = await response.Content.ReadAsStringAsync();
-                    NotificationDTO tokenObject = System.Text.Json.JsonSerializer.Deserialize<NotificationDTO>(r);
+                    NotificationDto tokenObject = System.Text.Json.JsonSerializer.Deserialize<NotificationDto>(r);
                     tokenObject.ClaimsId = c.ClaimId;
                     var addedClaim = await _claimService.AddNotification(tokenObject);
                     return Ok("Claim submitted successfully "+ addedClaim);
@@ -168,7 +166,7 @@
                 var content = await response.Content.ReadAsStringAsync();
 
                 // Deserialize the JSON response into a NotificationDTO object
-                var notificationDTO = JsonConvert.DeserializeObject<NotificationDTO>(content);
+                var notificationDTO = JsonConvert.DeserializeObject<NotificationDto>(content);
                var result = await _claimService.AddNotification(notificationDTO);
 
                 // Return the NotificationDTO object
@@ -220,7 +218,7 @@
         #region update claim
 
         [HttpPut("{claimId}")]
-            public async Task<ActionResult<ClaimsDto>> UpdateClaim(string claimId, ClaimsDto model)
+            public async Task<ActionResult<ApiResult<ClaimsDto>>> UpdateClaim(string claimId, ClaimsDto model)
             {
                 if (claimId != model.ClaimId.ToString())
                 {
@@ -233,12 +231,9 @@
             }
             model.UserId = user?.Id;
             var updatedClaim = await _claimService.UpdateClaims(model);
-                if (updatedClaim == null)
-                {
-                    return NotFound(); // 404 Not Found if claim not found
-                }
 
-                return Ok(updatedClaim);
+                return HandleOperationResult(updatedClaim);
+
             }
         }
     #endregion

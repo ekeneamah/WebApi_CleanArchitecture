@@ -6,11 +6,11 @@ using System.Threading.Tasks;
 
 namespace Application.Dtos
 {
-    public class GeneratePolicyDTO
+    public class GeneratePolicyDto
     {
-        public bool isOrg { get; set; }
-        public int kycid { get; set; }
-        public List<SectionDTO> sections { get; set; }
+        public bool IsOrg { get; set; }
+        public int Kycid { get; set; }
+        public List<SectionDto> Sections { get; set; }
         public int ProductId { get; set; }
         public object Userid { get; set; }
         public DateTime EndDate { get; set; }

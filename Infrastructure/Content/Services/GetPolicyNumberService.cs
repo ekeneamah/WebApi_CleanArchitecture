@@ -22,7 +22,7 @@ namespace Infrastructure.Content.Services
             _authResponseService = authResponseService;
         }
 
-        public async Task<PolicyGenReturnedData_cornerstoneDTO> PostPolicyAndTransform(string endpointUrl, GetPolicyNumberDTO policyDto)
+        public async Task<PolicyGenReturnedDataCornerstoneDto> PostPolicyAndTransform(string endpointUrl, GetPolicyNumberDto policyDto)
         {
             // Serialize the TransactionDTO to JSON
             var jsonContent = JsonSerializer.Serialize(policyDto);
@@ -40,7 +40,7 @@ namespace Infrastructure.Content.Services
                     var responseContent = await response.Content.ReadAsStringAsync();
 
                     // Deserialize the response JSON into the target model
-                    var modelForDatabase = JsonSerializer.Deserialize<PolicyGenReturnedData_cornerstoneDTO>(responseContent);
+                    var modelForDatabase = JsonSerializer.Deserialize<PolicyGenReturnedDataCornerstoneDto>(responseContent);
                   
                     return modelForDatabase;
                 }

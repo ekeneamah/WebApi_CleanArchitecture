@@ -2,20 +2,21 @@
 using Application.Dtos;
 using Application.Interfaces.Content.Products;
 using Domain;
-using Domain.Models;
 using Infrastructure;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using NuGet.Configuration;
 using System.Drawing.Printing;
+using Application.Common;
+using Domain.Entities;
 
 namespace API.Controllers.Content
 {
     [Route("api/[controller]")]
     [ApiController]
   
-    public class ProductController : ControllerBase
+    public class ProductController : BaseController
     {
         private readonly IProduct _productServcie;
 
@@ -28,75 +29,69 @@ namespace API.Controllers.Content
         #region GetAllProducts Endpoint
         // GET: api/Products
         [HttpGet("GetAll")]
-        public async Task<ActionResult<ProductDtoDetails>> GetProducts(int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<ApiResult<List<ProductDtoDetails>>>> GetProducts(int pageNumber = 1, int pageSize = 10)
         {
             var products = await _productServcie.GetAll(pageNumber, pageSize);
             //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
 
-            return Ok(products);
+            return HandleOperationResult(products);
         }
         #endregion
 
         #region GetAllProducts Endpoint
         // GET: api/Products
         [HttpGet("GetAllProductsByGroup")]
-        public async Task<ActionResult<ProductDtoDetails>> GetProductsByGroup(string group_name,int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<ApiResult<List<ProductDtoDetails>>>> GetProductsByGroup(string group_name,int pageNumber = 1, int pageSize = 10)
         {
             var products = await _productServcie.GetAllProductsByGroup(pageNumber, pageSize,group_name);
             //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
 
-            return Ok(products);
+            return HandleOperationResult(products);
         }
         #endregion
 
         #region GetAllProducts by category id Endpoint
         // GET: api/Products
         [HttpGet("GetProductsByCategoryId")]
-        public async Task<ActionResult<ProductDtoDetails>> GetProductsByCategoryId(int product_categoryId, int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<ApiResult<List<ProductDtoDetails>>>> GetProductsByCategoryId(int product_categoryId, int pageNumber = 1, int pageSize = 10)
         {
             var products = await _productServcie.GetAllProductsByCategory( pageNumber, pageSize, product_categoryId);
             //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
 
-            return Ok(products);
+            return HandleOperationResult(products);
         }
         #endregion
         #region GetAllProducts by insurance id Endpoint
         // GET: api/Products
         [HttpGet("GetProductsByInsuranceCoyId")]
-        public async Task<ActionResult<Product>> GetProductsByInsuranceCoyId(int insuranceCoyId, int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<ApiResult<List<Product>>>> GetProductsByInsuranceCoyId(int insuranceCoyId, int pageNumber = 1, int pageSize = 10)
         {
             var products = await _productServcie.GetProductsByInsuranceCoyId(pageNumber, pageSize, insuranceCoyId);
             //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
 
-            return Ok(products);
+            return HandleOperationResult(products);
         }
         #endregion
         #region Get Recommended Products Endpoint
         // GET: api/Products
         [HttpGet("GetRecommendedProducts")]
-        public async Task<ActionResult<Product>> GetRecommendedProducts(int pageNumber = 1, int pageSize = 10)
+        public async Task<ActionResult<ApiResult<List<Product>>>> GetRecommendedProducts(int pageNumber = 1, int pageSize = 10)
         {
             var products = await _productServcie.GetRecommendedProducts(pageNumber, pageSize);
             //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
 
-            return Ok(products);
+            return HandleOperationResult(products);
         }
         #endregion
         #region get product details
 
         // GET: api/Products/5
         [HttpGet("{code}")]
-        public async Task<ActionResult<Product>> GetProduct(string code)
+        public async Task<ActionResult<ApiResult<ProductDtoDetails>>> GetProduct(string code)
         {
             
             var product = await _productServcie.GetByCode(code);
-
-            if (product == null)
-            {
-                return NotFound($"no ProductEntity with {code} was found");
-            }
-
-            return Ok(product);
+            return HandleOperationResult(product);
         }
         #endregion
 
@@ -104,17 +99,12 @@ namespace API.Controllers.Content
 
         // GET: api/Products/5
         [HttpGet("GetProductDetailById")]
-        public async Task<ActionResult<Product>> GetProductDetailById(int product_id)
+        public async Task<ActionResult<ApiResult<ProductDtoDetails>>> GetProductDetailById(int product_id)
         {
 
             var product = await _productServcie.GetDetailsById(product_id);
 
-            if (product == null)
-            {
-                return NotFound($"no ProductEntity with {product_id} was found");
-            }
-
-            return Ok(product);
+            return HandleOperationResult(product);
         }
         #endregion
 
@@ -123,10 +113,10 @@ namespace API.Controllers.Content
         // POST: api/Products
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<int>> PostProduct( ProductDto model)
+        public async Task<ActionResult<int>> PostProduct( CreateProductDto model)
         {
 
-            var isExist = await _productServcie.ProductIsExist(model.Product_Code);
+            var isExist = await _productServcie.ProductIsExist(model.ProductCode);
 
             if (isExist is true)
             {
@@ -137,14 +127,14 @@ namespace API.Controllers.Content
             {
                 var product = new Product
                 {
-                    Product_Name = model.Product_Name,
-                    Coy_Id = model.InsuranceCoy_id,
-                    Category_Id = model.Category_Id,
-                    Product_Price = model.Product_Price,
-                    Product_Quantity = model.Product_Quantity,
-                    Product_Code = model.Product_Code,
-                    Product_Description = model.Product_Description,
-                    Product_Group = model.Product_Group,
+                    ProductName = model.ProductName,
+                    CoyId = model.InsuranceCoyId,
+                    CategoryId = model.CategoryId,
+                    ProductPrice = model.ProductPrice,
+                    ProductQuantity = model.ProductQuantity,
+                    ProductCode = model.ProductCode,
+                    ProductDescription = model.ProductDescription,
+                    ProductGroup = model.ProductGroup,
                     
                 };
 
@@ -158,27 +148,27 @@ namespace API.Controllers.Content
         #region Update Product Endpoint
         // PUT: api/Products/5
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateProduct([FromQuery] int id, ProductDto model)
+        public async Task<ActionResult<ApiResult<Product>>> UpdateProduct([FromQuery] int id, CreateProductDto model)
         {
             var product = await _productServcie.GetById(id);
 
             if (product == null)
             {
-                return NotFound($"brand:{model.Product_Name}  has not found");
+                return NotFound($"brand:{model.ProductName}  has not found");
             }
 
-            product.Product_Name = model.Product_Name;
-            product.Coy_Id = model.InsuranceCoy_id;
-            product.Product_Price = model.Product_Price;
-            product.Product_Quantity = model.Product_Quantity;
-            product.Product_Description = model.Product_Description;
-            product.Category_Id = model.Category_Id;
-            product.Product_Code = model.Product_Code;
+            product.ProductName = model.ProductName;
+            product.CoyId = model.InsuranceCoyId;
+            product.ProductPrice = model.ProductPrice;
+            product.ProductQuantity = model.ProductQuantity;
+            product.ProductDescription = model.ProductDescription;
+            product.CategoryId = model.CategoryId;
+            product.ProductCode = model.ProductCode;
 
 
             _productServcie.Update(product);
 
-            return Ok(product);
+            return HandleOperationResult(ApiResult<Product>.Successful(product));
         }
 
         #endregion
@@ -191,7 +181,7 @@ namespace API.Controllers.Content
             var product = await _productServcie.GetById(id);
             if (product is null)
             {
-                return NotFound($"brand:{product.Product_Name} with Id:{product.Product_Id} has not found");
+                return NotFound($"brand:{product.ProductName} with Id:{product.ProductId} has not found");
             }
 
             _productServcie.Delete(product);
@@ -202,22 +192,17 @@ namespace API.Controllers.Content
 
         #region Withdraw Product Endpoint
         [HttpPut("WithDraw")]
-        public async Task<IActionResult> WithDrawProduct(WithDrawProducts dto)
+        public async Task<ActionResult<ApiResult<CreateProductDto>>> WithDrawProduct(WithDrawProducts dto)
         {
-            var exist = _productServcie.GetProductByCode(dto.Product_Code);
-
-            if (exist is null)
-            {
-                return BadRequest($"No Products found with this Code {dto.Product_Code}");
-
-            }
+            var exist = await _productServcie.GetProductByCode(dto.ProductCode);
+            
 
           //  if (dto.Product_Quantity > exist.Product_Quantity)
                // return BadRequest($"Your request is bigger Than the stock , the sock has {exist.Product_Quantity} of {exist.Product_Name}");
 
             _productServcie.WithDraw(dto);
 
-            return Ok(exist);
+            return HandleOperationResult(exist);
         }
 
         #endregion

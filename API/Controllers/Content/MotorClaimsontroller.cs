@@ -1,21 +1,19 @@
-﻿using Application.Interfaces;
-using Domain.Models;
+﻿using System.Net.Http.Headers;
+using System.Text;
+using Application.Common;
+using Application.Interfaces;
+using Domain.Entities;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
-using System.Net.Http.Headers;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace API.Controllers
+namespace API.Controllers.Content
 {
     [ApiController]
     [Route("api/[controller]")]
     [Authorize]
-    public class MotorClaimsController : ControllerBase
+    public class MotorClaimsController : BaseController
     {
         private readonly IMotorClaimRepository _repository;
         private readonly UserManager<AppUser> _userManager;
@@ -32,34 +30,31 @@ namespace API.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<MotorClaim>>> GetAll()
+        public async Task<ActionResult<ApiResult<List<MotorClaim>>>> GetAll()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
 
             var claims = await _repository.GetAllMotorClaims(user.Id);
-            return Ok(claims);
+            return HandleOperationResult(claims);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<MotorClaim>> GetById(int id)
+        public async Task<ActionResult<ApiResult<MotorClaim>>> GetById(int id)
         {
             var claim = await _repository.GetMotorClaimById(id);
-            if (claim == null)
-            {
-                return NotFound();
-            }
-            return Ok(claim);
+            return HandleOperationResult(claim);
+
         }
 
         [HttpPost]
-        public async Task<ActionResult<MotorClaim>> Create(MotorClaim motorClaim)
+        public async Task<ActionResult<ApiResult<MotorClaim>>> Create(MotorClaim motorClaim)
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
-            motorClaim.User_Id = user.Id;
+            motorClaim.UserId = user.Id;
            // motorClaim.Name = user.FirstName+" "+user.LastName;
 
             HttpResponseMessage claimsRes = await SendClaimAsync(motorClaim);
@@ -67,7 +62,7 @@ namespace API.Controllers
             {
 
                 var createdClaim = await _repository.CreateMotorClaim(motorClaim);
-                return CreatedAtAction(nameof(GetById), new { id = createdClaim.Id }, createdClaim);
+                return HandleOperationResult(createdClaim);
             }
             else
             {
