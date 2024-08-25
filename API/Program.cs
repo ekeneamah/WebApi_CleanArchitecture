@@ -25,6 +25,7 @@ using System.Collections;
 using System.Text;
 using System.Text.Json.Serialization;
 using API.Filters;
+using Application.Interfaces.Content.UnderWriting;
 using Application.Interfaces.Email;
 using Application.Mapping;
 using Microsoft.AspNetCore.Mvc;
@@ -92,6 +93,7 @@ builder.Services.AddScoped<ICategoryandInsurancecoy, CategoryandInsurancecoyServ
 builder.Services.AddScoped<IAuthResponse, AuthResponseService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IKYC, KYCService>();
+builder.Services.AddScoped<IUnderWritingService, UnderWritingService>();
 builder.Services.Configure<MailSettings>(builder.Configuration.GetSection("MailSettings"));
 builder.Services.AddAutoMapper(typeof(MappingProfile));
 

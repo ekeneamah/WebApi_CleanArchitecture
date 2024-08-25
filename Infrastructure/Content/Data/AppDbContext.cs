@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Reflection;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using Domain.Entities;
 
 namespace Infrastructure.Content.Data
@@ -33,12 +35,15 @@ namespace Infrastructure.Content.Data
         public DbSet<PolicySectionRate> PolicySectionRates { get; set; }
         public DbSet<PolicySectionSmi> PolicySectionSmis { get; set; }
         public DbSet<CategoryandInsurancecoy> CategoryandInsurancecoys { get;  set; }
+        public DbSet<UnderWritingForm> ProductUnderWritingForms { get;  set; }
+        public DbSet<ClaimsUnderWritingForm> ClaimsUnderWritingForms { get;  set; }
+        public DbSet<FormSubmission> ProductUnderWritingAnswers { get;  set; }
+        public DbSet<ClaimsFormSubmission> ClaimsUnderWritingAnswers { get;  set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
 
             base.OnModelCreating(modelBuilder);
-
             modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());
         }
 
