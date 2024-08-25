@@ -7,7 +7,7 @@ using Domain.Entities;
 
 namespace API.Controllers.Content
 {
-    
+
     [Route("api/[controller]")]
     [ApiController]
     public class UnderWritingController : BaseController
@@ -21,11 +21,12 @@ namespace API.Controllers.Content
 
         [HttpPost("ProductUnderWritingForm")]
 
-        public async Task<ActionResult<ApiResult<UnderWritingForm>>> CreateProductUnderWritingForm([FromBody]ProductUnderWritingDto model)
+        public async Task<ActionResult<ApiResult<UnderWritingForm>>> CreateProductUnderWritingForm(
+            [FromBody] ProductUnderWritingDto model)
         {
-                var result = await _underWritingService.CreateProductUnderWritingFormAsync(model);
-                return HandleOperationResult(result);
-            
+            var result = await _underWritingService.CreateProductUnderWritingFormAsync(model);
+            return HandleOperationResult(result);
+
         }
 
         [HttpGet("ProductUnderWritingForm")]
@@ -34,6 +35,25 @@ namespace API.Controllers.Content
             [Required] int? productId)
         {
             var result = await _underWritingService.GetProductUnderWritingFormAsync(productId.GetValueOrDefault());
+            return HandleOperationResult(result);
+        }
+
+        [HttpPost("ClaimsUnderWritingForm")]
+
+        public async Task<ActionResult<ApiResult<ClaimsUnderWritingForm>>> CreateClaimsUnderWritingForm(
+            [FromBody] ProductUnderWritingDto model)
+        {
+            var result = await _underWritingService.CreateClaimsUnderWritingFormAsync(model);
+            return HandleOperationResult(result);
+
+        }
+
+        [HttpGet("ClaimsUnderWritingForm")]
+
+        public async Task<ActionResult<ApiResult<ClaimsUnderWritingForm>>> GetClaimsUnderWritingForm(
+            [Required] int? productId)
+        {
+            var result = await _underWritingService.GetClaimsUnderWritingFormAsync(productId.GetValueOrDefault());
             return HandleOperationResult(result);
         }
 

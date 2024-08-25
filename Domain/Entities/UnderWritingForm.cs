@@ -53,8 +53,8 @@ public class ClaimsUnderWritingForm
     public string Id { get; set; } = null!;
     public Product? Product { get; set; }
     
-    [NotMapped]
     public List<FormField>? Form { get; set; } = new List<FormField>();
+    [NotMapped]
 
     public string? FormJson
     {

@@ -19,7 +19,7 @@ public class UnderWritingService : IUnderWritingService
 
     public async Task<ApiResult<UnderWritingForm>> CreateProductUnderWritingFormAsync(ProductUnderWritingDto model)
     {
-        var product = _context.Products.FirstOrDefault(x => x.ProductId == model.ProductId);
+        var product = await _context.Products.FirstOrDefaultAsync(x => x.ProductId == model.ProductId);
         if (product == null) return  ApiResult<UnderWritingForm>.Failed("Product Not Found");
 
         var validationErrors = ValidateForm(model);
@@ -27,7 +27,7 @@ public class UnderWritingService : IUnderWritingService
         {
             return ApiResult<UnderWritingForm>.Failed(string.Join(Environment.NewLine, validationErrors));
         }
-        var data = _context.ProductUnderWritingForms.FirstOrDefault(x => x.Product == product);
+        var data = await _context.ProductUnderWritingForms.FirstOrDefaultAsync(x => x.Product == product);
         if (data is null)
         {
              data = new UnderWritingForm
@@ -55,6 +55,47 @@ public class UnderWritingService : IUnderWritingService
      
         var data = await _context.ProductUnderWritingForms.FirstOrDefaultAsync(x => x.Product == product);
         return ApiResult<UnderWritingForm>.Successful(data);
+    }
+    
+    
+    public async Task<ApiResult<ClaimsUnderWritingForm>> CreateClaimsUnderWritingFormAsync(ProductUnderWritingDto model)
+    {
+        var product = await _context.Products.FirstOrDefaultAsync(x => x.ProductId == model.ProductId);
+        if (product == null) return  ApiResult<ClaimsUnderWritingForm>.Failed("Product Not Found");
+
+        var validationErrors = ValidateForm(model);
+        if (validationErrors.Count > 0)
+        {
+            return ApiResult<ClaimsUnderWritingForm>.Failed(string.Join(Environment.NewLine, validationErrors));
+        }
+        var data = await _context.ClaimsUnderWritingForms.FirstOrDefaultAsync(x => x.Product == product);
+        if (data is null)
+        {
+             data = new ClaimsUnderWritingForm
+            {
+                Form = model.Form,
+                Product = product
+            
+            };
+            _context.ClaimsUnderWritingForms.Add(data);
+        }
+
+        else
+        {
+            data.Form = model.Form;
+            _context.Update(data);
+        }
+       
+        await _context.SaveChangesAsync();
+        return ApiResult<ClaimsUnderWritingForm>.Successful(data);
+    }
+     public async Task<ApiResult<ClaimsUnderWritingForm>> GetClaimsUnderWritingFormAsync(int productId)
+    {
+        var product = await _context.Products.FirstOrDefaultAsync(x => x.ProductId == productId);
+        if (product == null) return  ApiResult<ClaimsUnderWritingForm>.Failed("Product Not Found");
+     
+        var data = await _context.ClaimsUnderWritingForms.FirstOrDefaultAsync(x => x.Product == product);
+        return ApiResult<ClaimsUnderWritingForm>.Successful(data);
     }
     
     
