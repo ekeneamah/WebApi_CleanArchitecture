@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class ReInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,7 +37,7 @@ namespace Infrastructure.Migrations
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     InsuranceCoyId = table.Column<int>(type: "int", nullable: false),
-                    InsuranceCoyName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CoyName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -142,7 +142,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "KYCs",
+                name: "Kycs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -156,7 +156,7 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_KYCs", x => x.Id);
+                    table.PrimaryKey("PK_Kycs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -334,7 +334,8 @@ namespace Infrastructure.Migrations
                     Amount = table.Column<double>(type: "float", nullable: false),
                     DateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PaymentRef = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PaymentRef = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TransactionType = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -441,7 +442,7 @@ namespace Infrastructure.Migrations
                 name: "InsuranceCompany");
 
             migrationBuilder.DropTable(
-                name: "KYCs");
+                name: "Kycs");
 
             migrationBuilder.DropTable(
                 name: "MotorClaims");
