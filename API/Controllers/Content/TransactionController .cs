@@ -3,6 +3,7 @@ using Domain.Entities;
 
 namespace API.Controllers.Content
 {
+    using API.helper;
     using Application.Interfaces;
     using Application.Interfaces.Content.Policy;
     using Infrastructure.Content.Services;
@@ -164,16 +165,27 @@ namespace API.Controllers.Content
             return HandleOperationResult(transaction);
         }
 
+        #region GetTransactionByUserId
         [HttpGet("GetTransactionsByUserId")]
-        public async Task<ActionResult<ApiResult<List<TransactionDto>>>> GetTransactionsByUserId()
+        public async Task<ActionResult<ApiResult<PaginatedListWithFIlter<TransactionDto>>>> GetTransactionsByUserId(
+            int pageNumber = 1,
+            int pageSize = 10,
+            DateTime? startDate = null,
+            DateTime? endDate = null,
+            string? transactionType = null,
+            string? status = null)
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
-            var transactions = await _transactionService.GetTransactionsByUserId(user.Id);
+
+            var transactions = await _transactionService.GetTransactionsByUserId(
+                user.Id, pageNumber, pageSize, startDate, endDate, transactionType, status);
 
             return HandleOperationResult(transactions);
         }
+
+        #endregion
     }
 
     public class TransactionRequest

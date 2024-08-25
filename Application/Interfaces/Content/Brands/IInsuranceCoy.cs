@@ -13,13 +13,14 @@ namespace Application.Interfaces.Content.Brands
     {
         Task<ApiResult<List<InsuranceCoyDto>>> GetAll(int pageNumber, int pageSize);
 
-        Task<ApiResult<InsuranceCoyDto>> GetById(int id);
+        Task<ApiResult<InsuranceCoyDetailDto>> GetInsuranceCoyDetailById(int id);
+        Task<InsuranceCoy> GetByInsuranceCoyId(int id);
 
         Task<ApiResult<InsuranceCoyDto>> Add_Coy(InsuranceCoyDto model);
 
-        Task<int> Update_Coy(InsuranceCoyDto model);
+        Task<int> Update_Coy(InsuranceCoy model);
 
-        Task<ApiResult<InsuranceCoy>> Delete_Coy(InsuranceCoyDto model);
+        Task<ApiResult<InsuranceCoy>> Delete_Coy(InsuranceCoy model);
 
         Task<bool> CoyIsExist(string code);
 

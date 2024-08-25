@@ -80,29 +80,62 @@ namespace Infrastructure.Content.Services
 
         }
 
-        public async Task<ApiResult<List<TransactionDto>>> GetTransactionsByUserId(string userId)
+        public async Task<ApiResult<PaginatedListWithFIlter<TransactionDto>>> GetTransactionsByUserId(
+    string userId,
+    int pageNumber,
+    int pageSize,
+    DateTime? startDate = null,
+    DateTime? endDate = null,
+    string transactionType = null,
+    string status = null)
         {
-            List<TransactionDto> td = new();
-            List<Transaction> transactions = await _dbContext.Transactions.Where(t => t.UserId == userId).ToListAsync();
-            foreach(Transaction t in transactions)
-            {
-                TransactionDto tdto = new()
-                {
-                    Reference = t.Reference,
-                    Status = t.Status,
-                    AccessCode = t.AccessCode,
-                    Amount = t.Amount,
-                    AuthorizationUrl = t.AuthorizationUrl,
-                    DateTime = t.DateTime,
-                    PaymentRef = t.PaymentRef,
-                    PolicyNo = t.PolicyNo,
-                    UserEmail = t.UserEmail,
-                    Product = _dbContext.Products.FirstOrDefault(i => i.ProductId == t.ProductId)
+            // Retrieve the transactions for the user
+            var query = _dbContext.Transactions.Where(t => t.UserId == userId);
 
-                };
-                td.Add(tdto);
+            // Apply filters
+            if (startDate.HasValue)
+            {
+                query = query.Where(t => t.DateTime >= startDate.Value);
             }
-            return ApiResult<List<TransactionDto>>.Successful(td);
+
+            if (endDate.HasValue)
+            {
+                query = query.Where(t => t.DateTime <= endDate.Value);
+            }
+
+            if (!string.IsNullOrEmpty(transactionType))
+            {
+                query = query.Where(t => t.TransactionType == transactionType);
+            }
+
+            if (!string.IsNullOrEmpty(status))
+            {
+                query = query.Where(t => t.Status == status);
+            }
+
+            // Apply pagination
+            var paginatedTransactions = await PaginatedListWithFIlter<Transaction>.CreateAsync(query, pageNumber, pageSize);
+
+            // Convert paginated list of transactions to TransactionDto list
+            var td = paginatedTransactions.Select(t => new TransactionDto
+            {
+                Reference = t.Reference,
+                Status = t.Status,
+                AccessCode = t.AccessCode,
+                Amount = t.Amount,
+                AuthorizationUrl = t.AuthorizationUrl,
+                DateTime = t.DateTime,
+                PaymentRef = t.PaymentRef,
+                PolicyNo = t.PolicyNo,
+                UserEmail = t.UserEmail,
+                Product = _dbContext.Products.FirstOrDefault(i => i.ProductId == t.ProductId)
+            }).ToList();
+
+            // Return the result wrapped in a PaginatedList
+            var result = new PaginatedListWithFIlter<TransactionDto>(td, paginatedTransactions.TotalPages, paginatedTransactions.PageIndex, pageSize);
+
+            return ApiResult<PaginatedListWithFIlter<TransactionDto>>.Successful(result);
         }
+
     }
 }

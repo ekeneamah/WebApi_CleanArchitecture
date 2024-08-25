@@ -15,8 +15,8 @@ namespace Application.Dtos
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public int InsuranceCoyId { get; set; }
-        public string InsuranceCoyName { get; set; }
-        public InsuranceCoyDto InsuranceCoy { get; set; }
+        public string? CoyName { get; set; }
+        public InsuranceCoyDetailDto InsuranceCoy { get; set; }
         public CreateCategoryDto CreateCategory { get; set; }
     }
 }

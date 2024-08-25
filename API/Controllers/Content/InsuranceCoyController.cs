@@ -27,32 +27,32 @@ namespace API.Controllers.Content
         [HttpGet]
         public async Task<ActionResult<ApiResult<List<InsuranceCoyDto>>>> GetAllInsuranceCoy(int pageNumber = 1, int pageSize = 10)
         {
-            var brands = await _insuranceCoyService.GetAll(pageNumber, pageSize);
+            var insuranceCoy = await _insuranceCoyService.GetAll(pageNumber, pageSize);
 
-            if (brands is null)
+            if (insuranceCoy is null)
                 return BadRequest("No Data here !");
 
-            return HandleOperationResult(brands);
+            return HandleOperationResult(insuranceCoy);
         }
 
         #endregion Get All Brands Endpoint
 
-        #region Get Brand Endpoint
+        #region Get Insurance Coy Data
 
         // GET: api/InsuranceCompany/5
         [HttpGet("{id}")]
        // [Authorize(Roles = "SuperAdmin")]
-        public async Task<ActionResult<ApiResult<InsuranceCoyDto>>> GetInsuranceCoy(int id)
+        public async Task<ActionResult<ApiResult<InsuranceCoyDetailDto>>> GetInsuranceCoy(int id)
         {
-            var brand = await _insuranceCoyService.GetById(id);
+            var insuranceCoy = await _insuranceCoyService.GetInsuranceCoyDetailById(id);
 
-            return HandleOperationResult(brand);
+            return HandleOperationResult(insuranceCoy);
 
         }
 
-        #endregion Get Brand Endpoint
+        #endregion
 
-        #region Create Brand Endpoint
+        #region Create Insurance Coy Endpoint
 
         // POST: api/InsuranceCompany
         [HttpPost]
@@ -94,22 +94,22 @@ namespace API.Controllers.Content
 
         #endregion Create Brand Endpoint
 
-        #region Update Category
+        #region Update Insurance Coy
         // PUT: api/InsuranceCompany/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<ApiResult<InsuranceCoyDto>>> UpdateBrand(int id, InsuranceCoy model)
+        public async Task<ActionResult<ApiResult<InsuranceCoyDto>>> UpdateInsuranceCoy(int id, InsuranceCoy model)
         {
-            var brand = (await _insuranceCoyService.GetById(id)).Data;
+            var insuranceCoy = await _insuranceCoyService.GetByInsuranceCoyId(id);
 
-            if (brand == null)
+            if (insuranceCoy == null)
                 return NotFound($"insuranceCoy: {model.CoyName} was not found");
 
             if (await _insuranceCoyService.CoyIsExist(model.CoyName))
                 return BadRequest(" this InsuranceCompany name is already registred");
 
 
-            brand.CoyName = model.CoyName;
-            await _insuranceCoyService.Update_Coy(brand);
+            insuranceCoy.CoyName = model.CoyName;
+            await _insuranceCoyService.Update_Coy(insuranceCoy);
 
             return HandleOperationResult(ApiResult<InsuranceCoyDto>.Successful(null));
         }
@@ -118,7 +118,7 @@ namespace API.Controllers.Content
         [HttpPut("{id}/logo")]
         public async Task<IActionResult> UpdateLogoImage(int id, IFormFile logoImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
-            var insuranceCoy = (await _insuranceCoyService.GetById(id)).Data;
+            var insuranceCoy = (await _insuranceCoyService.GetByInsuranceCoyId(id));
             if (insuranceCoy == null)
             {
                 return NotFound();
@@ -160,13 +160,13 @@ namespace API.Controllers.Content
         [HttpDelete("{id}")]
         public async Task<ActionResult<ApiResult<InsuranceCoy>>> DeleteBrand(int id)
         {
-            var brand = (await _insuranceCoyService.GetById(id)).Data;
-            if (brand == null)
+            var insuranceCoy = (await _insuranceCoyService.GetByInsuranceCoyId(id));
+            if (insuranceCoy == null)
             {
-                return NotFound($"insuranceCoy:{brand.CoyName}  has not found");
+                return NotFound($"insuranceCoy:{insuranceCoy.CoyName}  has not found");
             }
 
-            return HandleOperationResult(await _insuranceCoyService.Delete_Coy(brand));
+            return HandleOperationResult(await _insuranceCoyService.Delete_Coy(insuranceCoy));
 
         }
         #endregion

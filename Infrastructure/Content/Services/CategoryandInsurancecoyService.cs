@@ -62,7 +62,7 @@ namespace Infrastructure.Content.Services
                     CategoryId = item.CategoryId,
                     CategoryName = item.CategoryName,
                     InsuranceCoyId = item.InsuranceCoyId,
-                    InsuranceCoy = (await _insuranceCoyService.GetById(item.InsuranceCoyId)).Data,
+                    InsuranceCoy = (await _insuranceCoyService.GetInsuranceCoyDetailById(item.InsuranceCoyId)).Data,
                     Id = item.Id
                 };
                 result.Add(cd);
@@ -83,7 +83,7 @@ namespace Infrastructure.Content.Services
                     CategoryId = item.CategoryId,
                     CategoryName = item.CategoryName,
                     InsuranceCoyId = item.InsuranceCoyId,
-                    InsuranceCoy = (await _insuranceCoyService.GetById(item.InsuranceCoyId)).Data,
+                    InsuranceCoy = (await _insuranceCoyService.GetInsuranceCoyDetailById(item.InsuranceCoyId)).Data,
                     Id = item.Id
                 };
                 result.Add(cd);

@@ -6,6 +6,7 @@ public class ApiResult<T>
 {
     public bool Success { get; set; }
     public string? Message { get; set; }
+    public string? ErrorMessage { get; set; }
     public T? Data { get; set; }
     
     [JsonIgnore]
@@ -29,6 +30,10 @@ public class ApiResult<T>
         var response = new ApiResult<T> { Success = false, Message  = message ?? ResponseMessage.BadRequest, ErrorCode = ErrorCode.ValidationFailed };
 
         return response;
+    }
+    public static ApiResult<T> FailureResult(string errorMessage)
+    {
+        return new ApiResult<T> { Success = false, ErrorMessage = errorMessage };
     }
 
 }

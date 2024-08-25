@@ -16,6 +16,6 @@ namespace Domain.Entities
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
         public int InsuranceCoyId { get; set; }
-        public string InsuranceCoyName { get;set; }
+        public string CoyName { get;set; }
     }
 }

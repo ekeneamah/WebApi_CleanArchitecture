@@ -18,6 +18,7 @@ using System.Text;
 using Application.Common;
 using Application.Interfaces.Email;
 using static System.Net.WebRequestMethods;
+using NuGet.Protocol.Core.Types;
 
 namespace Infrastructure.Identity.Services
 {
@@ -555,6 +556,29 @@ namespace Infrastructure.Identity.Services
 
         #endregion
 
+        #region ValidateEmailandUsername
+        public async Task<ApiResult<string>> ValidateEmailandUsernameAsync(ValidateEmailandUsernameDTO validateEmailandUsernameDTO)
+        {
+            var auth = new AuthResponse();
+
+
+            var userEmail = await _userManager.FindByEmailAsync(validateEmailandUsernameDTO.Email);
+            var userName = await _userManager.FindByNameAsync(validateEmailandUsernameDTO.UserName);
+            if (userEmail !=null)
+                {
+                    return ApiResult<string>.FailureResult("Email already exists.");
+                }
+
+                if (userName !=null)
+                {
+                    return ApiResult<string>.FailureResult("Username already exists.");
+                }
+
+                return ApiResult<string>.Successful("Email and Username are available.");
+            }
+        }
+        #endregion
+
 
     }
-}
+

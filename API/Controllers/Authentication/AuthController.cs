@@ -208,5 +208,27 @@ namespace API.Controllers.Authentication
             return HandleOperationResult(await _authService.DeleteAllUserAsync());
         }
         #endregion
+        #region validateEmail
+        [HttpPost("validate-email-username")]
+        public async Task<IActionResult> ValidateEmailAndUsername([FromBody] ValidateEmailandUsernameDTO validateEmailandUsernameDTO)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var result = await _authService.ValidateEmailandUsernameAsync(validateEmailandUsernameDTO);
+
+            if (result.Success)
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                return BadRequest(result.ErrorMessage);
+            }
+        }
+        #endregion
+
     }
 }

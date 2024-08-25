@@ -1,6 +1,7 @@
 ﻿using Application.Common;
 using Application.Dtos;
 using Application.Interfaces.Content.Brands;
+using Application.Interfaces.Content.Products;
 using Domain.Entities;
 using Infrastructure.Content.Data;
 using Microsoft.EntityFrameworkCore;
@@ -10,10 +11,12 @@ namespace Infrastructure.Content.Services
     public class InsuranceCoyService : IInsuranceCoy
     {
         private readonly AppDbContext _context;
+        private IProduct _product;
 
-        public InsuranceCoyService(AppDbContext context)
+        public InsuranceCoyService(AppDbContext context, IProduct product)
         {
             _context = context;
+            _product = product;
         }
 
         public async Task<ApiResult<List<InsuranceCoyDto>>> GetAll(int pageNumber, int pageSize)
@@ -55,14 +58,14 @@ namespace Infrastructure.Content.Services
         }
 
 
-        public async Task<ApiResult<InsuranceCoyDto>> GetById(int id)
+        public async Task<ApiResult<InsuranceCoyDetailDto>> GetInsuranceCoyDetailById(int id)
         {
             var i = await _context.InsuranceCompany.Where(m => m.CoyId == id).FirstOrDefaultAsync();
             if (i is null)
             {
-                return ApiResult<InsuranceCoyDto>.NotFound("Insurance Company not found");
+                return ApiResult<InsuranceCoyDetailDto>.NotFound("Insurance Company not found");
             }
-            InsuranceCoyDto insuranceCoyDTO = new()
+            InsuranceCoyDetailDto insuranceCoy = new()
             {
                 CoyName = i.CoyName,
                 CoyId = i.CoyId,
@@ -83,10 +86,12 @@ namespace Infrastructure.Content.Services
                 CoyStatus = i.CoyStatus,
                 CoyAgentId = i.CoyAgentId,
                 IsOrg = i.IsOrg,
-                Title = i.Title,
-                CoyZipCode = i.CoyZipCode
+                Title = i.Title??"No Title",
+                CoyZipCode = i.CoyZipCode,
+                ProductDetails = await _product.ProductForInsuranceCoyDetails(i.CoyId)
+                
             };
-            return ApiResult<InsuranceCoyDto>.Successful(insuranceCoyDTO);
+            return ApiResult<InsuranceCoyDetailDto>.Successful(insuranceCoy);
 
         }
 
@@ -132,7 +137,7 @@ namespace Infrastructure.Content.Services
         }
 
 
-        public async Task<int> Update_Coy(InsuranceCoyDto model)
+        public async Task<int> Update_Coy(InsuranceCoy model)
         {
             InsuranceCoy insuranceCoy = new()
             {
@@ -168,9 +173,9 @@ namespace Infrastructure.Content.Services
         }
 
 
-        public async Task<ApiResult<InsuranceCoy>> Delete_Coy(InsuranceCoyDto model)
+        public async Task<ApiResult<InsuranceCoy>> Delete_Coy(InsuranceCoy coy)
         {
-            InsuranceCoy coy = new()
+           /* InsuranceCoy coy = new()
             {
                 CoyId = model.CoyId,
                 CoyName = model.CoyName,
@@ -178,7 +183,7 @@ namespace Infrastructure.Content.Services
                 CoyCity = model.CoyCity,
                 CoyAgentId = model.CoyAgentId,
 
-            };
+            };*/
             _context.InsuranceCompany.Remove(coy);
             await _context.SaveChangesAsync();
             return ApiResult<InsuranceCoy>.Successful(coy);
@@ -191,11 +196,10 @@ namespace Infrastructure.Content.Services
             return await _context.InsuranceCompany.AnyAsync(b => b.CoyName == coy_Name);
         }
 
-
-
-
-
-
-
+        public async Task<InsuranceCoy> GetByInsuranceCoyId(int id)
+        {
+            InsuranceCoy insuranceCoy = await _context.InsuranceCompany.FindAsync(id);
+            return insuranceCoy;
+        }
     }
 }
