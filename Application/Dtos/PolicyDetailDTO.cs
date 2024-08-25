@@ -27,7 +27,7 @@ namespace Application.Dtos
         [Required]
         public required string TransactionStatus { get; set; }
         public required int CoyId { get; set; }
-        public InsuranceCoyDto? InsuranceCoy { get; set; }
+        public InsuranceCoyDetailDto? InsuranceCoy { get; set; }
         public CreateProductDto? Product { get; set; }
         public UserProfileDto? UserProfile { get; set; }
         public int PolicyId { get; set; }

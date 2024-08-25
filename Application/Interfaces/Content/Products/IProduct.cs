@@ -21,6 +21,7 @@ namespace Application.Interfaces.Content.Products
         Task<ApiResult<ProductDtoDetails>> GetDetailsById(int id);
         Task<ApiResult<ProductDtoDetails>> GetByCode(string code);
         Task<ApiResult<CreateProductDto>> GetProductByCode(string code);
+        Task<List<ProductForInsuranceCoyDetailsDto>> ProductForInsuranceCoyDetails(int insuranceCoyId);
 
         Task<Product> Add(Product model);
 

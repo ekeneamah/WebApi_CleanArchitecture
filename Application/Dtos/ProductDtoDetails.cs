@@ -32,4 +32,27 @@ namespace Application.Dtos
 
     }
 
+    public class ProductForInsuranceCoyDetailsDto
+    {
+        public string? ProductDescription { get; set; }
+
+        public int? ProductId { get; set; }
+
+        public string ProductName { get; set; }
+
+        public int CoyId { get; set; }
+        public string CoyName { get; set; }
+        public int? CategoryId { get; set; }
+        public string CategoryName { get; set; }
+
+        public double ProductPrice { get; set; }
+
+       
+        public string ProductCode { get; set; }
+        public object ProductGroup { get; set; }
+        public List<ProductBenefit?> Benefit { get; set; } = new List<ProductBenefit?>();
+
+    }
+
+
 }

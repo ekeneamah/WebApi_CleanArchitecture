@@ -90,12 +90,12 @@ namespace Infrastructure.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("InsuranceCoyId")
-                        .HasColumnType("int");
-
-                    b.Property<string>("InsuranceCoyName")
+                    b.Property<string>("CoyName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("InsuranceCoyId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
@@ -673,6 +673,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("int");
 
                     b.Property<string>("Status")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransactionType")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("UserEmail")

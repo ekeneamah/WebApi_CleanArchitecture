@@ -93,7 +93,7 @@ namespace API.Controllers.Content
         [HttpDelete("Delete_Category")]
         public async Task<ActionResult<ApiResult<Category>>> Delete(int id)
         {
-           // var category = await _categoryService.GetById(id);
+           // var category = await _categoryService.GetInsuranceCoyDetailById(id);
 
            
            var category = await _categoryService.DeleteCategory(id);

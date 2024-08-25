@@ -25,5 +25,6 @@ namespace Application.Interfaces.Authentication
         Task<ApiResult<string>> ResendOTPAsync(VerifyOtpDto model);
         Task<ApiResult<string>> Signout();
         Task<ApiResult<string>> DeleteAllUserAsync();
+        Task<ApiResult<string>> ValidateEmailandUsernameAsync(ValidateEmailandUsernameDTO  validateEmailandUsernameDTO);
     }
 }

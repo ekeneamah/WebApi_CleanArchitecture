@@ -12,23 +12,24 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Application.Common;
+using Application.Interfaces.Content.Brands;
 
 namespace Infrastructure.Content.Services
 {
     public class PolicyService : IPolicy
     {
         private readonly AppDbContext _context;
-        private readonly InsuranceCoyService _insuranceCoyService ;
+        private readonly IInsuranceCoy _insuranceCoyService ;
         private readonly ProductService productService;
         private readonly UserProfileService userProfileService;
         private UserManager<AppUser> _userManager;
         private readonly GetPolicyNumberService _getPolicyNumberService;
         private readonly KYCService _kYCService;
 
-        public PolicyService(AppDbContext context, UserManager<AppUser> userManager)
+        public PolicyService(AppDbContext context, UserManager<AppUser> userManager,IInsuranceCoy insuranceCoy)
         {
             _context = context;
-            _insuranceCoyService = new InsuranceCoyService(context);
+            _insuranceCoyService = insuranceCoy;
             productService = new ProductService(context);
             _userManager = userManager;
             userProfileService = new UserProfileService(context, _userManager);
@@ -92,7 +93,7 @@ namespace Infrastructure.Content.Services
                     TransactionRef = x.TransactionRef,
                     TransactionStatus = x.TransactionStatus,
                     UserId = x.UserId,
-                    InsuranceCoy = (await _insuranceCoyService.GetById(x.CoyId)).Data,
+                    InsuranceCoy = (await _insuranceCoyService.GetInsuranceCoyDetailById(x.CoyId)).Data,
                     Product = (await productService.GetProductByCode(x.ProductCode)).Data,
                     UserProfile = (await userProfileService.GetProfilebyUserid(x.UserId)).Data
                 };
@@ -118,7 +119,7 @@ namespace Infrastructure.Content.Services
                 TransactionStatus = x.TransactionStatus,
                 UserId = x.UserId,
                 PaymentRef = x.PaymentRef,
-                InsuranceCoy = (await _insuranceCoyService.GetById(x.CoyId)).Data,
+                InsuranceCoy = (await _insuranceCoyService.GetInsuranceCoyDetailById(x.Id)).Data,
                 Product = (await productService.GetProductByCode(x.ProductCode)).Data,
                 UserProfile = (await userProfileService.GetProfilebyUserid(x.UserId)).Data
             };
@@ -150,7 +151,7 @@ namespace Infrastructure.Content.Services
                         TransactionStatus = x.TransactionStatus,
                         UserId = x.UserId,
                         PaymentRef = x.PaymentRef,
-                        InsuranceCoy = (await _insuranceCoyService.GetById(x.CoyId)).Data,
+                        InsuranceCoy = (await _insuranceCoyService.GetInsuranceCoyDetailById(x.CoyId)).Data,
                         Product = (await productService.GetProductByCode(x.ProductCode)).Data,
                         UserProfile = (await userProfileService.GetProfilebyUserid(x.UserId)).Data
                     };
@@ -184,7 +185,7 @@ namespace Infrastructure.Content.Services
                     PaymentRef = x.PaymentRef,
                     TransactionStatus = x.TransactionStatus,
                     UserId = x.UserId,
-                    InsuranceCoy = (await _insuranceCoyService.GetById(x.CoyId)).Data,
+                    InsuranceCoy = (await _insuranceCoyService.GetInsuranceCoyDetailById(x.CoyId)).Data,
                     Product = (await productService.GetProductByCode(x.ProductCode)).Data,
                     UserProfile = (await userProfileService.GetProfilebyUserid(x.UserId)).Data
                 };

@@ -297,6 +297,30 @@ namespace Infrastructure.Content.Services
         }
         #endregion
 
+        #region Get Product For Insurance Coy Detail
+       public async Task<List<ProductForInsuranceCoyDetailsDto>> ProductForInsuranceCoyDetails(int insuranceCoyId)
+        {
+            List<Product> result = await _context.Products.Where(g => g.CoyId == insuranceCoyId).ToListAsync();
+            List<ProductForInsuranceCoyDetailsDto> p = new List<ProductForInsuranceCoyDetailsDto>();
+            foreach (Product product in result)
+            {
+                ProductForInsuranceCoyDetailsDto pd = new()
+                {
+                    CoyId = product.CoyId,
+                    CategoryName = await _context.Categories.Where(i => i.CategoryId == product.CategoryId).Select(n => n.CategoryName).FirstOrDefaultAsync() ?? "Not Available",
+                    CategoryId = product.CategoryId,
+                    ProductName = product.ProductName,
+                    ProductDescription = product.ProductDescription,
+                    ProductPrice = product.ProductPrice,
+                    ProductId = product.ProductId
+
+                };
+                p.Add(pd);
+            }
+
+            return p;
+        }
+        #endregion
         #region get products by insurance coy id
 
         public async Task<ApiResult<List<Product>>> GetRecommendedProducts(int pageNumber, int pageSize)

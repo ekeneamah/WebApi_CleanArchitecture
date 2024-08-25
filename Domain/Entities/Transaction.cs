@@ -16,6 +16,7 @@ namespace Domain.Entities
         public DateTime? DateTime { get; set; }
         public string? UserEmail { get; set; }
         public string? PaymentRef { get; set; }
+        public string TransactionType { get; set; }
     }
 
     public class TransactionDto

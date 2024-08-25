@@ -13,8 +13,16 @@ namespace Application.Interfaces
         Task<int> SaveResponse(Transaction transactionResponse);
         Task<int> DeleteResponse(Transaction transactionResponse);
         Task<int> UpdateResponse(Transaction transactionResponse);
-        Task<ApiResult<TransactionDto>> GetTransactionByReference(string reference); // New method
-        Task<ApiResult<List<TransactionDto>>> GetTransactionsByUserId(string userId); // New method
+        Task<ApiResult<TransactionDto>> GetTransactionByReference(string? reference); // New method
+        Task<ApiResult<PaginatedListWithFIlter<TransactionDto>>> GetTransactionsByUserId(
+                string? userId,
+                int pageNumber,
+                int pageSize,
+                DateTime? startDate = null,
+                DateTime? endDate = null,
+                string? transactionType = null,
+                string? status = null);
+        
     }
 
 }
