@@ -565,16 +565,16 @@ namespace Infrastructure.Identity.Services
             var userEmail = await _userManager.FindByEmailAsync(validateEmailandUsernameDTO.Email);
             var userName = await _userManager.FindByNameAsync(validateEmailandUsernameDTO.UserName);
             if (userEmail !=null)
-                {
-                    return ApiResult<string>.FailureResult("Email already exists.");
-                }
+            {
+                return ApiResult<string>.Failed("Email already exists.");
+            }
 
-                if (userName !=null)
-                {
-                    return ApiResult<string>.FailureResult("Username already exists.");
-                }
+            if (userName !=null)
+            {
+                return ApiResult<string>.Failed("Username already exists.");
+            }
 
-                return ApiResult<string>.Successful("Email and Username are available.");
+            return ApiResult<string>.Successful("Email and Username are available.");
             }
         }
         #endregion

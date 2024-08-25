@@ -22,7 +22,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<ApiResult<Kycdto>> CreateKYC(Kycdto kycDto)
         {
-            kyc kycEntity = new()
+            Kyc kycEntity = new()
             {
                 IdentityType = kycDto.IdentityType,
                 Name = kycDto.Name,
@@ -33,7 +33,7 @@ namespace Infrastructure.Content.Services
                 
             };
 
-            _context.KYCs.Add(kycEntity);
+            _context.Kycs.Add(kycEntity);
             await _context.SaveChangesAsync();
 
             // Return the created KYC DTO with its ID populated
@@ -53,13 +53,13 @@ namespace Infrastructure.Content.Services
         public async Task<ApiResult<List<Kycdto>>> GetKYCByUserId(string userid)
         {
             List<Kycdto> result = new();
-            List<kyc> kentity = await _context.KYCs.Where(u => u.UserId == userid).ToListAsync();
+            List<Kyc> kentity = await _context.Kycs.Where(u => u.UserId == userid).ToListAsync();
 
             if (kentity == null)
             {
                 return ApiResult<List<Kycdto>>.NotFound("KYC not found");
             }
-            foreach (kyc entity in kentity)
+            foreach (Kyc entity in kentity)
             {
                 Kycdto k = new()
                 {
@@ -82,7 +82,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<ApiResult<Kycdto>> GetKYCById(int id)
         {
-            var kycEntity = await _context.KYCs.FindAsync(id);
+            var kycEntity = await _context.Kycs.FindAsync(id);
 
             if (kycEntity == null)
             {
@@ -106,7 +106,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<ApiResult<List<Kycdto>>> GetAllKYC()
         {
-            var kycEntities = await _context.KYCs.ToListAsync();
+            var kycEntities = await _context.Kycs.ToListAsync();
 
             var result = kycEntities.Select(kycEntity => new Kycdto
             {
@@ -123,7 +123,7 @@ namespace Infrastructure.Content.Services
 
         public async Task<ApiResult<Kycdto>> UpdateKYC(int id, Kycdto kycDto)
         {
-            kyc kycEntity = await _context.KYCs.Where(u=>u.UserId==kycDto.UserId && u.Id==id).FirstOrDefaultAsync();
+            Kyc kycEntity = await _context.Kycs.Where(u=>u.UserId==kycDto.UserId && u.Id==id).FirstOrDefaultAsync();
 
             if (kycEntity == null)
             {
@@ -154,14 +154,14 @@ namespace Infrastructure.Content.Services
 
         public async Task<bool> DeleteKYC(int id)
         {
-            var kycEntity = await _context.KYCs.FindAsync(id);
+            var kycEntity = await _context.Kycs.FindAsync(id);
 
             if (kycEntity == null)
             {
                 return false;
             }
 
-            _context.KYCs.Remove(kycEntity);
+            _context.Kycs.Remove(kycEntity);
             await _context.SaveChangesAsync();
 
             return true;

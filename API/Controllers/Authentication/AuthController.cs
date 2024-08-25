@@ -175,7 +175,7 @@ namespace API.Controllers.Authentication
         #region Resend OTP
         [HttpPost("resend-otp")]
         [Authorize]
-        public async Task<IActionResult> ResendOTPAsync()
+        public async Task<ActionResult<ApiResult<string>>> ResendOTPAsync()
         {
 
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
@@ -190,7 +190,7 @@ namespace API.Controllers.Authentication
             };
 
 
-            return Ok(await _authService.ConfirmOTPAsync(model));
+            return HandleOperationResult(await _authService.ConfirmOTPAsync(model));
         }
         #endregion
 
@@ -210,23 +210,11 @@ namespace API.Controllers.Authentication
         #endregion
         #region validateEmail
         [HttpPost("validate-email-username")]
-        public async Task<IActionResult> ValidateEmailAndUsername([FromBody] ValidateEmailandUsernameDTO validateEmailandUsernameDTO)
+        public async Task<ActionResult<ApiResult<string>>> ValidateEmailAndUsername([FromBody] ValidateEmailandUsernameDTO validateEmailandUsernameDTO)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }
-
             var result = await _authService.ValidateEmailandUsernameAsync(validateEmailandUsernameDTO);
 
-            if (result.Success)
-            {
-                return Ok(result.Data);
-            }
-            else
-            {
-                return BadRequest(result.ErrorMessage);
-            }
+            return HandleOperationResult(result);
         }
         #endregion
 

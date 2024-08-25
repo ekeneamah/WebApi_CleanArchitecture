@@ -26,7 +26,7 @@ namespace Infrastructure.Content.Data
         public DbSet<VehiclePremium> VehiclePremiums { get; set; }
         public DbSet<CoyBenefitEntity> CoyBenefits { get; set; }
         public DbSet<MotorClaim> MotorClaims { get; set; }
-        public DbSet<kyc> KYCs { get; internal set; }
+        public DbSet<Kyc> Kycs { get; internal set; }
         public DbSet<PolicyGenReturnedDataCornerstone> PolicyGenReturnedData_cornerstone { get; set; }
         public DbSet<PolicySection> policySections { get; set; }
         public DbSet<PolicySectionField> PolicySectionFields { get; set; }

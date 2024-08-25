@@ -47,7 +47,7 @@ namespace Infrastructure.Content.Services
             _dbContext.Transactions.Update(transactionResponse);
             Product p = await _dbContext.Products.Where(p => p.ProductId == transactionResponse.ProductId).FirstOrDefaultAsync();
             AppUser a = await _userManager.FindByIdAsync(transactionResponse.UserId);
-            TRansactionComplete emailBody = new();
+            TransactionComplete emailBody = new();
             int coyId = await _dbContext.Products.Where(p=>p.ProductId==transactionResponse.ProductId).Select(c=>c.CoyId).FirstOrDefaultAsync();
             string coyEmail =await  _dbContext.InsuranceCompany.Where(i=>i.CoyId== coyId).Select(e=>e.CoyEmail).FirstOrDefaultAsync();
         
