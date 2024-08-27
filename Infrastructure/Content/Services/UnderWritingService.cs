@@ -292,6 +292,7 @@ public class UnderWritingService : IUnderWritingService
                             $"ValidationPattern '{field.RegexValidationPattern}' is not a valid regex for field {field.FieldName}.");
                     }
                 }
+                
 
                 if (field.InputType == InputType.Upload)
                 {
@@ -347,6 +348,17 @@ public class UnderWritingService : IUnderWritingService
             if (!formField.AllowsMultiple && answer.Files != null && answer.Files.Count > 1)
             {
                 errors.Add($"Field '{formField.DisplayName}' does not allow multiple file uploads.");
+            }
+            
+            if (formField.InputType == InputType.Select)
+            {
+                foreach (var value in answer.Values)
+                {
+                    if (formField.Options != null && !formField.Options.Any(o => o.Key == value))
+                    {
+                        errors.Add($"Value '{value}' is not a valid option for field '{formField.FieldName}'.");
+                    }
+                }
             }
 
             if (formField.InputType == InputType.Upload && answer.Files != null && answer.Files.Any())
