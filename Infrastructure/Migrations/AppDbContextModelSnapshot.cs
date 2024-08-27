@@ -184,6 +184,52 @@ namespace Infrastructure.Migrations
                     b.ToTable("ClaimsForms");
                 });
 
+            modelBuilder.Entity("Domain.Entities.ClaimsFormSubmission", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AnswerJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FormId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ClaimsUnderWritingAnswers");
+                });
+
+            modelBuilder.Entity("Domain.Entities.ClaimsUnderWritingForm", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FormJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ClaimsUnderWritingForms");
+                });
+
             modelBuilder.Entity("Domain.Entities.CoyBenefitEntity", b =>
                 {
                     b.Property<int>("BenefitId")
@@ -203,6 +249,32 @@ namespace Infrastructure.Migrations
                     b.HasKey("BenefitId");
 
                     b.ToTable("CoyBenefits");
+                });
+
+            modelBuilder.Entity("Domain.Entities.FormSubmission", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("AnswerJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("FormId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("Status")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("ProductUnderWritingAnswers");
                 });
 
             modelBuilder.Entity("Domain.Entities.InsuranceCoy", b =>
@@ -287,6 +359,41 @@ namespace Infrastructure.Migrations
                     b.HasKey("CoyId");
 
                     b.ToTable("InsuranceCompany");
+                });
+
+            modelBuilder.Entity("Domain.Entities.Kyc", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<DateTime>("FromExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("IdentityNumber")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("IdentityType")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime>("ToExpiryDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("UserId")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Kycs");
                 });
 
             modelBuilder.Entity("Domain.Entities.MotorClaim", b =>
@@ -690,6 +797,26 @@ namespace Infrastructure.Migrations
                     b.ToTable("Transactions");
                 });
 
+            modelBuilder.Entity("Domain.Entities.UnderWritingForm", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<string>("FormJson")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("ProductId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ProductId");
+
+                    b.ToTable("ProductUnderWritingForms");
+                });
+
             modelBuilder.Entity("Domain.Entities.UserProfile", b =>
                 {
                     b.Property<int>("ProfileId")
@@ -805,39 +932,15 @@ namespace Infrastructure.Migrations
                     b.ToTable("VehiclePremiums");
                 });
 
-            modelBuilder.Entity("Domain.Entities.kyc", b =>
+            modelBuilder.Entity("Domain.Entities.ClaimsUnderWritingForm", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
+                    b.HasOne("Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<DateTime>("FromExpiryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("IdentityNumber")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("IdentityType")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<DateTime>("ToExpiryDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<string>("UserId")
-                        .IsRequired()
-                        .HasColumnType("nvarchar(max)");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("KYCs");
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Domain.Entities.ProductBenefit", b =>
@@ -845,6 +948,17 @@ namespace Infrastructure.Migrations
                     b.HasOne("Domain.Entities.Product", null)
                         .WithMany("Benefit")
                         .HasForeignKey("ProductId");
+                });
+
+            modelBuilder.Entity("Domain.Entities.UnderWritingForm", b =>
+                {
+                    b.HasOne("Domain.Entities.Product", "Product")
+                        .WithMany()
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Product");
                 });
 
             modelBuilder.Entity("Domain.Entities.Product", b =>

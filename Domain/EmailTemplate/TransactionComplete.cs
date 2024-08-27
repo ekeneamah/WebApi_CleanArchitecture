@@ -1,6 +1,6 @@
 ﻿namespace Domain.EmailTemplate
 {
-    internal class TRansactionComplete
+    internal class TransactionComplete
     {
     }
 }

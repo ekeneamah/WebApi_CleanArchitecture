@@ -48,13 +48,11 @@ namespace API.Controllers.Content
         [HttpPost("Add_NewCategory")]
         public async Task<ActionResult<ApiResult<List<CreateCategoryDto>>>> CreateCategory( CreateCategoryDto model)
         {
-            model.CategoryDescription = model.CategoryDescription.Replace("\n", "\\n");
+            model.CategoryDescription = model.CategoryDescription?.Replace("\n", "\\n");
          
             if (await _categoryService.CategoryIsExist(model.CategoryName))
                 return BadRequest(" this CategoryEntity name is already registred");
-
             
-
             await  _categoryService.AddCategory(model);
 
             return HandleOperationResult(await _categoryService.GetAll());

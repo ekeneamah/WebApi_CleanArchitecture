@@ -28,10 +28,6 @@ namespace API.Controllers.Content
         public async Task<ActionResult<ApiResult<List<InsuranceCoyDto>>>> GetAllInsuranceCoy(int pageNumber = 1, int pageSize = 10)
         {
             var insuranceCoy = await _insuranceCoyService.GetAll(pageNumber, pageSize);
-
-            if (insuranceCoy is null)
-                return BadRequest("No Data here !");
-
             return HandleOperationResult(insuranceCoy);
         }
 

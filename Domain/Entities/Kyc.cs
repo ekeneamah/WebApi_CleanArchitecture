@@ -4,7 +4,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Domain.Entities
 {
-    public class kyc
+    public class Kyc
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }

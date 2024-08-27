@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class Init : Migration
+    public partial class ReInit : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -37,7 +37,7 @@ namespace Infrastructure.Migrations
                     CategoryId = table.Column<int>(type: "int", nullable: false),
                     CategoryName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     InsuranceCoyId = table.Column<int>(type: "int", nullable: false),
-                    InsuranceCoyName = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    CoyName = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -97,6 +97,21 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClaimsUnderWritingAnswers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FormId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    AnswerJson = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClaimsUnderWritingAnswers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CoyBenefits",
                 columns: table => new
                 {
@@ -142,7 +157,7 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "KYCs",
+                name: "Kycs",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
@@ -156,7 +171,7 @@ namespace Infrastructure.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_KYCs", x => x.Id);
+                    table.PrimaryKey("PK_Kycs", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -321,6 +336,21 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductUnderWritingAnswers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FormId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    AnswerJson = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductUnderWritingAnswers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
                 {
@@ -334,7 +364,8 @@ namespace Infrastructure.Migrations
                     Amount = table.Column<double>(type: "float", nullable: false),
                     DateTime = table.Column<DateTime>(type: "datetime2", nullable: true),
                     UserEmail = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    PaymentRef = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    PaymentRef = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    TransactionType = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -391,6 +422,25 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClaimsUnderWritingForms",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    FormJson = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClaimsUnderWritingForms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClaimsUnderWritingForms_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductBenefits",
                 columns: table => new
                 {
@@ -410,9 +460,38 @@ namespace Infrastructure.Migrations
                         principalColumn: "ProductId");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProductUnderWritingForms",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    FormJson = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductUnderWritingForms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductUnderWritingForms_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClaimsUnderWritingForms_ProductId",
+                table: "ClaimsUnderWritingForms",
+                column: "ProductId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_ProductBenefits_ProductId",
                 table: "ProductBenefits",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductUnderWritingForms_ProductId",
+                table: "ProductUnderWritingForms",
                 column: "ProductId");
         }
 
@@ -435,13 +514,19 @@ namespace Infrastructure.Migrations
                 name: "ClaimsForms");
 
             migrationBuilder.DropTable(
+                name: "ClaimsUnderWritingAnswers");
+
+            migrationBuilder.DropTable(
+                name: "ClaimsUnderWritingForms");
+
+            migrationBuilder.DropTable(
                 name: "CoyBenefits");
 
             migrationBuilder.DropTable(
                 name: "InsuranceCompany");
 
             migrationBuilder.DropTable(
-                name: "KYCs");
+                name: "Kycs");
 
             migrationBuilder.DropTable(
                 name: "MotorClaims");
@@ -466,6 +551,12 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductBenefits");
+
+            migrationBuilder.DropTable(
+                name: "ProductUnderWritingAnswers");
+
+            migrationBuilder.DropTable(
+                name: "ProductUnderWritingForms");
 
             migrationBuilder.DropTable(
                 name: "Transactions");

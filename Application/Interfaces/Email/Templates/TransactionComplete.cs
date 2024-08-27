@@ -2,11 +2,11 @@
 
 namespace Application.Interfaces.Email.Templates
 {
-    public class TRansactionComplete
+    public class TransactionComplete
     {
         private readonly Transaction _transaction;
 
-        public TRansactionComplete() { 
+        public TransactionComplete() { 
         }
 
         public string GetEmailBody(Transaction transaction,Product p, string FirstName )
