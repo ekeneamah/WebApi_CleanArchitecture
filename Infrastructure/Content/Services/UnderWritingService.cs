@@ -3,8 +3,11 @@ using Application.Common;
 using Application.Dtos.UnderWriting;
 using Application.Interfaces.Content.UnderWriting;
 using Domain.Entities;
+using Infrastructure.Common;
 using Infrastructure.Content.Data;
+using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Content.Services;
@@ -12,10 +15,12 @@ namespace Infrastructure.Content.Services;
 public class UnderWritingService : IUnderWritingService
 {
     private readonly AppDbContext _context;
+    private readonly UserManager<AppUser> _userManager;
 
-    public UnderWritingService(AppDbContext dbContext)
+    public UnderWritingService(AppDbContext dbContext, UserManager<AppUser> userManager)
     {
         _context = dbContext;
+        _userManager = userManager;
     }
 
     public async Task<ApiResult<FormSubmission>> SubmitProductUnderWritingFormAsync(FormSubmissionDto model)
@@ -23,8 +28,19 @@ public class UnderWritingService : IUnderWritingService
         var underWritingForm = await _context.ProductUnderWritingForms.FirstOrDefaultAsync(x => x.Id == model.FormId);
         if (underWritingForm == null) return ApiResult<FormSubmission>.Failed("Form Not Found");
 
-        //Todo: compare userId with Logged in User
 
+        var tokenUserId = HttpContextHelper.Current.User.FindFirst("UserId")?.Value;
+        if (tokenUserId is null)
+            return ApiResult<FormSubmission>.Failed("Invalid User");
+        
+        
+        var user = await _userManager.FindByIdAsync(tokenUserId);
+        if (user == null)
+            return ApiResult<FormSubmission>.Failed("Invalid User");
+
+        if (model.UserId != tokenUserId)
+            return ApiResult<FormSubmission>.Failed("UserId Mismatch");
+        
         var validationErrors = ValidateAnswer(model, underWritingForm.Form);
         if (validationErrors.Count > 0)
         {
@@ -64,9 +80,19 @@ public class UnderWritingService : IUnderWritingService
     {
         var underWritingForm = await _context.ClaimsUnderWritingForms.FirstOrDefaultAsync(x => x.Id == model.FormId);
         if (underWritingForm == null) return ApiResult<ClaimsFormSubmission>.Failed("Form Not Found");
+        
 
-        //Todo: compare userId with Logged in User
+        var tokenUserId = HttpContextHelper.Current.User.FindFirst("UserId")?.Value;
+        if (tokenUserId is null)
+            return ApiResult<ClaimsFormSubmission>.Failed("Invalid User");
+        
+        
+        var user = await _userManager.FindByIdAsync(tokenUserId);
+        if (user == null)
+            return ApiResult<ClaimsFormSubmission>.Failed("Invalid User");
 
+        if (model.UserId != tokenUserId)
+            return ApiResult<ClaimsFormSubmission>.Failed("UserId Mismatch");
         var validationErrors = ValidateAnswer(model, underWritingForm.Form);
         if (validationErrors.Count > 0)
         {
@@ -190,7 +216,19 @@ public class UnderWritingService : IUnderWritingService
     
     public async Task<ApiResult<FormSubmission>> GetProductUnderWritingSubmissionAsync(string formId, string userId)
     {
+        var tokenUserId = HttpContextHelper.Current.User.FindFirst("UserId")?.Value;
+        if (tokenUserId is null)
+            return ApiResult<FormSubmission>.Failed("Invalid User");
+        
+        
+        var user = await _userManager.FindByIdAsync(tokenUserId);
+        if (user == null)
+            return ApiResult<FormSubmission>.Failed("Invalid User");
 
+        if (userId != tokenUserId)
+            return ApiResult<FormSubmission>.Failed("UserId Mismatch");
+        
+        
         var data = await _context.ProductUnderWritingAnswers.FirstOrDefaultAsync(x => x.FormId == formId && x.UserId == userId);
         return ApiResult<FormSubmission>.Successful(data);
     }
@@ -198,6 +236,18 @@ public class UnderWritingService : IUnderWritingService
  public async Task<ApiResult<ClaimsFormSubmission>> GetClaimsUnderWritingSubmissionAsync(string formId, string userId)
     {
 
+        var tokenUserId = HttpContextHelper.Current.User.FindFirst("UserId")?.Value;
+        if (tokenUserId is null)
+            return ApiResult<ClaimsFormSubmission>.Failed("Invalid User");
+        
+        
+        var user = await _userManager.FindByIdAsync(tokenUserId);
+        if (user == null)
+            return ApiResult<ClaimsFormSubmission>.Failed("Invalid User");
+
+        if (userId != tokenUserId)
+            return ApiResult<ClaimsFormSubmission>.Failed("UserId Mismatch");
+        
         var data = await _context.ClaimsUnderWritingAnswers.FirstOrDefaultAsync(x => x.FormId == formId && x.UserId == userId);
         return ApiResult<ClaimsFormSubmission>.Successful(data);
     }

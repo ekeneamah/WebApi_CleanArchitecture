@@ -4,6 +4,7 @@ using Application.Common;
 using Application.Dtos.UnderWriting;
 using Application.Interfaces.Content.UnderWriting;
 using Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 
 namespace API.Controllers.Content
 {
@@ -46,6 +47,7 @@ public class UnderWritingController : BaseController
         return HandleOperationResult(result);
     }
 
+    [Authorize]
     [HttpPost("product-underwriting-submission")]
     public async Task<ActionResult<ApiResult<FormSubmission>>> SubmitProductUnderWritingForm([FromForm] FormSubmissionDto model)
     {
@@ -53,6 +55,7 @@ public class UnderWritingController : BaseController
         return HandleOperationResult(result);
     }
 
+    [Authorize]
     [HttpPost("claims-underwriting-submission")]
     public async Task<ActionResult<ApiResult<ClaimsFormSubmission>>> SubmitClaimsUnderWritingForm([FromForm] FormSubmissionDto model)
     {
@@ -60,6 +63,7 @@ public class UnderWritingController : BaseController
         return HandleOperationResult(result);
     }
 
+    [Authorize]
     [HttpGet("product-underwriting-submission")]
     public async Task<ActionResult<ApiResult<FormSubmission>>> GetProductUnderWritingSubmission([Required] string formId, [Required] string userId)
     {
@@ -67,6 +71,7 @@ public class UnderWritingController : BaseController
         return HandleOperationResult(result);
     }
 
+    [Authorize]
     [HttpGet("claims-underwriting-submission")]
     public async Task<ActionResult<ApiResult<ClaimsFormSubmission>>> GetClaimsUnderWritingSubmission([Required] string formId, [Required] string userId)
     {

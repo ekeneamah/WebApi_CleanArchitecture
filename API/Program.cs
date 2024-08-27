@@ -28,6 +28,7 @@ using API.Filters;
 using Application.Interfaces.Content.UnderWriting;
 using Application.Interfaces.Email;
 using Application.Mapping;
+using Infrastructure.Common;
 using Microsoft.AspNetCore.Mvc;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -49,6 +50,7 @@ builder.Services.Configure<JWT>(builder.Configuration.GetSection("JWT"));
 builder.Services.Configure<RouteOptions>(options => options.LowercaseUrls = true);
 
 builder.Services.UseHttpClientMetrics();
+builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
@@ -167,6 +169,13 @@ builder.Services.AddSwaggerGen(c =>
 });
 
 var app = builder.Build();
+
+   
+app.UseAuthentication();
+
+HttpContextHelper
+    .Configure(app.Services
+        .GetRequiredService<IHttpContextAccessor>());
 using (var scope = app.Services.CreateScope())
 {
     IDictionary environmentVariables = Environment.GetEnvironmentVariables();
@@ -175,6 +184,7 @@ using (var scope = app.Services.CreateScope())
         Console.WriteLine($"{entry.Key} = {entry.Value}");
     }
     var serviceProvider = scope.ServiceProvider;
+  
     try
     {
         var dbContext = serviceProvider.GetRequiredService<AppDbContext>();
