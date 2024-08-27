@@ -97,6 +97,21 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClaimsUnderWritingAnswers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FormId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    AnswerJson = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClaimsUnderWritingAnswers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "CoyBenefits",
                 columns: table => new
                 {
@@ -321,6 +336,21 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ProductUnderWritingAnswers",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    FormId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    UserId = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<int>(type: "int", nullable: false),
+                    AnswerJson = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductUnderWritingAnswers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Transactions",
                 columns: table => new
                 {
@@ -392,6 +422,25 @@ namespace Infrastructure.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "ClaimsUnderWritingForms",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    FormJson = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ClaimsUnderWritingForms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ClaimsUnderWritingForms_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "ProductBenefits",
                 columns: table => new
                 {
@@ -411,9 +460,38 @@ namespace Infrastructure.Migrations
                         principalColumn: "ProductId");
                 });
 
+            migrationBuilder.CreateTable(
+                name: "ProductUnderWritingForms",
+                columns: table => new
+                {
+                    Id = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    ProductId = table.Column<int>(type: "int", nullable: false),
+                    FormJson = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_ProductUnderWritingForms", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_ProductUnderWritingForms_Products_ProductId",
+                        column: x => x.ProductId,
+                        principalTable: "Products",
+                        principalColumn: "ProductId",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ClaimsUnderWritingForms_ProductId",
+                table: "ClaimsUnderWritingForms",
+                column: "ProductId");
+
             migrationBuilder.CreateIndex(
                 name: "IX_ProductBenefits_ProductId",
                 table: "ProductBenefits",
+                column: "ProductId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ProductUnderWritingForms_ProductId",
+                table: "ProductUnderWritingForms",
                 column: "ProductId");
         }
 
@@ -434,6 +512,12 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "ClaimsForms");
+
+            migrationBuilder.DropTable(
+                name: "ClaimsUnderWritingAnswers");
+
+            migrationBuilder.DropTable(
+                name: "ClaimsUnderWritingForms");
 
             migrationBuilder.DropTable(
                 name: "CoyBenefits");
@@ -467,6 +551,12 @@ namespace Infrastructure.Migrations
 
             migrationBuilder.DropTable(
                 name: "ProductBenefits");
+
+            migrationBuilder.DropTable(
+                name: "ProductUnderWritingAnswers");
+
+            migrationBuilder.DropTable(
+                name: "ProductUnderWritingForms");
 
             migrationBuilder.DropTable(
                 name: "Transactions");

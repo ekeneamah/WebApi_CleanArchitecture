@@ -190,16 +190,19 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AnswerJsonString")
+                    b.Property<string>("AnswerJson")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FormId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -214,9 +217,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FormJson")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -253,16 +257,19 @@ namespace Infrastructure.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("nvarchar(450)");
 
-                    b.Property<string>("AnswerJsonString")
+                    b.Property<string>("AnswerJson")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("FormId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<int>("Status")
                         .HasColumnType("int");
 
                     b.Property<string>("UserId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("Id");
@@ -797,9 +804,10 @@ namespace Infrastructure.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("FormJson")
+                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("ProductId")
+                    b.Property<int>("ProductId")
                         .HasColumnType("int");
 
                     b.HasKey("Id");
@@ -928,7 +936,9 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });
@@ -944,7 +954,9 @@ namespace Infrastructure.Migrations
                 {
                     b.HasOne("Domain.Entities.Product", "Product")
                         .WithMany()
-                        .HasForeignKey("ProductId");
+                        .HasForeignKey("ProductId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
 
                     b.Navigation("Product");
                 });

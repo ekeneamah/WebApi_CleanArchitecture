@@ -7,55 +7,71 @@ using Domain.Entities;
 
 namespace API.Controllers.Content
 {
+[Route("api/[controller]")]
+[ApiController]
+public class UnderWritingController : BaseController
+{
+    private readonly IUnderWritingService _underWritingService;
 
-    [Route("api/[controller]")]
-    [ApiController]
-    public class UnderWritingController : BaseController
+    public UnderWritingController(IUnderWritingService underWritingService)
     {
-        private readonly IUnderWritingService _underWritingService;
-
-        public UnderWritingController(IUnderWritingService underWritingService)
-        {
-            _underWritingService = underWritingService;
-        }
-
-        [HttpPost("ProductUnderWritingForm")]
-
-        public async Task<ActionResult<ApiResult<UnderWritingForm>>> CreateProductUnderWritingForm(
-            [FromBody] ProductUnderWritingDto model)
-        {
-            var result = await _underWritingService.CreateProductUnderWritingFormAsync(model);
-            return HandleOperationResult(result);
-
-        }
-
-        [HttpGet("ProductUnderWritingForm")]
-
-        public async Task<ActionResult<ApiResult<UnderWritingForm>>> GetProductUnderWritingForm(
-            [Required] int? productId)
-        {
-            var result = await _underWritingService.GetProductUnderWritingFormAsync(productId.GetValueOrDefault());
-            return HandleOperationResult(result);
-        }
-
-        [HttpPost("ClaimsUnderWritingForm")]
-
-        public async Task<ActionResult<ApiResult<ClaimsUnderWritingForm>>> CreateClaimsUnderWritingForm(
-            [FromBody] ProductUnderWritingDto model)
-        {
-            var result = await _underWritingService.CreateClaimsUnderWritingFormAsync(model);
-            return HandleOperationResult(result);
-
-        }
-
-        [HttpGet("ClaimsUnderWritingForm")]
-
-        public async Task<ActionResult<ApiResult<ClaimsUnderWritingForm>>> GetClaimsUnderWritingForm(
-            [Required] int? productId)
-        {
-            var result = await _underWritingService.GetClaimsUnderWritingFormAsync(productId.GetValueOrDefault());
-            return HandleOperationResult(result);
-        }
-
+        _underWritingService = underWritingService;
     }
+
+    [HttpPost("product-underwriting-form")]
+    public async Task<ActionResult<ApiResult<UnderWritingForm>>> CreateProductUnderWritingForm([FromBody] ProductUnderWritingDto model)
+    {
+        var result = await _underWritingService.CreateProductUnderWritingFormAsync(model);
+        return HandleOperationResult(result);
+    }
+
+    [HttpGet("product-underwriting-form")]
+    public async Task<ActionResult<ApiResult<UnderWritingForm>>> GetProductUnderWritingForm([Required] int productId)
+    {
+        var result = await _underWritingService.GetProductUnderWritingFormAsync(productId);
+        return HandleOperationResult(result);
+    }
+
+    [HttpPost("claims-underwriting-form")]
+    public async Task<ActionResult<ApiResult<ClaimsUnderWritingForm>>> CreateClaimsUnderWritingForm([FromBody] ProductUnderWritingDto model)
+    {
+        var result = await _underWritingService.CreateClaimsUnderWritingFormAsync(model);
+        return HandleOperationResult(result);
+    }
+
+    [HttpGet("claims-underwriting-form")]
+    public async Task<ActionResult<ApiResult<ClaimsUnderWritingForm>>> GetClaimsUnderWritingForm([Required] int productId)
+    {
+        var result = await _underWritingService.GetClaimsUnderWritingFormAsync(productId);
+        return HandleOperationResult(result);
+    }
+
+    [HttpPost("product-underwriting-submission")]
+    public async Task<ActionResult<ApiResult<FormSubmission>>> SubmitProductUnderWritingForm([FromForm] FormSubmissionDto model)
+    {
+        var result = await _underWritingService.SubmitProductUnderWritingFormAsync(model);
+        return HandleOperationResult(result);
+    }
+
+    [HttpPost("claims-underwriting-submission")]
+    public async Task<ActionResult<ApiResult<ClaimsFormSubmission>>> SubmitClaimsUnderWritingForm([FromForm] FormSubmissionDto model)
+    {
+        var result = await _underWritingService.SubmitClaimsUnderWritingFormAsync(model);
+        return HandleOperationResult(result);
+    }
+
+    [HttpGet("product-underwriting-submission")]
+    public async Task<ActionResult<ApiResult<FormSubmission>>> GetProductUnderWritingSubmission([Required] string formId, [Required] string userId)
+    {
+        var result = await _underWritingService.GetProductUnderWritingSubmissionAsync(formId, userId);
+        return HandleOperationResult(result);
+    }
+
+    [HttpGet("claims-underwriting-submission")]
+    public async Task<ActionResult<ApiResult<ClaimsFormSubmission>>> GetClaimsUnderWritingSubmission([Required] string formId, [Required] string userId)
+    {
+        var result = await _underWritingService.GetClaimsUnderWritingSubmissionAsync(formId, userId);
+        return HandleOperationResult(result);
+    }
+}
 }

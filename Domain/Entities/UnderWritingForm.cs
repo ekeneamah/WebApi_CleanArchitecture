@@ -12,16 +12,20 @@ public class UnderWritingForm
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
     public string Id { get; set; } = null!;
-    public Product? Product { get; set; }
-    
+    [JsonIgnore]
+    public Product Product { get; set; } = null!;
+
     [NotMapped]
-    public List<FormField>? Form { get; set; } = new List<FormField>();
+    public List<FormField> Form { get; set; } = new List<FormField>();
 
     [JsonIgnore]
-    public string? FormJson
+    [Required]
+    public string FormJson
     {
-        get => Form == null ? null : JsonSerializer.Serialize(Form);
-        set => Form = value == null ? null : JsonSerializer.Deserialize<List<FormField>>(value);
+        get => JsonSerializer.Serialize(Form);
+        set => Form = string.IsNullOrEmpty(value) 
+            ? new List<FormField>() 
+            : JsonSerializer.Deserialize<List<FormField>>(value) ?? new List<FormField>();
     }
 }
 
@@ -30,17 +34,21 @@ public class FormSubmission
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Id { get; set; } = null!;
-    public string? FormId { get; set; }        
+    public required string FormId { get; set; }    
     [NotMapped]
-    public List<FormAnswer>? Answers { get; set; }  
-    public string? UserId { get; set; }             
+    public List<FormAnswer> Answers { get; set; } = null!;
+
+    public string UserId { get; set; } = null!;
     public SubmissionStatus Status { get; set; }   
-    
-    public string? AnswerJson
+    [JsonIgnore]
+    [Required]
+
+    public string AnswerJson
     {
-        get => Answers == null ? null : JsonSerializer.Serialize(Answers);
-        set => Answers = value == null ? null : JsonSerializer.Deserialize<List<FormAnswer>>(value);
-    }
+        get => JsonSerializer.Serialize(Answers);
+        set => Answers = string.IsNullOrEmpty(value) 
+            ? new List<FormAnswer>() 
+            : JsonSerializer.Deserialize<List<FormAnswer>>(value) ?? new List<FormAnswer>();    }
 }
 
 
@@ -51,15 +59,21 @@ public class ClaimsUnderWritingForm
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
 
     public string Id { get; set; } = null!;
-    public Product? Product { get; set; }
+    [JsonIgnore]
+    public Product Product { get; set; } = null!;
     
-    public List<FormField>? Form { get; set; } = new List<FormField>();
     [NotMapped]
+    public List<FormField> Form { get; set; } = new List<FormField>();
+    [JsonIgnore]
+    [Required]
 
-    public string? FormJson
+    public string FormJson
     {
-        get => Form == null ? null : JsonSerializer.Serialize(Form);
-        set => Form = value == null ? null : JsonSerializer.Deserialize<List<FormField>>(value);
+        get =>  JsonSerializer.Serialize(Form);
+        set => Form = string.IsNullOrEmpty(value) 
+            ? new List<FormField>() 
+            : JsonSerializer.Deserialize<List<FormField>>(value) ?? new List<FormField>();
+        
     }
 }
 
@@ -68,16 +82,20 @@ public class ClaimsFormSubmission
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Id { get; set; } = null!;
-    public string? FormId { get; set; }        
+    public required string FormId { get; set; }      
     [NotMapped]
-    public List<FormAnswer>? Answers { get; set; }  
-    public string? UserId { get; set; }             
+    public List<FormAnswer> Answers { get; set; } = null!;
+
+    public string UserId { get; set; } = null!;
     public SubmissionStatus Status { get; set; }   
-    
-    public string? AnswerJsonString
+    [JsonIgnore]
+    [Required]
+    public string AnswerJson
     {
-        get => Answers == null ? null : JsonSerializer.Serialize(Answers);
-        set => Answers = value == null ? null : JsonSerializer.Deserialize<List<FormAnswer>>(value);
+        get => JsonSerializer.Serialize(Answers);
+        set => Answers = string.IsNullOrEmpty(value) 
+            ? new List<FormAnswer>() 
+            : JsonSerializer.Deserialize<List<FormAnswer>>(value) ?? new List<FormAnswer>();
     }
 }
 
@@ -98,20 +116,21 @@ public class Option
 public class FormField
 {
     [Required]
-    public string? FieldId { get; set; }
+    public required string FieldId { get; set; }
     [Required]
-    public string? FieldName { get; set; }
+    public required string FieldName { get; set; }
     public string? DisplayName { get; set; }
     public InputType InputType { get; set; }
     public bool IsRequired { get; set; }
-    public List<Option>? Options { get; set; } 
+    public List<Option>? Options { get; set; } = new List<Option>();
     public bool AllowsMultiple { get; set; }   
     public string? Placeholder { get; set; }
     public string? RegexValidationPattern { get; set; }
     
     // Properties specific to file upload
-    public long? MaxFileSize { get; set; }         
-    public List<string>? AllowedFileTypes { get; set; } // Allowed file extensions (e.g., ".jpg", ".png")
+    public long? MaxFileSize { get; set; }
+
+    public List<string>? AllowedFileTypes { get; set; } = new List<string>(); // Allowed file extensions (e.g., ".jpg", ".png")
 }
 
 
@@ -152,10 +171,3 @@ public enum InputType
 }
 
 
-public class FormAnswerDto
-{
-    public string? FieldId { get; set; }
-    public string? FieldName { get; set; }        
-    public List<string>? Values { get; set; }     
-    public List<IFormFile>? Files { get; set; }   
-}
