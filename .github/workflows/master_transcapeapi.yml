@@ -6,7 +6,7 @@ name: Build and deploy ASP.Net Core app to Azure Web App - transcapeapi
 on:
   push:
     branches:
-      - master
+      - mvp-main
   workflow_dispatch:
 
 jobs:
