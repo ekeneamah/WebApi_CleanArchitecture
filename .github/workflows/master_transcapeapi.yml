@@ -54,4 +54,4 @@ jobs:
           app-name: 'transcapeapi'
           slot-name: 'Production'
           package: .
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_62929F52402E48DF99943F4ABCFA16CC }}
+          publish-profile: ${{ secrets.DEPLOYMENTPROFILE }}
