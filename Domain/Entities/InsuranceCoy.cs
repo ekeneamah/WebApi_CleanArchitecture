@@ -41,6 +41,8 @@ namespace Domain.Entities
         public required string CoyAgentId { get; set; } = "ABC";
         public bool IsOrg { get; set; }
         public string? Title { get; set; }
+        public bool ProvidesQuestionForm { get; set; } = false;
+
     }
 
     public class CoyBenefitEntity

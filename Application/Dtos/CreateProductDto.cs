@@ -23,11 +23,10 @@ namespace Application.Dtos
         public string ProductCode { get; set; }
         public string ProductDescription { get; set; }
         public string ProductGroup { get; set; }
-        public int ProductId { get; set; }
-        public InsuranceCoy? InsuranceCoy { get; set; }
-        public Category? ProductCategory { get; set; }
-        public int CoyId { get; set; }
-        public List<ProductBenefit?> Benefit { get; set; } = new List<ProductBenefit?>();
+        public bool RequireInspection { get; set; }
+        public string? CoyProductId { get; set; }
+        
+
 
     }
 

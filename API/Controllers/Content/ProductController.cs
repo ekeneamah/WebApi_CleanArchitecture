@@ -118,7 +118,7 @@ namespace API.Controllers.Content
 
             var isExist = await _productServcie.ProductIsExist(model.ProductCode);
 
-            if (isExist is true)
+            if (isExist)
             {
                 return BadRequest("ProductEntity Code already exists");
 
@@ -135,6 +135,8 @@ namespace API.Controllers.Content
                     ProductCode = model.ProductCode,
                     ProductDescription = model.ProductDescription,
                     ProductGroup = model.ProductGroup,
+                    RequireInspection = model.RequireInspection,
+                    CoyProductId = model.CoyProductId
                     
                 };
 
@@ -164,6 +166,8 @@ namespace API.Controllers.Content
             product.ProductDescription = model.ProductDescription;
             product.CategoryId = model.CategoryId;
             product.ProductCode = model.ProductCode;
+            product.RequireInspection = model.RequireInspection;
+            product.CoyProductId = model.CoyProductId;
 
 
             _productServcie.Update(product);
