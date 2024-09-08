@@ -8,6 +8,7 @@ namespace Domain.Entities
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int ProductId { get; set; }
+        public string? CoyProductId { get; set; }
 
 
         [Required]
@@ -43,6 +44,7 @@ namespace Domain.Entities
         public string? ThumbNail { get; set; }
         public string? ImageUrl { get; set; }
         public string? VideoUrl { get; set; }
+        public bool RequireInspection { get; set; }
         public List<ProductBenefit?> Benefit { get; set; } = new List<ProductBenefit?>();
 
     }

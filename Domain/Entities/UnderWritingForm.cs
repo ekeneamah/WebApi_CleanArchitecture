@@ -28,17 +28,28 @@ public class UnderWritingForm
     }
 }
 
+// public class FormSection
+// {
+//     public string SectionName { get; set; }
+//     public string SectionId { get; set; }
+//     public List<FormField> Fields { get; set; } = new List<FormField>();
+// }
 public class FormSubmission
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Id { get; set; } = null!;
-    public required string FormId { get; set; }    
+    public string? FormId { get; set; }    
     [NotMapped]
     public List<FormAnswer> Answers { get; set; } = null!;
+    [JsonIgnore]
+    public Product Product { get; set; } = null!;
+
+    public DateTime SubmissionDate { get; set; }
 
     public string UserId { get; set; } = null!;
     public SubmissionStatus Status { get; set; }   
+    public InspectionStatus? InspectionStatus { get; set; }   
     [JsonIgnore]
     [Required]
 
@@ -125,11 +136,16 @@ public class FormField
     public bool AllowsMultiple { get; set; }   
     public string? Placeholder { get; set; }
     public string? RegexValidationPattern { get; set; }
+    public string? OptionsSource { get; set; }
+    public string? DependsOn { get; set; }
     
     // Properties specific to file upload
     public long? MaxFileSize { get; set; }
 
     public List<string>? AllowedFileTypes { get; set; } = new List<string>(); // Allowed file extensions (e.g., ".jpg", ".png")
+    public string? SectionId { get; set; }
+    public string? SectionName { get; set; }
+    
 }
 
 
@@ -154,6 +170,13 @@ public enum SubmissionStatus
 {
     Draft,
     Submitted
+}
+
+public enum InspectionStatus
+{
+    NotStarted,
+    Successful,
+    Failure
 }
 
 public enum InputType
