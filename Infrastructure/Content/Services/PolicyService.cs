@@ -44,7 +44,7 @@ namespace Infrastructure.Content.Services
          
 
         }
-        public async Task<int> AddPolicy(Application.Dtos.TransactionDto x)
+        public async Task<int> AddPolicy(Application.Dtos.CreatePolicyDto x)
         {
             Policy pd = new()
             {
@@ -69,7 +69,7 @@ namespace Infrastructure.Content.Services
             throw new NotImplementedException();
         }
 
-        public Application.Dtos.TransactionDto DeletePolicy(Application.Dtos.TransactionDto model)
+        public Application.Dtos.CreatePolicyDto DeletePolicy(Application.Dtos.CreatePolicyDto model)
         {
             throw new NotImplementedException();
         }
@@ -196,12 +196,12 @@ namespace Infrastructure.Content.Services
 
         }
 
-        public Application.Dtos.TransactionDto UpdatePolicy(Category model)
+        public Application.Dtos.CreatePolicyDto UpdatePolicy(Category model)
         {
             throw new NotImplementedException();
         }
 
-        public PolicyDetailDto UpdatePolicy(Application.Dtos.TransactionDto model)
+        public PolicyDetailDto UpdatePolicy(Application.Dtos.CreatePolicyDto model)
         {
             throw new NotImplementedException();
         }
@@ -225,7 +225,7 @@ namespace Infrastructure.Content.Services
                 CityLga = userProfileDto.LocalGovernment,
                 StateId = userProfileDto.City,
                 Nationality = userProfileDto.Country,
-                DateOfBirth = userProfileDto.DateofBirth == null ? DateTime.Today : DateTime.Parse(userProfileDto.DateofBirth),
+                DateOfBirth = userProfileDto.DateOfBirth == null ? DateTime.Today : DateTime.Parse(userProfileDto.DateOfBirth),
                 TaxIdNumber = userProfileDto.TaxIdNumber,
                 KycType = kYCDTO.IdentityType,
                 KycExpiryDate = kYCDTO.FromExpiryDate,

@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API.Controllers.Content
 {
-    [Route("api/[controller]")]
+    [Route("api/categories")]
     [ApiController]
    
     public class CategoryController : BaseController
@@ -21,8 +21,7 @@ namespace API.Controllers.Content
         }
 
         #region Get All Categories Endpoint
-        // GET: CategoriesController
-        [HttpGet("GET_ALLCategories")]
+        [HttpGet]
         public async Task<ActionResult<ApiResult<List<CreateCategoryDto>>>> GetAllCategories()
         {
             var categries = await _categoryService.GetAll();
@@ -33,8 +32,8 @@ namespace API.Controllers.Content
 
         #region Get Category Endpoint
         // GET: CategoriesController/Details/5
-        [HttpGet("GET_Category")]
-        public async Task<ActionResult<ApiResult<CreateCategoryDto>>> Details(int id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ApiResult<CreateCategoryDto>>> Details([FromRoute] int id)
         {
             var category = await _categoryService.GetById(id);
 
@@ -45,8 +44,8 @@ namespace API.Controllers.Content
 
         #region Create Category Endpoint
         // POST: CategoriesController/Create
-        [HttpPost("Add_NewCategory")]
-        public async Task<ActionResult<ApiResult<List<CreateCategoryDto>>>> CreateCategory( CreateCategoryDto model)
+        [HttpPost]
+        public async Task<ActionResult<ApiResult<List<CreateCategoryDto>>>> CreateCategory([FromForm] CreateCategoryDto model)
         {
             model.CategoryDescription = model.CategoryDescription?.Replace("\n", "\\n");
          
@@ -62,8 +61,8 @@ namespace API.Controllers.Content
 
         #region Update Category
         // POST: CategoriesController/Edit/5
-        [HttpPut("Edit_Category")]
-        public async Task<ActionResult<ApiResult<List<CategoryBenefit>>>> UpdateCategory(int id, CreateCategoryDto item)
+        [HttpPut]
+        public async Task<ActionResult<ApiResult<List<CategoryBenefit>>>> UpdateCategory(int id,[FromForm] CreateCategoryDto item)
         {
             
 
@@ -88,8 +87,8 @@ namespace API.Controllers.Content
 
         #region Delete Category
         // POST: CategoriesController/Delete/5
-        [HttpDelete("Delete_Category")]
-        public async Task<ActionResult<ApiResult<Category>>> Delete(int id)
+        [HttpDelete("{id}")]
+        public async Task<ActionResult<ApiResult<Category>>> Delete([FromRoute] int id)
         {
            // var category = await _categoryService.GetInsuranceCoyDetailById(id);
 

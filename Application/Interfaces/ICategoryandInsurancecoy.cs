@@ -18,7 +18,7 @@ namespace Application.Interfaces
         ApiResult<CategoryandInsurancecoy> GetById(int id);
         ApiResult<List<CategoryandInsurancecoy>> GetAll();
         Task<ApiResult<List<CategoryandInsurancecoyDto>>> GetByCategoryId(int categoryId);
-        Task<ApiResult<List<CategoryandInsurancecoyDto>>> GetByInsuranceCoyId(int insuranceCoyId);
+        Task<ApiResult<List<CategoryandInsurancecoyDto>>> GetByInsuranceCoyId(int coyId);
 
         // Update operation
         void Update(CategoryandInsurancecoy item);

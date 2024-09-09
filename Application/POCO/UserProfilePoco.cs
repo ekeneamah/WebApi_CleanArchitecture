@@ -16,7 +16,7 @@ namespace Application.POCO
             UserProfileDto ud = new()
             {
                 UserId = u.UserId,
-                DateofBirth = u.DateofBirth,
+                DateOfBirth = u.DateofBirth,
                 Gender = u.Gender,
                 MaritalStatus = u.MaritalStatus,
                 ResidentialAddress = u.ResidentialAddress,
@@ -25,14 +25,14 @@ namespace Application.POCO
                 Bvn = u.Bvn,
                 City = u.City,
                 Country = u.Country,
-                Maidenname = u.Maidenname,
+                MaidenName = u.Maidenname,
                 Nin = u.Nin,
                 Phone = u.Phone,
                 PostalCode = u.PostalCode,
                 Region = u.Region,
                 ResidentPerminNo = u.ResidentPerminNo,
                 SignatureUrl = u.SignatureUrl,
-                Stateoforigin = u.Stateoforigin,
+                StateOfOrigin = u.Stateoforigin,
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email
@@ -45,7 +45,7 @@ namespace Application.POCO
             UserProfile ud = new()
             {
                 UserId = u.UserId,
-                DateofBirth = u.DateofBirth,
+                DateofBirth = u.DateOfBirth,
                 Gender = u.Gender,
                 MaritalStatus = u.MaritalStatus,
                 ResidentialAddress = u.ResidentialAddress,
@@ -54,14 +54,14 @@ namespace Application.POCO
                 Bvn = u.Bvn,
                 City = u.City,
                 Country = u.Country,
-                Maidenname = u.Maidenname,
+                Maidenname = u.MaidenName,
                 Nin = u.Nin,
                 Phone = u.Phone,
                 PostalCode = u.PostalCode,
                 Region = u.Region,
                 ResidentPerminNo = u.ResidentPerminNo,
                 SignatureUrl = u.SignatureUrl,
-                Stateoforigin = u.Stateoforigin,
+                Stateoforigin = u.StateOfOrigin,
                 FirstName = u.FirstName,
                 LastName = u.LastName,
                 Email = u.Email
@@ -101,7 +101,7 @@ namespace Application.POCO
             UserProfileDto ud = new()
             {
                 UserId = "",
-                DateofBirth = "",
+                DateOfBirth = "",
                 Gender = "",
                 MaritalStatus = "",
                 ResidentialAddress = "",
@@ -110,14 +110,14 @@ namespace Application.POCO
                 Bvn = "",
                 City = "",
                 Country = "",
-                Maidenname = "",
+                MaidenName = "",
                 Nin = "",
                 Phone = "",
                 PostalCode = "",
                 Region = "",
                 ResidentPerminNo = "",
                 SignatureUrl = "",
-                Stateoforigin ="",
+                StateOfOrigin ="",
             };
             return ud;
         }

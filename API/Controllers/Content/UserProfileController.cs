@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Content
 {
-    [Route("api/[controller]")]
+    [Route("api/user-profiles")]
     [ApiController]
     [Authorize]
     public class UserProfileController : BaseController
@@ -27,15 +27,14 @@ namespace API.Controllers.Content
            
         }
         #region GetAllProducts Endpoint
-        // GET: api/Products
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<ActionResult<ApiResult<List<UserProfileDto>>>> GetUserPrifiles()
         {
             return HandleOperationResult(await _profileservice.GetAll());
         }
         #endregion
         #region getbyuserid
-        [HttpGet("GetUserid")]
+        [HttpGet("me")]
         public async Task<ActionResult<ApiResult<UserProfileDto>>> GetUserPrifilebyid()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
@@ -46,8 +45,8 @@ namespace API.Controllers.Content
         #endregion
 
         #region create profile
-        [HttpPut]
-        public async Task<ActionResult<ApiResult<UserProfileDto>>> UpdateProfile( UserProfileDto u)
+        [HttpPut("me")]
+        public async Task<ActionResult<ApiResult<UserProfileDto>>> UpdateProfile([FromBody]  UserProfileDto u)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -62,8 +61,8 @@ namespace API.Controllers.Content
         #endregion create profile
 
         #region update only logo
-        [HttpPut("{id}/profilepix")]
-        public async Task<ActionResult<ApiResult<bool>>> UpdateProfileImage(int id, IFormFile profileImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
+        [HttpPut("{id}/profile-pix")]
+        public async Task<ActionResult<ApiResult<bool>>> UpdateProfileImage(int id, [FromForm] IFormFile profileImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -102,7 +101,7 @@ namespace API.Controllers.Content
         #endregion
 
         #region delete profile pix
-        [HttpDelete("{id}/profilepix")]
+        [HttpDelete("{id}/profile-pix")]
         public async Task<ActionResult<ApiResult<bool>>> DeleteProfileImage(int id, IFormFile profileImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
