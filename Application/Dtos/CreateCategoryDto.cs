@@ -14,7 +14,7 @@ namespace Application.Dtos
         [Required]
         [MaxLength(100)]
 
-        public string? CategoryName { get; set; }
+        public string CategoryName { get; set; } = null!;
         [Required]
         public string? CategoryDescription { get; set; }
         [MaxLength(450)]

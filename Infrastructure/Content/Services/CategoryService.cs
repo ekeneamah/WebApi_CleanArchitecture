@@ -68,6 +68,11 @@ namespace Infrastructure.Content.Services
         #region AddCategory
         public async Task<ApiResult<CreateCategoryDto>> AddCategory(CreateCategoryDto item)
         {
+            if (await CategoryIsExist(item.CategoryName))
+            {
+                return ApiResult<CreateCategoryDto>.Failed("Category already exist");
+            }
+
 
             Category model = new()
             {

@@ -112,14 +112,14 @@ namespace API.Controllers.Content
         // POST: api/Products
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<int>> PostProduct([FromBody] CreateProductDto model)
+        public async Task<ActionResult<ApiResult<Product>>> PostProduct([FromBody] CreateProductDto model)
         {
 
             var isExist = await _productServcie.ProductIsExist(model.ProductCode);
 
             if (isExist)
             {
-                return BadRequest("ProductEntity Code already exists");
+                return HandleOperationResult(ApiResult<Product>.Failed("Code already exist"));
 
             }
             else
@@ -138,8 +138,8 @@ namespace API.Controllers.Content
                     CoyProductId = model.CoyProductId
                     
                 };
+                return HandleOperationResult(ApiResult<Product>.Successful(await _productServcie.Add(product)));
 
-               return Ok( await _productServcie.Add(product));
             }
            
             //return Ok();

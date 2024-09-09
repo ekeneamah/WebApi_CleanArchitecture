@@ -22,6 +22,31 @@ namespace Infrastructure.Content.Services
 
         public async Task<ApiResult<Kycdto>> CreateKYC(Kycdto kycDto)
         {
+            if (kycDto.IdentityType != "NIN")
+            {
+
+
+                // Check if expiry date is greater than issued date
+                if (kycDto.FromExpiryDate > kycDto.ToExpiryDate)
+                {
+                    return ApiResult<Kycdto>.Failed("Expiry date must be greater than issued date.");
+                }
+
+                // Check if expiry date has not passed
+                if (DateTime.Today > kycDto.ToExpiryDate)
+                {
+                    return ApiResult<Kycdto>.Failed("Identity has expired.");
+                }
+                // Check if expiry date has not passed
+                if (DateTime.Today < kycDto.FromExpiryDate)
+                {
+                    return ApiResult<Kycdto>.Failed("Identity has expired.");
+                }
+            }
+            else if (DateTime.Today < kycDto.FromExpiryDate)
+            {
+                return ApiResult<Kycdto>.Failed("Date is invalid.");
+            }
             Kyc kycEntity = new()
             {
                 IdentityType = kycDto.IdentityType,
@@ -123,6 +148,32 @@ namespace Infrastructure.Content.Services
 
         public async Task<ApiResult<Kycdto>> UpdateKYC(int id, Kycdto kycDto)
         {
+            if (id != kycDto.Id)
+            {
+                return ApiResult<Kycdto>.Failed("Invalid KYC ID.");
+            }
+            if (kycDto.IdentityType != "NIN")
+            {
+
+
+                // Check if expiry date is greater than issued date
+                if (kycDto.FromExpiryDate > kycDto.ToExpiryDate)
+                {
+                    return ApiResult<Kycdto>.Failed("Expiry date must be greater than issued date.");
+                }
+
+                // Check if expiry date has not passed
+                if (DateTime.Today > kycDto.ToExpiryDate)
+                {
+                    return ApiResult<Kycdto>.Failed("Identity has expired.");
+                }
+               
+            }
+            else if (DateTime.Today < kycDto.FromExpiryDate)
+            {
+                return ApiResult<Kycdto>.Failed("Date is invalid.");
+            }
+            
             Kyc kycEntity = await _context.Kycs.Where(u=>u.UserId==kycDto.UserId && u.Id==id).FirstOrDefaultAsync();
 
             if (kycEntity == null)

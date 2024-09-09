@@ -206,7 +206,7 @@ namespace Infrastructure.Content.Services
             throw new NotImplementedException();
         }
 
-        public async Task<string> GeneratePolicyNumber(GeneratePolicyDto generatePolicyDTO)
+        public async Task<ApiResult<string>> GeneratePolicyNumber(GeneratePolicyDto generatePolicyDTO)
         {
             var productDetails = (await productService.GetDetailsById(generatePolicyDTO.ProductId)).Data;
             UserProfileDto userProfileDto = await userProfileService.GetProfilebyUserid(generatePolicyDTO.Userid);
@@ -260,12 +260,12 @@ namespace Infrastructure.Content.Services
                 _context.Policies.Update(p);
                  await _context.SaveChangesAsync();
                 await SavePolicyNo(retPolicy);
-                return retPolicy.PolicyNo;
+                return ApiResult<string>.Successful(retPolicy.PolicyNo);
 
             }
             else
             {
-                return "No policy number yet";
+                return ApiResult<string>.Failed("Policy not generated");
             }
         }
 
