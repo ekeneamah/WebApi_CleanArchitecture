@@ -43,7 +43,7 @@ namespace API.Controllers.Authentication
         #region SignUp Endpoint
 
         [HttpPost("signUp")]
-        public async Task<ActionResult<ApiResult<AuthResponse>>> SignUpAsync(SignUp model)
+        public async Task<ActionResult<ApiResult<AuthResponse>>> SignUpAsync([FromBody]SignUp model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -63,7 +63,7 @@ namespace API.Controllers.Authentication
         #region Login Endpoint
 
         [HttpPost("login")]
-        public async Task<ActionResult<ApiResult<AuthResponse>>> LoginAsync([FromForm] Login model)
+        public async Task<ActionResult<ApiResult<AuthResponse>>> LoginAsync([FromBody] Login model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -87,8 +87,8 @@ namespace API.Controllers.Authentication
 /// </summary>
 /// <param name="model"></param>
 /// <returns></returns>
-        [HttpPost("AddRole")]
-        public async Task<ActionResult<ApiResult<AssignRolesDto>>> AddRoleAsync(AssignRolesDto model)
+        [HttpPost("role")]
+        public async Task<ActionResult<ApiResult<AssignRolesDto>>> AddRoleAsync([FromBody] AssignRolesDto model)
         {
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
@@ -105,7 +105,7 @@ namespace API.Controllers.Authentication
 
         #region RefreshTokenCheck Endpoint
 
-        [HttpGet("refreshToken")]
+        [HttpGet("refresh-token")]
         public async Task<ActionResult<ApiResult<AuthResponse>>> RefreshTokenCheckAsync()
         {
             var refreshToken = Request.Cookies["refreshTokenKey"];
@@ -118,7 +118,7 @@ namespace API.Controllers.Authentication
 
         #region RevokeTokenAsync
 
-        [HttpPost("revokeToken")]
+        [HttpPost("revoke-token")]
         public async Task<ActionResult<ApiResult<bool>>> RevokeTokenAsync(RevokeToken model)
         {
             var refreshToken = model.Token ?? Request.Cookies["refreshTokenKey"];
@@ -202,7 +202,7 @@ namespace API.Controllers.Authentication
         }
         #endregion
         #region signout
-        [HttpDelete("DeleteAllUser")]
+        [HttpDelete("users")]
         public async Task<ActionResult<ApiResult<string>>> DeleteAllUser()
         {
             return HandleOperationResult(await _authService.DeleteAllUserAsync());

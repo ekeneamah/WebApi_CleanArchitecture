@@ -28,7 +28,16 @@ namespace Infrastructure.Content.Services
 
         public async Task<ApiResult<UserProfileDto>> UpdateUser(UserProfileDto u)
         {
-           var user = await _userManager.FindByIdAsync(u.UserId);
+            using var scope = await _context.Database.BeginTransactionAsync();
+
+            if (u.UserId == null)
+                return ApiResult<UserProfileDto>.Failed("Invalid User");
+            
+            var user = await _userManager.FindByIdAsync(u.UserId);
+            
+            if (user == null)
+                return ApiResult<UserProfileDto>.Failed("Invalid User");
+            
             AppUser au = new()
             {
                 FirstName = u.FirstName,
@@ -38,23 +47,34 @@ namespace Infrastructure.Content.Services
                 BVN = u.Bvn,
                 City = u.City,
                 Country = u.Country,
-                DateofBirth = u.DateofBirth,
+                DateofBirth = u.DateOfBirth,
                 Gender = u.Gender,
-                Maidenname = u.Maidenname,
+                Maidenname = u.MaidenName,
                 MaritalStatus = u.MaritalStatus,
                 NIN = u.Nin,
                 Phone = u.Phone,
                 ResidentialAddress = u.ResidentialAddress,
-                Stateoforigin = u.Stateoforigin,
+                Stateoforigin = u.StateOfOrigin,
                 PostalCode = u.PostalCode,
                 Town = u.Town,
                 SignatureUrl = u.SignatureUrl
             };
-            if (user != null)
+            await _userManager.UpdateAsync(au);
+
+            if (user.UserName != u.UserName)
             {
-                _userManager.UpdateAsync(au);
-                await _context.SaveChangesAsync();
-            } 
+                var result = await _userManager.SetUserNameAsync(user, u.UserName);
+                if (!result.Succeeded)
+                {
+                    var errorMessages = string.Join(Environment.NewLine, result.Errors.Select(x => x.Description));
+
+                    return ApiResult<UserProfileDto>.Failed(errorMessages);
+                }
+
+            }
+            await _context.SaveChangesAsync();
+            await scope.CommitAsync();
+            
            
             return ApiResult<UserProfileDto>.Successful(u);
         }
@@ -91,14 +111,14 @@ namespace Infrastructure.Content.Services
                     Bvn = u.BVN,
                     City = u.City,
                     Country = u.Country,
-                    DateofBirth = u.DateofBirth,
+                    DateOfBirth = u.DateofBirth,
                     Gender = u.Gender,
-                    Maidenname = u.Maidenname,
+                    MaidenName = u.Maidenname,
                     MaritalStatus = u.MaritalStatus,
                     Nin = u.NIN,
                     Phone = u.Phone,
                     ResidentialAddress = u.ResidentialAddress,
-                    Stateoforigin = u.Stateoforigin,
+                    StateOfOrigin = u.Stateoforigin,
                     PostalCode = u.PostalCode,
                     Town = u.Town,
                     SignatureUrl = u.SignatureUrl
@@ -113,7 +133,11 @@ namespace Infrastructure.Content.Services
         public async Task<ApiResult<UserProfileDto>> GetProfilebyUserid(string id)
         {
             
-            AppUser u = await _userManager.FindByIdAsync(id);
+            var u = await _userManager.FindByIdAsync(id);
+            if (u == null)
+            {
+                return ApiResult<UserProfileDto>.Failed("User Not Found");
+            }
             UserProfileDto au = new()
             {
                 FirstName = u.FirstName,
@@ -123,17 +147,22 @@ namespace Infrastructure.Content.Services
                 Bvn = u.BVN,
                 City = u.City,
                 Country = u.Country,
-                DateofBirth = u.DateofBirth,
+                DateOfBirth = u.DateofBirth,
                 Gender = u.Gender,
-                Maidenname = u.Maidenname,
+                MaidenName = u.Maidenname,
                 MaritalStatus = u.MaritalStatus,
                 Nin = u.NIN,
                 Phone = u.Phone,
                 ResidentialAddress = u.ResidentialAddress,
-                Stateoforigin = u.Stateoforigin,
+                StateOfOrigin = u.Stateoforigin,
                 PostalCode = u.PostalCode,
                 Town = u.Town,
-                SignatureUrl = u.SignatureUrl
+                SignatureUrl = u.SignatureUrl,
+                UserId = u.Id,
+                UserName = u.UserName,
+                ResidentPerminNo = u.ResidentPerminNo,
+                Region = u.Region
+                
             };
 
             return ApiResult<UserProfileDto>.Successful(au);

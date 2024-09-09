@@ -12,7 +12,7 @@ namespace Application.Dtos
     {
         public string? ProductName { get; set; }
 
-        public int InsuranceCoyId { get; set; }
+        public int CoyId { get; set; }
         public int? CategoryId { get; set; }
 
         public double ProductPrice { get; set; }

@@ -19,7 +19,7 @@ namespace API.Controllers.Content
 
 	
 	[ApiController]
-	[Route("api/[controller]")]
+	[Route("api/transactions")]
 	[Authorize]
 	public class TransactionController : BaseController
 	{
@@ -52,7 +52,7 @@ namespace API.Controllers.Content
 		}
 
 		[HttpPost("initialize")]
-		public async Task<IActionResult> InitializeTransaction( TransactionRequest request)
+		public async Task<IActionResult> InitializeTransaction([FromBody] TransactionRequest request)
 		{
             
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
@@ -103,62 +103,69 @@ namespace API.Controllers.Content
             }
         }
         #region complete transaction
-        [HttpPost("CompleteTransaction")]
-		public async Task<ActionResult<TransactionVerificationResponse>> CompleteTransaction(Transaction transactionResponse)
+        [HttpPost("complete")]
+		public async Task<ActionResult<TransactionVerificationResponse>> CompleteTransaction([FromBody] Transaction transactionResponse)
 		{
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
                 return BadRequest("Invalid User");
             try
             {
-                
-           
-                var apiUrl = ApiBaseUrl + "transaction/verify/";
 
 
-                _httpClient.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", "sk_test_5a79p4peopxivb0eohtxpzefa7kz4eg3lxysx09");
-                _httpClient.DefaultRequestHeaders.Accept.Add(new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
+	            var apiUrl = ApiBaseUrl + "transaction/verify/";
 
 
-                
-                
-                var response = await _httpClient.GetAsync($"{ApiBaseUrl}transaction/verify/:{transactionResponse.Reference}");
-                var responseData = await response.Content.ReadAsStringAsync();
-                var responseObj = JsonConvert.DeserializeObject<TransactionVerificationResponse>(responseData);
-                if (response.IsSuccessStatusCode)
-                {
-                   
-                    Transaction result = new()
-                    {
+	            _httpClient.DefaultRequestHeaders.Authorization =
+		            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer",
+			            "sk_test_5a79p4peopxivb0eohtxpzefa7kz4eg3lxysx09");
+	            _httpClient.DefaultRequestHeaders.Accept.Add(
+		            new System.Net.Http.Headers.MediaTypeWithQualityHeaderValue("application/json"));
 
-                        PaymentRef = responseObj.Data.Reference,
-                        Amount = double.Parse(responseObj.Data.Amount),
-                        UserId = user.Id,
-                        UserEmail = user.Email,
-                        Reference = responseObj.Data.Reference,
-                        Status = responseObj.Data.Status,
-                        ProductId = transactionResponse.ProductId,
-                        DateTime = responseObj.Data.TransactionDate==null?DateTime.UtcNow: responseObj.Data.TransactionDate,
 
-                    };
 
-                    // Save transactionData to your database using Entity Framework Core or other ORM
-                     await _transactionService.UpdateResponse(result);
-                    
-                }
-                return Ok(responseObj);
-                }
+
+	            var response =
+		            await _httpClient.GetAsync($"{ApiBaseUrl}transaction/verify/:{transactionResponse.Reference}");
+	            var responseData = await response.Content.ReadAsStringAsync();
+	            var responseObj = JsonConvert.DeserializeObject<TransactionVerificationResponse>(responseData);
+	            if (response.IsSuccessStatusCode)
+	            {
+
+		            Transaction result = new()
+		            {
+
+			            PaymentRef = responseObj.Data.Reference,
+			            Amount = double.Parse(responseObj.Data.Amount),
+			            UserId = user.Id,
+			            UserEmail = user.Email,
+			            Reference = responseObj.Data.Reference,
+			            Status = responseObj.Data.Status,
+			            ProductId = transactionResponse.ProductId,
+			            DateTime = responseObj.Data.TransactionDate == null
+				            ? DateTime.UtcNow
+				            : responseObj.Data.TransactionDate,
+
+		            };
+
+		            // Save transactionData to your database using Entity Framework Core or other ORM
+		            await _transactionService.UpdateResponse(result);
+
+	            }
+
+	            return Ok(responseObj);
+            }
             catch (HttpRequestException ex)
             {
-                return StatusCode(500, $"Error: {ex.Message}");
+	            return StatusCode(500, $"Error: {ex.Message}");
             }
-           
 
 
-        }
+
+		}
         #endregion
-        [HttpGet("{reference}")]
-        public async Task<ActionResult<ApiResult<TransactionDto>>> GetTransactionByReference(string reference)
+        [HttpGet("by-reference/{reference}")]
+        public async Task<ActionResult<ApiResult<TransactionDto>>> GetTransactionByReference([FromRoute] string reference)
         {
             var transaction = await _transactionService.GetTransactionByReference(reference);
 
@@ -166,7 +173,7 @@ namespace API.Controllers.Content
         }
 
         #region GetTransactionByUserId
-        [HttpGet("GetTransactionsByUserId")]
+        [HttpGet("me")]
         public async Task<ActionResult<ApiResult<PaginatedListWithFIlter<TransactionDto>>>> GetTransactionsByUserId(
             int pageNumber = 1,
             int pageSize = 10,

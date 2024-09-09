@@ -8,7 +8,7 @@ using Domain.Entities;
 
 namespace API.Controllers.Content
 {
-    [Route("api/[controller]")]
+    [Route("api/vehicle-premiums")]
     [ApiController]
     public class VehiclePremiumsController : BaseController
     {
@@ -38,14 +38,14 @@ namespace API.Controllers.Content
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApiResult<VehiclePremium>>> AddVehiclePremium(VehiclePremium vehiclePremium)
+        public async Task<ActionResult<ApiResult<VehiclePremium>>> AddVehiclePremium([FromBody] VehiclePremium vehiclePremium)
         {
                return HandleOperationResult(await _vehiclePremiumRepository.GetVehiclePremiumByIdAsync(vehiclePremium.Id));
           
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateVehiclePremium(int id, VehiclePremium vehiclePremium)
+        public async Task<IActionResult> UpdateVehiclePremium(int id,[FromBody]  VehiclePremium vehiclePremium)
         {
             if (id != vehiclePremium.Id)
             {

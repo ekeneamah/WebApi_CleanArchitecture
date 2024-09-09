@@ -20,15 +20,15 @@ namespace Application.Interfaces.Content.Policy
         Task<string> GeneratePolicyNumber(GeneratePolicyDto ret );
 
 
-        Task<int> AddPolicy(Dtos.TransactionDto model);
+        Task<int> AddPolicy(Dtos.CreatePolicyDto model);
 
 
 
-        PolicyDetailDto UpdatePolicy(Dtos.TransactionDto model);
+        PolicyDetailDto UpdatePolicy(Dtos.CreatePolicyDto model);
 
 
 
-        Dtos.TransactionDto DeletePolicy(Dtos.TransactionDto model);
+        Dtos.CreatePolicyDto DeletePolicy(Dtos.CreatePolicyDto model);
 
 
 

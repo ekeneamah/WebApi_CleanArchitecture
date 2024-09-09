@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Application.Dtos
 {
-    public class TransactionDto
+    public class CreatePolicyDto
     {
         
 

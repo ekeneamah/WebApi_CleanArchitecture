@@ -9,7 +9,7 @@ using Application.Common;
 
 namespace API.Controllers.Content
 {
-    [Route("api/[controller]")]
+    [Route("api/kycs")]
 [ApiController]
 public class KYCController : BaseController
 {
@@ -24,7 +24,7 @@ public class KYCController : BaseController
 
 
     [HttpPost]
-    public async Task<ActionResult<ApiResult<Kycdto>>> CreateKYC(Kycdto kycDto)
+    public async Task<ActionResult<ApiResult<Kycdto>>> CreateKYC([FromBody]Kycdto kycDto)
         {
             if (kycDto.IdentityType != "NIN")
             {
@@ -68,7 +68,7 @@ public class KYCController : BaseController
         return HandleOperationResult(kycDto);
     }
 
-        [HttpGet("GetKycByUserId")]
+        [HttpGet("me")]
         public async Task<ActionResult<ApiResult<List<Kycdto>>>> GetKYCByUserId()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
@@ -87,7 +87,7 @@ public class KYCController : BaseController
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<ApiResult<Kycdto>>> UpdateKYC(int id, Kycdto kycDto)
+    public async Task<ActionResult<ApiResult<Kycdto>>> UpdateKYC(int id, [FromBody] Kycdto kycDto)
     {
         if (id != kycDto.Id)
         {
