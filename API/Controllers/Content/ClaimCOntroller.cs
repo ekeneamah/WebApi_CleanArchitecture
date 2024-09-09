@@ -50,7 +50,7 @@ namespace API.Controllers.Content
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<List<ClaimDetailDto>>.Failed("Invalid User"));
 
             var claims = await _claimService.GetAllMyClaims(user.Id);
             return HandleOperationResult(claims);
@@ -227,7 +227,7 @@ namespace API.Controllers.Content
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<ClaimsDto>.Failed("Invalid User"));
             }
             model.UserId = user?.Id;
             var updatedClaim = await _claimService.UpdateClaims(model);

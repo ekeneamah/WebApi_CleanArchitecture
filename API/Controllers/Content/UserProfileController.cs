@@ -39,7 +39,7 @@ namespace API.Controllers.Content
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult(ApiResult<UserProfileDto>.Failed("Invalid User"));    
             return HandleOperationResult(await _profileservice.GetProfilebyUserid(user.Id));
         }
         #endregion
@@ -48,12 +48,10 @@ namespace API.Controllers.Content
         [HttpPut("me")]
         public async Task<ActionResult<ApiResult<UserProfileDto>>> UpdateProfile([FromBody]  UserProfileDto u)
         {
-            if(!ModelState.IsValid)
-                return BadRequest(ModelState);
             var orgin = Request.Headers["origin"];
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult(ApiResult<UserProfileDto>.Failed("Invalid User")); 
             u.UserId = user.Id;
             var result = await _profileservice.UpdateUser(u);
             return HandleOperationResult(result);
@@ -66,8 +64,7 @@ namespace API.Controllers.Content
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
-           
+                return HandleOperationResult(ApiResult<bool>.Failed("Invalid User"));           
             if (!string.IsNullOrEmpty(user.ProfilePix))
             {
                 string wwwrootPathold = webHostEnvironment.WebRootPath;
@@ -106,8 +103,7 @@ namespace API.Controllers.Content
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
-
+                return HandleOperationResult(ApiResult<bool>.Failed("Invalid User"));
             if (!string.IsNullOrEmpty(user.ProfilePix))
             {
                 string wwwrootPathold = webHostEnvironment.WebRootPath;

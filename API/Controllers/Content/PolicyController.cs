@@ -42,7 +42,7 @@ namespace API.Controllers.Content
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<List<PolicyDetailDto>>.Failed("Invalid User"));
             return HandleOperationResult(await _policyService.GetAllPolicyByUserId(user.Id));
         }
         #endregion
@@ -54,19 +54,22 @@ namespace API.Controllers.Content
         /// <param name="generatePolicyDTO"></param>
         /// <returns></returns>
         [HttpPost("generate-policy-number")]
-        public async Task<ActionResult<string>> GenPolicyNo([FromBody] GeneratePolicyDto generatePolicyDTO)
+        public async Task<ActionResult<ApiResult<string>>> GenPolicyNo([FromBody] GeneratePolicyDto generatePolicyDTO)
         {
             string token = await AuthenticateAndGetToken();
             if (string.IsNullOrEmpty(token))
             {
-                return Unauthorized("Failed to obtain authentication token.");
+                return HandleOperationResult( ApiResult<string>.UnAuthorized("Failed to obtain authentication token."));
             }
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<string>.Failed("Invalid User"));
             generatePolicyDTO.Userid = user.Id;
             generatePolicyDTO.Token = token;
-            return await _policyService.GeneratePolicyNumber(generatePolicyDTO);
+            var res = await _policyService.GeneratePolicyNumber(generatePolicyDTO);                
+            return HandleOperationResult(res);
+
+            
             
         }
         #endregion

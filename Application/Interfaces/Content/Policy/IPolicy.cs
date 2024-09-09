@@ -17,7 +17,7 @@ namespace Application.Interfaces.Content.Policy
         Task<ApiResult<PolicyDetailDto>> GetById(int id);
         Task<ApiResult<List<PolicyDetailDto>>> GetAllPolicyByUserId(string userid);
         Task<ApiResult<List<PolicyDetailDto>>> GetByUserName(string username);
-        Task<string> GeneratePolicyNumber(GeneratePolicyDto ret );
+        Task<ApiResult<string>> GeneratePolicyNumber(GeneratePolicyDto ret );
 
 
         Task<int> AddPolicy(Dtos.CreatePolicyDto model);

@@ -45,8 +45,6 @@ namespace API.Controllers.Authentication
         [HttpPost("signUp")]
         public async Task<ActionResult<ApiResult<AuthResponse>>> SignUpAsync([FromBody]SignUp model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             var orgin = Request.Headers["origin"];
             var result = await _authService.SignUpAsync(model, orgin);
             if (result.Success)
@@ -65,9 +63,6 @@ namespace API.Controllers.Authentication
         [HttpPost("login")]
         public async Task<ActionResult<ApiResult<AuthResponse>>> LoginAsync([FromBody] Login model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var result = await _authService.LoginAsync(model);
 
             if (result.Success && result.Data?.RefreshToken != null)
@@ -90,9 +85,6 @@ namespace API.Controllers.Authentication
         [HttpPost("role")]
         public async Task<ActionResult<ApiResult<AssignRolesDto>>> AddRoleAsync([FromBody] AssignRolesDto model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var result = await _authService.AssignRolesAsync(model);
 
             if (!string.IsNullOrEmpty(result))
@@ -180,7 +172,7 @@ namespace API.Controllers.Authentication
 
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<string>.Failed("Invalid User"));
 
             VerifyOtpDto model = new()
             {

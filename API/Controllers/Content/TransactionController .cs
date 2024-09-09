@@ -184,8 +184,7 @@ namespace API.Controllers.Content
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
-
+	            return HandleOperationResult(ApiResult<PaginatedListWithFIlter<TransactionDto>>.Failed("Invalid User"));
             var transactions = await _transactionService.GetTransactionsByUserId(
                 user.Id, pageNumber, pageSize, startDate, endDate, transactionType, status);
 

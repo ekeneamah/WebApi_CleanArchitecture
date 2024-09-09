@@ -56,7 +56,8 @@ namespace API.Controllers.Content
         {
             if (await _insuranceCoyService.CoyIsExist(insuranceCoy.CoyName))
             {
-                return BadRequest($"InsuranceCompany name: {insuranceCoy.CoyName} is already registered");
+                return HandleOperationResult( ApiResult<InsuranceCoyDto>.Failed($"InsuranceCompany name: {insuranceCoy.CoyName} is already registered"));
+
             }
             // Save logo image file to wwwroot/Images folder
             string wwwrootPath = webHostEnvironment.WebRootPath;
@@ -96,13 +97,10 @@ namespace API.Controllers.Content
         public async Task<ActionResult<ApiResult<InsuranceCoyDto>>> UpdateInsuranceCoy(int id,[FromForm]  InsuranceCoy model)
         {
             var insuranceCoy = await _insuranceCoyService.GetByInsuranceCoyId(id);
-
-            if (insuranceCoy == null)
-                return NotFound($"insuranceCoy: {model.CoyName} was not found");
+            
 
             if (await _insuranceCoyService.CoyIsExist(model.CoyName))
-                return BadRequest(" this InsuranceCompany name is already registred");
-
+                return HandleOperationResult( ApiResult<InsuranceCoyDto>.Failed($"Insurance Company name: {insuranceCoy.CoyName} is already registered"));
 
             insuranceCoy.CoyName = model.CoyName;
             await _insuranceCoyService.Update_Coy(insuranceCoy);
