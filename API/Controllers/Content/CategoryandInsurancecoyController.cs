@@ -49,7 +49,7 @@ namespace API.Controllers.Content
         }
 
         // GET: api/CategoryandInsurancecoy/ByInsuranceCoyId/5
-        [HttpGet("by-insurance-coy-id/{coyId}")]
+        [HttpGet("by-insurance-coy/{coyId}")]
         public async Task<ActionResult<ApiResult<List<CategoryandInsurancecoyDto>>>> GetByInsuranceCoyId([FromRoute] int coyId)
         {
             var response = await _service.GetByInsuranceCoyId(coyId);
