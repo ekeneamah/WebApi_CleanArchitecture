@@ -164,6 +164,38 @@ namespace Infrastructure.Identity.Services
             #region SendVerificationEmail
 
             // var verificationUri = await SendVerificationEmail(user, orgin);
+            await SendOnboardingOtp(user);
+
+            #endregion SendVerificationEmail
+
+            var jwtSecurityToken = await CreateJwtAsync(user);
+
+            auth.Email = user.Email;
+           // auth.UserId = user.Id;
+            auth.Roles = new List<string> { "User" };
+            auth.IsAuthenticated = true;
+            auth.UserName = user.UserName;
+            auth.FirstName = user.FirstName;
+            auth.LastName = user.LastName;
+            auth.Email = user.Email;
+            auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
+            auth.TokenExpiresOn = jwtSecurityToken.ValidTo.ToLocalTime();
+            auth.Message = "SignUp Succeeded! Otp sent to your email";
+            auth.IsActivated = user.IsActivated;
+            // create new refresh token
+            var newRefreshToken = GenerateRefreshToken();
+            auth.RefreshToken = newRefreshToken.Token;
+            auth.RefreshTokenExpiration = newRefreshToken.ExpireOn;
+
+            user.RefreshTokens.Add(newRefreshToken);
+            await _userManager.UpdateAsync(user);
+            
+            return ApiResult<AuthResponse>.Successful(auth);
+
+        }
+
+        private async Task SendOnboardingOtp(AppUser user)
+        {
             await _emailSender.SendEmailAsync(new EmailRequest()
             {
                 ToEmail = user.Email,
@@ -211,35 +243,6 @@ namespace Infrastructure.Identity.Services
         </body>
         </html>"
             });
-
-       
-
-            #endregion SendVerificationEmail
-
-            var jwtSecurityToken = await CreateJwtAsync(user);
-
-            auth.Email = user.Email;
-           // auth.UserId = user.Id;
-            auth.Roles = new List<string> { "User" };
-            auth.IsAuthenticated = true;
-            auth.UserName = user.UserName;
-            auth.FirstName = user.FirstName;
-            auth.LastName = user.LastName;
-            auth.Email = user.Email;
-            auth.Token = new JwtSecurityTokenHandler().WriteToken(jwtSecurityToken);
-            auth.TokenExpiresOn = jwtSecurityToken.ValidTo.ToLocalTime();
-            auth.Message = "SignUp Succeeded! Otp sent to your email";
-            auth.IsActivated = user.IsActivated;
-            // create new refresh token
-            var newRefreshToken = GenerateRefreshToken();
-            auth.RefreshToken = newRefreshToken.Token;
-            auth.RefreshTokenExpiration = newRefreshToken.ExpireOn;
-
-            user.RefreshTokens.Add(newRefreshToken);
-            await _userManager.UpdateAsync(user);
-            
-            return ApiResult<AuthResponse>.Successful(auth);
-
         }
 
         #endregion SignUp Method
@@ -258,7 +261,6 @@ namespace Infrastructure.Identity.Services
         public async Task<ApiResult<AuthResponse>> LoginAsync(Login model)
         {
             var auth = new AuthResponse();
-
             var user = await _userManager.FindByEmailAsync(model.Email);
             var userpass = await _userManager.CheckPasswordAsync(user, model.Password);
 
@@ -302,6 +304,10 @@ namespace Infrastructure.Identity.Services
                 await _userManager.UpdateAsync(user);
             }
 
+            if (!user.IsActivated)
+            {
+                await SendOnboardingOtp(user);
+            }
             return ApiResult<AuthResponse>.Successful(auth);
 
         }

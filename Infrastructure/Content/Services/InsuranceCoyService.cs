@@ -118,7 +118,6 @@ namespace Infrastructure.Content.Services
                 CoyAgentId = model.CoyAgentId,
                 Title = model.Title,
                 IsOrg = model.IsOrg,
-                CoyId = model.CoyId,
                 CoyZipCode = model.CoyZipCode
 
 

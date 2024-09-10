@@ -128,7 +128,7 @@ namespace API.Controllers.Authentication
         #region ConfirmOTP
         [HttpPost("confirm-otp")]
         [Authorize]
-        public async Task<ActionResult<ApiResult<string>>> ConfirmOTPAsync(OtpDto otp)
+        public async Task<ActionResult<ApiResult<string>>> ConfirmOTPAsync([FromBody] OtpDto otp)
         {
             try
             {

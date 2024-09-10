@@ -63,7 +63,7 @@ namespace API.Controllers.Content
         #endregion
         #region GetAllProducts by insurance id Endpoint
         // GET: api/Products
-        [HttpGet("by-insurance-coy-id/{coyId}")]
+        [HttpGet("by-insurance-coy/{coyId}")]
         public async Task<ActionResult<ApiResult<List<Product>>>> GetProductsByInsuranceCoyId(int coyId, int pageNumber = 1, int pageSize = 10)
         {
             var products = await _productServcie.GetProductsByInsuranceCoyId(pageNumber, pageSize, coyId);

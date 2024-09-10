@@ -45,11 +45,13 @@ namespace API.Controllers.Content
         #region Create Category Endpoint
         // POST: CategoriesController/Create
         [HttpPost]
-        public async Task<ActionResult<ApiResult<List<CreateCategoryDto>>>> CreateCategory([FromForm] CreateCategoryDto model)
+        public async Task<ActionResult<ApiResult<List<CreateCategoryDto>>>> CreateCategory([FromBody] CreateCategoryDto model)
         {
             model.CategoryDescription = model.CategoryDescription?.Replace("\n", "\\n");
-            await  _categoryService.AddCategory(model);
-
+            var response = await  _categoryService.AddCategory(model);
+            if (!response.Success)
+                return HandleOperationResult(ApiResult<List<CreateCategoryDto>>.Failed(response.Message));
+                
             return HandleOperationResult(await _categoryService.GetAll());
 
         }
@@ -58,7 +60,7 @@ namespace API.Controllers.Content
         #region Update Category
         // POST: CategoriesController/Edit/5
         [HttpPut]
-        public async Task<ActionResult<ApiResult<List<CategoryBenefit>>>> UpdateCategory(int id,[FromForm] CreateCategoryDto item)
+        public async Task<ActionResult<ApiResult<List<CategoryBenefit>>>> UpdateCategory(int id,[FromBody] CreateCategoryDto item)
         {
             
 

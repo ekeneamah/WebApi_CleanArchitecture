@@ -33,7 +33,7 @@ namespace Application.Dtos
         [MaxLength(6)]
         public required string Title { get; set; }
         public required string CoyAgentId { get; set; }    
-        public List<CoyBenefitEntity>? CoyBenefits { get; set; }
+        public List<CoyBenefitEntity> CoyBenefits { get; set; } = new List<CoyBenefitEntity>();
 
     }
 
