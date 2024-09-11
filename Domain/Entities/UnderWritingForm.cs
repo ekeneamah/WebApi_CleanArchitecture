@@ -33,10 +33,10 @@ public class UnderWritingForm
         {
             if (!string.IsNullOrEmpty(value))
             {
-                var deserializedForm = JsonSerializer.Deserialize<FormBody>(value);
+                var deserializedForm = JsonSerializer.Deserialize<FormBody>(value, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase,  PropertyNameCaseInsensitive   = true, Converters = { new JsonStringEnumConverter() } });
                 if (deserializedForm != null)
                 {
-                    GlobalFields = deserializedForm.Form ?? new List<FormField>();
+                    GlobalFields = deserializedForm.GlobalFields ?? new List<FormField>();
                     Sections = deserializedForm.Sections;
                 }
             }
@@ -52,7 +52,7 @@ public class UnderWritingForm
 // Body structure to deserialize the form JSON
 public class FormBody
 {
-    public List<FormField> Form { get; set; } = new List<FormField>(); // Questions that don't belong to a section.
+    public List<FormField> GlobalFields { get; set; } = new List<FormField>(); // Questions that don't belong to a section.
     public List<FormSection>? Sections { get; set; }
 }
 

@@ -35,7 +35,7 @@ public class FormSubmission
         {
             if (!string.IsNullOrEmpty(value))
             {
-                var deserializedForm = JsonSerializer.Deserialize<FormAnswerBody>(value);
+                var deserializedForm = JsonSerializer.Deserialize<FormAnswerBody>(value, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase,  PropertyNameCaseInsensitive   = true, Converters = { new JsonStringEnumConverter() } });
                 if (deserializedForm != null)
                 {
                     GlobalFieldAnswers = deserializedForm.GlobalFieldAnswers ?? new List<FormAnswer>();
@@ -91,7 +91,7 @@ public class ClaimsFormSubmission
         {
             if (!string.IsNullOrEmpty(value))
             {
-                var deserializedForm = JsonSerializer.Deserialize<FormAnswerBody>(value);
+                var deserializedForm = JsonSerializer.Deserialize<FormAnswerBody>(value, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase,  PropertyNameCaseInsensitive   = true, Converters = { new JsonStringEnumConverter() } });
                 if (deserializedForm != null)
                 {
                     GlobalFieldAnswers = deserializedForm.GlobalFieldAnswers ?? new List<FormAnswer>();
