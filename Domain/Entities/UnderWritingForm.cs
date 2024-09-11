@@ -11,7 +11,6 @@ public class UnderWritingForm
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
     public string Id { get; set; } = null!;
     [Required]
-    [NotMapped]
     public string Title { get; set; } = null!;
 
     [JsonIgnore]
