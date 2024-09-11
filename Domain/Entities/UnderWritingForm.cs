@@ -9,112 +9,122 @@ public class UnderWritingForm
 {
     [Key]
     [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
     public string Id { get; set; } = null!;
+    [Required]
+    [NotMapped]
+    public string Title { get; set; } = null!;
+
     [JsonIgnore]
     public Product Product { get; set; } = null!;
 
     [NotMapped]
-    public List<FormField> Form { get; set; } = new List<FormField>();
-
     [JsonIgnore]
-    [Required]
-    public string FormJson
-    {
-        get => JsonSerializer.Serialize(Form);
-        set => Form = string.IsNullOrEmpty(value) 
-            ? new List<FormField>() 
-            : JsonSerializer.Deserialize<List<FormField>>(value) ?? new List<FormField>();
-    }
-}
-
-// public class FormSection
-// {
-//     public string SectionName { get; set; }
-//     public string SectionId { get; set; }
-//     public List<FormField> Fields { get; set; } = new List<FormField>();
-// }
-public class FormSubmission
-{
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string Id { get; set; } = null!;
-    public string? FormId { get; set; }    
-    [NotMapped]
-    public List<FormAnswer> Answers { get; set; } = null!;
-    [JsonIgnore]
-    public Product Product { get; set; } = null!;
-
-    public DateTime SubmissionDate { get; set; }
-
-    public string UserId { get; set; } = null!;
-    public SubmissionStatus Status { get; set; }   
-    public InspectionStatus? InspectionStatus { get; set; }   
-    [JsonIgnore]
-    [Required]
-
-    public string AnswerJson
-    {
-        get => JsonSerializer.Serialize(Answers);
-        set => Answers = string.IsNullOrEmpty(value) 
-            ? new List<FormAnswer>() 
-            : JsonSerializer.Deserialize<List<FormAnswer>>(value) ?? new List<FormAnswer>();    }
-}
-
-
-
-public class ClaimsUnderWritingForm
-{
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-
-    public string Id { get; set; } = null!;
-    [JsonIgnore]
-    public Product Product { get; set; } = null!;
+    public List<FormField> GlobalFields { get; set; } = new List<FormField>(); // Questions that don't belong to a section.
     
     [NotMapped]
-    public List<FormField> Form { get; set; } = new List<FormField>();
     [JsonIgnore]
-    [Required]
+    public List<FormSection>? Sections { get; set; }
 
+    [Required]
     public string FormJson
     {
-        get =>  JsonSerializer.Serialize(Form);
-        set => Form = string.IsNullOrEmpty(value) 
-            ? new List<FormField>() 
-            : JsonSerializer.Deserialize<List<FormField>>(value) ?? new List<FormField>();
-        
+        get => JsonSerializer.Serialize(new { GlobalFields, Sections }, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase,     Converters = { new JsonStringEnumConverter() }
+        });
+        set
+        {
+            if (!string.IsNullOrEmpty(value))
+            {
+                var deserializedForm = JsonSerializer.Deserialize<FormBody>(value);
+                if (deserializedForm != null)
+                {
+                    GlobalFields = deserializedForm.Form ?? new List<FormField>();
+                    Sections = deserializedForm.Sections;
+                }
+            }
+            else
+            {
+                GlobalFields = new List<FormField>();
+                Sections = new List<FormSection>();
+            }
+        }
     }
 }
 
-public class ClaimsFormSubmission
+// Body structure to deserialize the form JSON
+public class FormBody
 {
-    [Key]
-    [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-    public string Id { get; set; } = null!;
-    public required string FormId { get; set; }      
-    [NotMapped]
-    public List<FormAnswer> Answers { get; set; } = null!;
-
-    public string UserId { get; set; } = null!;
-    public SubmissionStatus Status { get; set; }   
-    [JsonIgnore]
-    [Required]
-    public string AnswerJson
-    {
-        get => JsonSerializer.Serialize(Answers);
-        set => Answers = string.IsNullOrEmpty(value) 
-            ? new List<FormAnswer>() 
-            : JsonSerializer.Deserialize<List<FormAnswer>>(value) ?? new List<FormAnswer>();
-    }
+    public List<FormField> Form { get; set; } = new List<FormField>(); // Questions that don't belong to a section.
+    public List<FormSection>? Sections { get; set; }
 }
 
+// Model for form fields
+public class FormField
+{
+    [Required]
+    public required string FieldId { get; set; }
+    
+    [Required]
+    public required string FieldName { get; set; }
+    
+    public string? DisplayName { get; set; }
+    public InputType InputType { get; set; }
+    public bool IsRequired { get; set; }
+    public List<Option>? Options { get; set; } = new List<Option>();
+    public bool AllowsMultiple { get; set; }   
+    public string? Placeholder { get; set; }
+    public string? RegexValidationPattern { get; set; }
+    public string? OptionsApiEndpoint { get; set; }
+    public string? DependsOn { get; set; }
+
+    // Properties specific to file upload
+    public long? MaxFileSize { get; set; }
+    public List<string>? AllowedFileTypes { get; set; } = new List<string>(); // Allowed file extensions (e.g., ".jpg", ".png")
+}
+
+// Model for sections in the form
+public class FormSection
+{
+    [Required]
+    public string SectionId { get; set; } = null!;
+    
+    [Required]
+    public string SectionName { get; set; } = null!;
+    
+    [Required]
+    public string SectionKey { get; set; } = null!;
+    
+    public bool AllowMultipleEntries { get; set; } // If multiple entries (e.g., multiple vehicles) are allowed.
+    public List<FormField> Fields { get; set; } = new List<FormField>();
+    public List<FormSubSection> SubSections { get; set; } = new List<FormSubSection>(); // Subsections within the section
+}
+
+// Model for subsections in the form
+public class FormSubSection
+{
+    [Required]
+    public string SubSectionId { get; set; } = null!;
+    
+    [Required]
+    public string SubSectionName { get; set; } = null!;
+    
+    [Required]
+    public string SubSectionKey { get; set; } = null!;
+    
+    [Required]
+    public List<FormField> Fields { get; set; } = new List<FormField>(); // Fields within this subsection
+    
+    public bool AllowMultipleEntries { get; set; } // Indicates if this subsection allows multiple entries
+    
+    public List<FormSubSection>? SubSubSections { get; set; } = new List<FormSubSection>(); // Nested subsections (if any)
+}
+
+// Model for options (for select, radio, etc.)
 public class Option
 {
     [Required]
     public string Key { get; set; }
-    [Required]
 
+    [Required]
     public string Value { get; set; }
 
     public Option(string key, string value)
@@ -123,62 +133,8 @@ public class Option
         Value = value;
     }
 }
-public class FormField
-{
-    [Required]
-    public required string FieldId { get; set; }
-    [Required]
-    public required string FieldName { get; set; }
-    public string? DisplayName { get; set; }
-    public InputType InputType { get; set; }
-    public bool IsRequired { get; set; }
-    public List<Option>? Options { get; set; } = new List<Option>();
-    public bool AllowsMultiple { get; set; }   
-    public string? Placeholder { get; set; }
-    public string? RegexValidationPattern { get; set; }
-    public string? OptionsSource { get; set; }
-    public string? DependsOn { get; set; }
-    
-    // Properties specific to file upload
-    public long? MaxFileSize { get; set; }
 
-    public List<string>? AllowedFileTypes { get; set; } = new List<string>(); // Allowed file extensions (e.g., ".jpg", ".png")
-    public string? SectionId { get; set; }
-    public string? SectionName { get; set; }
-    
-}
-
-
-public class FormAnswer
-{
-    [Required]
-    public string FieldName { get; set; } = null!;
-
-    [Required]
-    public string FieldId { get; set; } = null!;
-
-    [Required]
-    public List<string> Values { get; set; } = null!;
-
-    public List<string>? FileUrls { get; set; }   
-}
-
-
-
-
-public enum SubmissionStatus
-{
-    Draft,
-    Submitted
-}
-
-public enum InspectionStatus
-{
-    NotStarted,
-    Successful,
-    Failure
-}
-
+// Enum for input types in the form
 public enum InputType
 {
     Text,
@@ -191,5 +147,3 @@ public enum InputType
     Date,
     Upload  
 }
-
-

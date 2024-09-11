@@ -25,23 +25,24 @@ public class UnderWritingService : IUnderWritingService
 
     public async Task<ApiResult<FormSubmission>> SubmitProductUnderWritingFormAsync(FormSubmissionDto model)
     {
-        var underWritingForm = await _context.ProductUnderWritingForms.FirstOrDefaultAsync(x => x.Id == model.FormId);
+        var underWritingForm = await _context.ProductUnderWritingForms
+            .Include(underWritingForm => underWritingForm.Product).FirstOrDefaultAsync(x => x.Id == model.FormId);
         if (underWritingForm == null) return ApiResult<FormSubmission>.Failed("Form Not Found");
 
 
         var tokenUserId = HttpContextHelper.Current.User.FindFirst("UserId")?.Value;
         if (tokenUserId is null)
             return ApiResult<FormSubmission>.Failed("Invalid User");
-        
-        
+
+
         var user = await _userManager.FindByIdAsync(tokenUserId);
         if (user == null)
             return ApiResult<FormSubmission>.Failed("Invalid User");
 
         if (model.UserId != tokenUserId)
             return ApiResult<FormSubmission>.Failed("UserId Mismatch");
-        
-        var validationErrors = ValidateAnswer(model, underWritingForm.Form);
+
+        var validationErrors = ValidateAnswer(model, underWritingForm.GlobalFields, underWritingForm.Sections ?? new List<FormSection>());
         if (validationErrors.Count > 0)
         {
             return ApiResult<FormSubmission>.Failed(string.Join(Environment.NewLine, validationErrors));
@@ -49,25 +50,31 @@ public class UnderWritingService : IUnderWritingService
 
         var data = await _context.ProductUnderWritingAnswers.FirstOrDefaultAsync(x =>
             x.UserId == model.UserId && x.FormId == underWritingForm.Id);
-        var answers = ConvertDtoToFormAnswers(model.Answers);
+        var answers = ConvertDtoToFormAnswers(model.GlobalFieldAnswers);
         if (data is null)
         {
             data = new FormSubmission
             {
                 FormId = model.FormId,
                 UserId = model.UserId,
-                Answers = answers,
-                Status = model.Status
+                GlobalFieldAnswers = answers,
+                SubmissionDate = DateTime.Now,
+                Status = model.Status,
+                SectionSubmissions = ConvertSectionSubmissions(model.SectionSubmissions),
+                Product = underWritingForm.Product
 
             };
             _context.ProductUnderWritingAnswers.Add(data);
         }
         else
         {
-            data.Answers = answers;
+            data.GlobalFieldAnswers = answers;
             data.Status = model.Status;
             data.UserId = model.UserId;
             data.FormId = model.FormId;
+            data.SectionSubmissions = ConvertSectionSubmissions(model.SectionSubmissions);
+            data.Product = underWritingForm.Product;
+
 
             _context.Update(data);
         }
@@ -78,22 +85,23 @@ public class UnderWritingService : IUnderWritingService
 
     public async Task<ApiResult<ClaimsFormSubmission>> SubmitClaimsUnderWritingFormAsync(FormSubmissionDto model)
     {
-        var underWritingForm = await _context.ClaimsUnderWritingForms.FirstOrDefaultAsync(x => x.Id == model.FormId);
+        var underWritingForm = await _context.ClaimsUnderWritingForms
+            .Include(claimsUnderWritingForm => claimsUnderWritingForm.Product).FirstOrDefaultAsync(x => x.Id == model.FormId);
         if (underWritingForm == null) return ApiResult<ClaimsFormSubmission>.Failed("Form Not Found");
-        
+
 
         var tokenUserId = HttpContextHelper.Current.User.FindFirst("UserId")?.Value;
         if (tokenUserId is null)
             return ApiResult<ClaimsFormSubmission>.Failed("Invalid User");
-        
-        
+
+
         var user = await _userManager.FindByIdAsync(tokenUserId);
         if (user == null)
             return ApiResult<ClaimsFormSubmission>.Failed("Invalid User");
 
         if (model.UserId != tokenUserId)
             return ApiResult<ClaimsFormSubmission>.Failed("UserId Mismatch");
-        var validationErrors = ValidateAnswer(model, underWritingForm.Form);
+        var validationErrors =  ValidateAnswer(model, underWritingForm.GlobalFields, underWritingForm.Sections ?? new List<FormSection>());
         if (validationErrors.Count > 0)
         {
             return ApiResult<ClaimsFormSubmission>.Failed(string.Join(Environment.NewLine, validationErrors));
@@ -101,25 +109,31 @@ public class UnderWritingService : IUnderWritingService
 
         var data = await _context.ClaimsUnderWritingAnswers.FirstOrDefaultAsync(x =>
             x.UserId == model.UserId && x.FormId == underWritingForm.Id);
-        var answers = ConvertDtoToFormAnswers(model.Answers);
+        var answers = ConvertDtoToFormAnswers(model.GlobalFieldAnswers);
         if (data is null)
         {
             data = new ClaimsFormSubmission
             {
                 FormId = model.FormId,
                 UserId = model.UserId,
-                Answers = answers,
-                Status = model.Status
+                GlobalFieldAnswers = answers,
+                Status = model.Status,
+                SectionSubmissions = ConvertSectionSubmissions(model.SectionSubmissions),
+                Product = underWritingForm.Product
+
 
             };
             _context.ClaimsUnderWritingAnswers.Add(data);
         }
         else
         {
-            data.Answers = answers;
+            data.GlobalFieldAnswers = answers;
             data.Status = model.Status;
             data.UserId = model.UserId;
             data.FormId = model.FormId;
+            data.SectionSubmissions = ConvertSectionSubmissions(model.SectionSubmissions);
+            data.Product = underWritingForm.Product;
+
 
             _context.Update(data);
         }
@@ -144,8 +158,10 @@ public class UnderWritingService : IUnderWritingService
         {
             data = new UnderWritingForm
             {
-                Form = model.Form,
-                Product = product
+                GlobalFields = model.GlobalFields,
+                Sections = model.Sections,
+                Product = product,
+                Title = model.Title
 
             };
             _context.ProductUnderWritingForms.Add(data);
@@ -153,7 +169,9 @@ public class UnderWritingService : IUnderWritingService
 
         else
         {
-            data.Form = model.Form;
+            data.GlobalFields = model.GlobalFields;
+            data.Sections = model.Sections;
+            data.Title = model.Title;
             _context.Update(data);
         }
 
@@ -165,7 +183,7 @@ public class UnderWritingService : IUnderWritingService
     {
         var product = await _context.Products.FirstOrDefaultAsync(x => x.ProductId == productId);
         if (product == null) return ApiResult<UnderWritingForm>.Failed("Product Not Found");
-        
+
         var data = await _context.ProductUnderWritingForms.FirstOrDefaultAsync(x => x.Product == product);
         return ApiResult<UnderWritingForm>.Successful(data);
     }
@@ -187,8 +205,11 @@ public class UnderWritingService : IUnderWritingService
         {
             data = new ClaimsUnderWritingForm
             {
-                Form = model.Form,
-                Product = product
+                GlobalFields = model.GlobalFields,
+                Sections = model.Sections,
+                Product = product,
+                Title = model.Title
+                
 
             };
             _context.ClaimsUnderWritingForms.Add(data);
@@ -196,7 +217,9 @@ public class UnderWritingService : IUnderWritingService
 
         else
         {
-            data.Form = model.Form;
+            data.GlobalFields = model.GlobalFields;
+            data.Sections = model.Sections;
+            data.Title = model.Title;
             _context.Update(data);
         }
 
@@ -213,203 +236,347 @@ public class UnderWritingService : IUnderWritingService
         return ApiResult<ClaimsUnderWritingForm>.Successful(data);
     }
 
-    
+
     public async Task<ApiResult<FormSubmission>> GetProductUnderWritingSubmissionAsync(string formId, string userId)
     {
         var tokenUserId = HttpContextHelper.Current.User.FindFirst("UserId")?.Value;
         if (tokenUserId is null)
             return ApiResult<FormSubmission>.Failed("Invalid User");
-        
-        
+
+
         var user = await _userManager.FindByIdAsync(tokenUserId);
         if (user == null)
             return ApiResult<FormSubmission>.Failed("Invalid User");
 
         if (userId != tokenUserId)
             return ApiResult<FormSubmission>.Failed("UserId Mismatch");
-        
-        
-        var data = await _context.ProductUnderWritingAnswers.FirstOrDefaultAsync(x => x.FormId == formId && x.UserId == userId);
+
+
+        var data = await _context.ProductUnderWritingAnswers.FirstOrDefaultAsync(x =>
+            x.FormId == formId && x.UserId == userId);
         return ApiResult<FormSubmission>.Successful(data);
     }
-    
- public async Task<ApiResult<ClaimsFormSubmission>> GetClaimsUnderWritingSubmissionAsync(string formId, string userId)
+
+    public async Task<ApiResult<ClaimsFormSubmission>> GetClaimsUnderWritingSubmissionAsync(string formId,
+        string userId)
     {
 
         var tokenUserId = HttpContextHelper.Current.User.FindFirst("UserId")?.Value;
         if (tokenUserId is null)
             return ApiResult<ClaimsFormSubmission>.Failed("Invalid User");
-        
-        
+
+
         var user = await _userManager.FindByIdAsync(tokenUserId);
         if (user == null)
             return ApiResult<ClaimsFormSubmission>.Failed("Invalid User");
 
         if (userId != tokenUserId)
             return ApiResult<ClaimsFormSubmission>.Failed("UserId Mismatch");
-        
-        var data = await _context.ClaimsUnderWritingAnswers.FirstOrDefaultAsync(x => x.FormId == formId && x.UserId == userId);
+
+        var data = await _context.ClaimsUnderWritingAnswers.FirstOrDefaultAsync(x =>
+            x.FormId == formId && x.UserId == userId);
         return ApiResult<ClaimsFormSubmission>.Successful(data);
     }
-
+    
     private List<string> ValidateForm(ProductUnderWritingDto form)
+{
+    var errors = new List<string>();
+
+    // Validate Global Fields
+    if (form.GlobalFields.Count == 0 && form.Sections.Count == 0)
     {
-        var errors = new List<string>();
-
-
-        if (form.Form.Count == 0)
-        {
-            errors.Add("At least one field must be defined in the form.");
-        }   
-        
-        else
-        {
-            var formFields = form.Form.Select(x => x.FieldName).ToList();
-
-            if (HasDuplicates(formFields, true))
-            {
-                errors.Add("Form contains duplicate field names.");
-                return errors;
-            
-            }
-            foreach (var field in form.Form)
-            {
-                if (string.IsNullOrEmpty(field.FieldName))
-                {
-                    errors.Add($"FieldName is required for a field.");
-                }
-
-                // Validate regex pattern if provided
-                if (!string.IsNullOrEmpty(field.RegexValidationPattern))
-                {
-                    try
-                    {
-                        _ = new Regex(field.RegexValidationPattern);
-                    }
-                    catch (ArgumentException)
-                    {
-                        errors.Add(
-                            $"ValidationPattern '{field.RegexValidationPattern}' is not a valid regex for field {field.FieldName}.");
-                    }
-                }
-                
-
-                if (field.InputType == InputType.Upload)
-                {
-                    if (field.MaxFileSize.HasValue && field.MaxFileSize.Value <= 0)
-                    {
-                        errors.Add($"MaxFileSize must be greater than 0 for field {field.FieldName}.");
-                    }
-
-                    if (field.AllowedFileTypes != null && field.AllowedFileTypes.Count > 0)
-                    {
-                        foreach (var fileType in field.AllowedFileTypes)
-                        {
-                            if (string.IsNullOrEmpty(fileType) || !fileType.StartsWith("."))
-                            {
-                                errors.Add(
-                                    $"AllowedFileType '{fileType}' is not a valid file extension for field {field.FieldName}.");
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return errors;
+        errors.Add("At least one global field or section field must be defined in the form.");
     }
 
-    
-     private List<string> ValidateAnswer(FormSubmissionDto submission, List<FormField> form)
+    // Validate GlobalFields
+    if (form.GlobalFields.Count > 0)
     {
-        var errors = new List<string>();
+        var globalFieldNames = form.GlobalFields.Select(x => x.FieldName).ToList();
 
-        foreach (var answer in submission.Answers)
+        if (HasDuplicates(globalFieldNames, true))
         {
-            var formField = form.Find(f => f.FieldName == answer.FieldName);
-            if (formField == null)
-            {
-                errors.Add($"Field '{answer.FieldName}' is not a valid field in the form.");
-                continue;
-            }
-            if (formField.IsRequired && answer.Values.Any())
-            {
-                if (!answer.Values.Any() && (answer.Files == null || !answer.Files.Any()))
-                {
-                    errors.Add($"Field '{formField.FieldName}' is required and cannot be empty.");
-                }
-            }
-
-            if (!formField.AllowsMultiple && answer.Values.Count > 1)
-            {
-                errors.Add($"Field '{formField.DisplayName}' does not allow multiple answers.");
-            }
-
-            if (!formField.AllowsMultiple && answer.Files != null && answer.Files.Count > 1)
-            {
-                errors.Add($"Field '{formField.DisplayName}' does not allow multiple file uploads.");
-            }
-            
-            if (formField.InputType == InputType.Select)
-            {
-                foreach (var value in answer.Values)
-                {
-                    if (formField.Options != null && !formField.Options.Any(o => o.Key == value))
-                    {
-                        errors.Add($"Value '{value}' is not a valid option for field '{formField.FieldName}'.");
-                    }
-                }
-            }
-
-            if (formField.InputType == InputType.Upload && answer.Files != null && answer.Files.Any())
-            {
-                foreach (var file in answer.Files)
-                {
-                    if (formField.MaxFileSize.HasValue && file.Length > formField.MaxFileSize.Value)
-                    {
-                        errors.Add($"File '{file.FileName}' exceeds the maximum allowed size for field '{formField.DisplayName}'.");
-                    }
-            
-                    var fileExtension = Path.GetExtension(file.FileName);
-                    if (formField.AllowedFileTypes != null && !formField.AllowedFileTypes.Contains(fileExtension))
-                    {
-                        errors.Add($"File '{file.FileName}' is not of an allowed type for field '{formField.DisplayName}'.");
-                    }
-                }
-            }
-
-            if (!string.IsNullOrEmpty(formField.RegexValidationPattern))
-            {
-                var regex = new Regex(formField.RegexValidationPattern);
-                foreach (var value in answer.Values)
-                {
-                    if (!regex.IsMatch(value))
-                    {
-                        errors.Add($"Value '{value}' does not match the validation pattern for field '{formField.DisplayName}'.");
-                    }
-                }
-            }
-            
+            errors.Add("Form contains duplicate field names in global fields.");
         }
 
-        // Check for required fields that are missing in the answers
-        foreach (var field in form)
+        foreach (var field in form.GlobalFields)
+        {
+            ValidateField(field, errors);
+        }
+    }
+
+    // Validate Sections
+    if (form.Sections.Count > 0)
+    {
+        foreach (var section in form.Sections)
+        {
+            ValidateSection(section, errors);
+        }
+    }
+
+    return errors;
+}
+
+// Helper method to validate individual fields
+private void ValidateField(FormField field, List<string> errors)
+{
+    if (string.IsNullOrEmpty(field.FieldName))
+    {
+        errors.Add("FieldName is required for a field.");
+    }
+
+    // Validate regex pattern if provided
+    if (!string.IsNullOrEmpty(field.RegexValidationPattern))
+    {
+        try
+        {
+            _ = new Regex(field.RegexValidationPattern);
+        }
+        catch (ArgumentException)
+        {
+            errors.Add($"ValidationPattern '{field.RegexValidationPattern}' is not a valid regex for field {field.FieldName}.");
+        }
+    }
+
+    // Validate file upload fields
+    if (field.InputType == InputType.Upload)
+    {
+        if (field.MaxFileSize.HasValue && field.MaxFileSize.Value <= 0)
+        {
+            errors.Add($"MaxFileSize must be greater than 0 for field {field.FieldName}.");
+        }
+
+        if (field.AllowedFileTypes != null && field.AllowedFileTypes.Count > 0)
+        {
+            foreach (var fileType in field.AllowedFileTypes)
+            {
+                if (string.IsNullOrEmpty(fileType) || !fileType.StartsWith("."))
+                {
+                    errors.Add($"AllowedFileType '{fileType}' is not a valid file extension for field {field.FieldName}.");
+                }
+            }
+        }
+    }
+}
+
+// Helper method to validate FormSection
+private void ValidateSection(FormSection section, List<string> errors)
+{
+    if (string.IsNullOrEmpty(section.SectionName))
+    {
+        errors.Add("SectionName is required for the section.");
+    }
+
+    var sectionFieldNames = section.Fields.Select(x => x.FieldName).ToList();
+
+    if (HasDuplicates(sectionFieldNames, true))
+    {
+        errors.Add("Subsection contains duplicate field names.");
+    }
+
+    foreach (var field in section.Fields)
+    {
+        ValidateField(field, errors);
+    }
+
+    // Validate each subsection in the section
+    foreach (var subSection in section.SubSections)
+    {
+        ValidateSubSection(subSection, errors);
+    }
+}
+
+// Helper method to validate FormSubSection
+private void ValidateSubSection(FormSubSection subSection, List<string> errors)
+{
+    if (string.IsNullOrEmpty(subSection.SubSectionName))
+    {
+        errors.Add("SubSectionName is required for the subsection.");
+    }
+
+    if (string.IsNullOrEmpty(subSection.SubSectionKey))
+    {
+        errors.Add("SubSectionKey is required for the subsection.");
+    }
+
+    var subSectionFieldNames = subSection.Fields.Select(x => x.FieldName).ToList();
+
+    if (HasDuplicates(subSectionFieldNames, true))
+    {
+        errors.Add("Subsection contains duplicate field names.");
+    }
+
+    foreach (var field in subSection.Fields)
+    {
+        ValidateField(field, errors);
+    }
+
+    // Recursively validate nested subsections (SubSubSections)
+    if (subSection.SubSubSections != null && subSection.SubSubSections.Count > 0)
+    {
+        foreach (var subSubSection in subSection.SubSubSections)
+        {
+            ValidateSubSection(subSubSection, errors);
+        }
+    }
+}
+    
+    
+    private List<string> ValidateAnswer(FormSubmissionDto submission, List<FormField> globalFields, List<FormSection> formSections)
+{
+    var errors = new List<string>();
+
+    // Validate GlobalFieldAnswers
+    foreach (var answer in submission.GlobalFieldAnswers)
+    {
+        var formField = globalFields.Find(f => f.FieldId.Equals(answer.FieldId, StringComparison.OrdinalIgnoreCase));
+        if (formField == null)
+        {
+            errors.Add($"Field '{answer.FieldName}' is not a valid field in the form.");
+            continue;
+        }
+
+        ValidateFieldAnswer(formField, answer, errors);
+    }
+
+    // Validate SectionSubmissions
+    if (submission.SectionSubmissions != null)
+    {
+        foreach (var sectionSubmission in submission.SectionSubmissions)
+        {
+            var formSection = formSections.Find(s => s.SectionId.Equals(sectionSubmission.SectionId, StringComparison.OrdinalIgnoreCase));
+            if (formSection == null)
+            {
+                errors.Add($"Section '{sectionSubmission.SectionKey}' is not a valid section in the form.");
+                continue;
+            }
+
+            foreach (var entrySubmission in sectionSubmission.EntrySubmissions)
+            {
+                foreach (var fieldResponse in entrySubmission.FieldResponses)
+                {
+                    var formField = formSection.Fields.Find(f => f.FieldId.Equals(fieldResponse.FieldId, StringComparison.CurrentCultureIgnoreCase));
+                    if (formField == null)
+                    {
+                        errors.Add($"Field '{fieldResponse.FieldName}' in section '{sectionSubmission.SectionKey}' is not a valid field.");
+                        continue;
+                    }
+
+                    ValidateFieldAnswer(formField, fieldResponse, errors);
+                }
+            }
+        }
+    }
+
+    // Check for required fields that are missing in GlobalFieldAnswers
+    foreach (var field in globalFields)
+    {
+        if (submission.Status == SubmissionStatus.Submitted && field.IsRequired)
+        {
+            var answer = submission.GlobalFieldAnswers.Find(a => a.FieldId.Equals(field.FieldId, StringComparison.OrdinalIgnoreCase));
+
+            if (answer == null ||
+                !answer.Values.Any() || answer.Values.TrueForAll(x => x == null) /* &&
+                (answer.Files == null || !answer.Files.Any()) */)
+            {
+                errors.Add($"Field '{field.FieldName}' is required and cannot be empty.");
+            }
+        }
+    }
+
+    // Check for required fields that are missing in SectionSubmissions
+    foreach (var section in formSections)
+    {
+        foreach (var field in section.Fields)
         {
             if (submission.Status == SubmissionStatus.Submitted && field.IsRequired)
             {
-                var answer = submission.Answers.Find(a => a.FieldName == field.FieldName);
-    
-                if (answer == null || 
-                      !answer.Values.Any() || answer.Values.TrueForAll(x => x == null) && 
-                    (answer.Files == null || !answer.Files.Any()))
+                bool fieldFound = false;
+                if (submission.SectionSubmissions != null)
                 {
-                    errors.Add($"Field '{field.FieldName}' is required and cannot be empty.");
+                    foreach (var sectionSubmission in submission.SectionSubmissions)
+                    {
+                        var entrySubmission = sectionSubmission.EntrySubmissions.Find(e => e.FieldResponses.Exists(f => f.FieldId.Equals(field.FieldId, StringComparison.OrdinalIgnoreCase)));
+                        if (entrySubmission != null)
+                        {
+                            fieldFound = true;
+                            break;
+                        }
+                    }
+                }
+
+                if (!fieldFound)
+                {
+                    errors.Add($"Field '{field.FieldName}' in section '{section.SectionName}' is required and cannot be empty.");
                 }
             }
         }
-
-        return errors;
     }
+
+    return errors;
+}
+
+// Helper method to validate field answers
+private void ValidateFieldAnswer(FormField formField, FormAnswerDto answer, List<string> errors)
+{
+    if (formField.IsRequired && answer.Values.Any())
+    {
+        if (!answer.Values.Any() /* && (answer.Files == null || !answer.Files.Any()) */)
+        {
+            errors.Add($"Field '{formField.FieldName}' is required and cannot be empty.");
+        }
+    }
+
+    if (!formField.AllowsMultiple && answer.Values.Count > 1)
+    {
+        errors.Add($"Field '{formField.FieldName}' does not allow multiple answers.");
+    }
+
+    // if (!formField.AllowsMultiple /* && answer.Files != null && answer.Files.Count > 1 */)
+    // {
+    //     errors.Add($"Field '{formField.FieldName}' does not allow multiple file uploads.");
+    // }
+
+    if (formField.InputType == InputType.Select)
+    {
+        foreach (var value in answer.Values)
+        {
+            if (formField.Options != null && !formField.Options.Any(o => o.Key == value))
+            {
+                errors.Add($"Value '{value}' is not a valid option for field '{formField.FieldName}'.");
+            }
+        }
+    }
+
+    // if (formField.InputType == InputType.Upload && answer.Files != null && answer.Files.Any())
+    // {
+    //     foreach (var file in answer.Files)
+    //     {
+    //         if (formField.MaxFileSize.HasValue && file.Length > formField.MaxFileSize.Value)
+    //         {
+    //             errors.Add($"File '{file.FileName}' exceeds the maximum allowed size for field '{formField.FieldName}'.");
+    //         }
+    //
+    //         var fileExtension = Path.GetExtension(file.FileName);
+    //         if (formField.AllowedFileTypes != null && !formField.AllowedFileTypes.Contains(fileExtension))
+    //         {
+    //             errors.Add($"File '{file.FileName}' is not of an allowed type for field '{formField.FieldName}'.");
+    //         }
+    //     }
+    // }
+
+    if (!string.IsNullOrEmpty(formField.RegexValidationPattern))
+    {
+        var regex = new Regex(formField.RegexValidationPattern);
+        foreach (var value in answer.Values)
+        {
+            if (!regex.IsMatch(value))
+            {
+                errors.Add($"Value '{value}' does not match the validation pattern for field '{formField.FieldName}'.");
+            }
+        }
+    }
+}
+
 
 
     private List<FormAnswer> ConvertDtoToFormAnswers(List<FormAnswerDto> dtos)
@@ -433,6 +600,31 @@ public class UnderWritingService : IUnderWritingService
         return formAnswers;
     }
 
+    private List<SectionSubmission>? ConvertSectionSubmissions(List<SectionSubmissionDto>? sectionSubmissionsDto)
+    {
+        if (sectionSubmissionsDto == null)
+        {
+            return null;
+        }
+
+        return sectionSubmissionsDto.Select(dto => new SectionSubmission
+        {
+            SectionId = dto.SectionId,
+            SectionKey = dto.SectionKey,
+            EntrySubmissions = dto.EntrySubmissions.Select(entryDto => new SectionEntrySubmission
+            {
+                FieldResponses = ConvertDtoToFormAnswers(entryDto.FieldResponses),
+                SubSectionSubmissions = entryDto.SubSectionSubmissions.Select(subSectionDto => new SubSectionSubmission
+                {
+                    SubSectionId = subSectionDto.SubSectionId,
+                    FieldResponses = ConvertDtoToFormAnswers(subSectionDto.FieldResponses)
+                }).ToList()
+            }).ToList()
+        }).ToList();
+    }
+
+
+
     private string ConvertToBase64(IFormFile file)
     {
         using (var memoryStream = new MemoryStream())
@@ -442,7 +634,7 @@ public class UnderWritingService : IUnderWritingService
             return Convert.ToBase64String(fileBytes);
         }
     }
-    
+
     private static bool HasDuplicates(List<string> strings, bool ignoreCase)
     {
         var set = new HashSet<string>(ignoreCase ? StringComparer.OrdinalIgnoreCase : StringComparer.Ordinal);
@@ -454,13 +646,15 @@ public class UnderWritingService : IUnderWritingService
                 return true;
             }
         }
+
         return false;
     }
-     public Dictionary<string, object> ConvertToDictionary(FormSubmission submission, List<FormField> form)
+
+    public Dictionary<string, object> ConvertToDictionary(FormSubmission submission, List<FormField> form)
     {
         var result = new Dictionary<string, object>();
 
-        foreach (var answer in submission.Answers)
+        foreach (var answer in submission.GlobalFieldAnswers)
         {
             var formField = form.Find(f => f.FieldName == answer.FieldName);
             if (formField != null)
@@ -501,6 +695,6 @@ public class UnderWritingService : IUnderWritingService
 
         return result;
     }
-    
+
 }
     

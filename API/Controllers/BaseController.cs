@@ -19,15 +19,7 @@ public abstract class BaseController : ControllerBase
         return StatusCode((int)statusCode, response);
     }
     
-    // protected ActionResult HandleOperationResult<T>(ApiResult<T> response)
-    // {
-    //     if (response.Success)
-    //     {
-    //         return Ok(response);
-    //     }
-    //
-    //     return StatusCode((int)response.ErrorCode, response);
-    // }
+   
 }
 
 public static class ErrorCodeToHttpStatusMapper
