@@ -480,6 +480,7 @@ namespace Infrastructure.Identity.Services
 
             }
             user.IsActivated = true;
+            user.EmailConfirmed = true;
             await _userManager.UpdateAsync(user);
             
 
