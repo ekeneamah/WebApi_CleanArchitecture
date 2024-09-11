@@ -35,10 +35,10 @@ public class ClaimsUnderWritingForm
         {
             if (!string.IsNullOrEmpty(value))
             {
-                var deserializedForm = JsonSerializer.Deserialize<FormBody>(value);
+                var deserializedForm = JsonSerializer.Deserialize<FormBody>(value, new JsonSerializerOptions { PropertyNamingPolicy = JsonNamingPolicy.CamelCase,  PropertyNameCaseInsensitive   = true, Converters = { new JsonStringEnumConverter() } });
                 if (deserializedForm != null)
                 {
-                    GlobalFields = deserializedForm.Form ?? new List<FormField>();
+                    GlobalFields = deserializedForm.GlobalFields ?? new List<FormField>();
                     Sections = deserializedForm.Sections;
                 }
             }
