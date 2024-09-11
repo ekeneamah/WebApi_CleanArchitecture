@@ -182,7 +182,7 @@ namespace API.Controllers.Authentication
             };
 
 
-            return HandleOperationResult(await _authService.ConfirmOTPAsync(model));
+            return HandleOperationResult(await _authService.ResendOTPAsync(model));
         }
         #endregion
 
