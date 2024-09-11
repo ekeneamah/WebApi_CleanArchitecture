@@ -50,8 +50,7 @@ namespace Infrastructure.Content.Services
                 result.Add(pd);
             }
 
-            return ApiResult<List<ProductDtoDetails>>.Successful(null);
-            return ApiResult<List<ProductDtoDetails>>.Successful(null);
+            return ApiResult<List<ProductDtoDetails>>.Successful(result);
 
         }
 

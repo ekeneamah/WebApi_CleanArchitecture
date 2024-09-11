@@ -147,12 +147,14 @@ public class SubSectionSubmission
 public enum SubmissionStatus
 {
     Draft,
-    Submitted
+    Submitted,
+    Processed
 }
 
 public enum InspectionStatus
 {
     NotStarted,
+    InProgress,
     Successful,
     Failure
 }

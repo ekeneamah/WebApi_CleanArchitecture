@@ -74,12 +74,62 @@ public class UnderWritingService : IUnderWritingService
             data.FormId = model.FormId;
             data.SectionSubmissions = ConvertSectionSubmissions(model.SectionSubmissions);
             data.Product = underWritingForm.Product;
-
-
             _context.Update(data);
         }
+        
 
+        if (underWritingForm.Product.RequireInspection)
+        {
+            data.InspectionStatus = InspectionStatus.NotStarted;
+            //Todo: send email?
+            //Todo: update inspection status
+        }
+        else if (model.Status == SubmissionStatus.Submitted)
+        {
+            //Todo: if cornerstone, create transaction and return transactionObject and payment
+            //Todo: if Leadway, get quote, create transaction and return transactionObject and payment
+
+            var transaction = new Transaction
+            {
+                Amount = 0,
+                Reference = Guid.NewGuid().ToString(),
+                DateTime = DateTime.Now,
+                UserId = tokenUserId,
+                ProductId = underWritingForm.Product.ProductId,
+            };
+            
+            //Todo: save transaction and return transactionObject
+            //Next steps: Initiate payment endpoint(specify payment gateway) - return payment link
+            // Verify payment endpoint (specify payment gateway)
+            // Automatic payment verification
+            //upon verification, update transaction status, call provider to get policy - use automapper to map submission to provider dto?
+            //Todo: Get vehicle makes and models endpoint.
+            //Todo: create frontend data mapping to auto populate fields
+            //e.g:
+            // {
+            //     "provider1": {
+            //         "profileMappings": {
+            //             "firstName": "clientInfo.othernames",
+            //             "lastName": "clientInfo.surname",
+            //             "email": "clientInfo.emailAddress",
+            //             "phone": "clientInfo.mobileNo",
+            //             "dob": "clientInfo.dob_mm_dd_yyyy"
+            //         }
+            //     },
+            //     "provider2": {
+            //         "profileMappings": {
+            //             "firstName": "insured.firstName",
+            //             "lastName": "insured.lastName",
+            //             "email": "insured.email",
+            //             "phone": "insured.phoneLine1",
+            //             "dob": "insured.dateOfBirth"
+            //         }
+            //     }
+            // }
+
+        }
         await _context.SaveChangesAsync();
+
         return ApiResult<FormSubmission>.Successful(data);
     }
 
