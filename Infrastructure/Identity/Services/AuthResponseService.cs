@@ -136,7 +136,7 @@ namespace Infrastructure.Identity.Services
                 LastName = model.LastName,
                 UserName = model.Username,
                 Email = model.Email,
-                OTP = GenerateAndStoreOTP(),
+                OTP = GenerateOtp(),
                 OtpTimestamp = DateTime.Now.AddHours(1),
                 IsActivated = false
                
@@ -196,6 +196,7 @@ namespace Infrastructure.Identity.Services
 
         private async Task SendOnboardingOtp(AppUser user)
         {
+            
             await _emailSender.SendEmailAsync(new EmailRequest()
             {
                 ToEmail = user.Email,
@@ -306,6 +307,9 @@ namespace Infrastructure.Identity.Services
 
             if (!user.IsActivated)
             {
+                user.OTP = GenerateOtp();
+                user.OtpTimestamp = DateTime.Now.AddHours(1);
+                await _userManager.UpdateAsync(user);
                 await SendOnboardingOtp(user);
             }
             return ApiResult<AuthResponse>.Successful(auth);
@@ -424,7 +428,7 @@ namespace Infrastructure.Identity.Services
         {
             //var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
             // var code = await _userManager.GenerateTwoFactorTokenAsync(user);
-            var otp = GenerateAndStoreOTP();
+            var otp = GenerateOtp();
 
            // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var route = "api/Auth/confirm-email/";
@@ -437,11 +441,11 @@ namespace Infrastructure.Identity.Services
         }
         #endregion SendVerificationEmail
         #region generate otp 
-        private string GenerateAndStoreOTP()
+        private string GenerateOtp()
         {
-            // Generate a random 6-digit OTP
+            // Generate a random 5-digit OTP
             Random rnd = new Random();
-            int otp = rnd.Next(100000, 999999);
+            int otp = rnd.Next(10000, 99999);
 
             // Store OTP and timestamp in user-specific storage (e.g., database)
             //user.Otp = otp.ToString();
@@ -492,10 +496,10 @@ namespace Infrastructure.Identity.Services
             // code = Encoding.UTF8.GetString(WebEncoders.Base64UrlDecode(code));
             if (user == null)
                 return ApiResult<string>.Failed("Invalid userid.");
-            user.OTP = GenerateAndStoreOTP();
+            
+            user.OTP = GenerateOtp();
             user.OtpTimestamp = DateTime.Now.AddHours(1);
             await _userManager.UpdateAsync(user);
-
             #region SendVerificationEmail
 
             // var verificationUri = await SendVerificationEmail(user, orgin);
@@ -565,9 +569,7 @@ namespace Infrastructure.Identity.Services
         #region ValidateEmailandUsername
         public async Task<ApiResult<string>> ValidateEmailandUsernameAsync(ValidateEmailandUsernameDTO validateEmailandUsernameDTO)
         {
-            var auth = new AuthResponse();
-
-
+            
             var userEmail = await _userManager.FindByEmailAsync(validateEmailandUsernameDTO.Email);
             var userName = await _userManager.FindByNameAsync(validateEmailandUsernameDTO.UserName);
             if (userEmail !=null)

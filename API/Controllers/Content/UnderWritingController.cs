@@ -49,7 +49,7 @@ public class UnderWritingController : BaseController
 
     [Authorize]
     [HttpPost("product-underwriting-submission")]
-    public async Task<ActionResult<ApiResult<FormSubmission>>> SubmitProductUnderWritingForm([FromForm] FormSubmissionDto model)
+    public async Task<ActionResult<ApiResult<FormSubmission>>> SubmitProductUnderWritingForm([FromBody] FormSubmissionDto model)
     {
         var result = await _underWritingService.SubmitProductUnderWritingFormAsync(model);
         return HandleOperationResult(result);
@@ -57,7 +57,7 @@ public class UnderWritingController : BaseController
 
     [Authorize]
     [HttpPost("claims-underwriting-submission")]
-    public async Task<ActionResult<ApiResult<ClaimsFormSubmission>>> SubmitClaimsUnderWritingForm([FromForm] FormSubmissionDto model)
+    public async Task<ActionResult<ApiResult<ClaimsFormSubmission>>> SubmitClaimsUnderWritingForm([FromBody] FormSubmissionDto model)
     {
         var result = await _underWritingService.SubmitClaimsUnderWritingFormAsync(model);
         return HandleOperationResult(result);
