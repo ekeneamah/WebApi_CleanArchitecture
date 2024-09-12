@@ -4,6 +4,7 @@ using Application.Interfaces.Authentication;
 using Infrastructure.Identity.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.Data;
 using Microsoft.AspNetCore.Mvc;
 using NuGet.Common;
 
@@ -16,15 +17,15 @@ namespace API.Controllers.Authentication
         private readonly IAuthResponse _authService;
         private readonly ILogger<AuthController> _logger;
         private readonly UserManager<AppUser> _userManager;
-
+   
         public AuthController(IAuthResponse authService, UserManager<AppUser> userManager)
         {
             _authService = authService;
             _userManager = userManager;
         }
 
-        # region SetRefreshTokenInCookies
-
+        #region SetRefreshTokenInCookies
+        [EndpointDescription("SetRefreshedTokenInCookies")]
         private void SetRefreshTokenInCookies(string refreshToken, DateTime expires)
         {
             var cookieOptions = new CookieOptions
@@ -43,7 +44,11 @@ namespace API.Controllers.Authentication
         #region SignUp Endpoint
 
         [HttpPost("signUp")]
+<<<<<<< HEAD
+        public async Task<ActionResult<ApiResult<AuthResponse>>> SignUpAsync([FromBody] SignUp model)
+=======
         public async Task<ActionResult<ApiResult<AuthResponse>>> SignUpAsync([FromBody]SignUp model)
+>>>>>>> cf7f3af2edc921d835f7596f50d2d758a7afeaab
         {
             var orgin = Request.Headers["origin"];
             var result = await _authService.SignUpAsync(model, orgin);
@@ -82,7 +87,11 @@ namespace API.Controllers.Authentication
 /// </summary>
 /// <param name="model"></param>
 /// <returns></returns>
+<<<<<<< HEAD
+        [HttpPost("addRole")]
+=======
         [HttpPost("role")]
+>>>>>>> cf7f3af2edc921d835f7596f50d2d758a7afeaab
         public async Task<ActionResult<ApiResult<AssignRolesDto>>> AddRoleAsync([FromBody] AssignRolesDto model)
         {
             var result = await _authService.AssignRolesAsync(model);
@@ -126,7 +135,7 @@ namespace API.Controllers.Authentication
         #endregion
 
         #region ConfirmOTP
-        [HttpPost("confirm-otp")]
+        [HttpPost("confirmOtp")]
         [Authorize]
         public async Task<ActionResult<ApiResult<string>>> ConfirmOTPAsync([FromBody] OtpDto otp)
         {
@@ -165,7 +174,7 @@ namespace API.Controllers.Authentication
         #endregion
 
         #region Resend OTP
-        [HttpPost("resend-otp")]
+        [HttpPost("resendotp")]
         [Authorize]
         public async Task<ActionResult<ApiResult<string>>> ResendOTPAsync()
         {
@@ -194,6 +203,7 @@ namespace API.Controllers.Authentication
         }
         #endregion
         #region signout
+
         [HttpDelete("users")]
         public async Task<ActionResult<ApiResult<string>>> DeleteAllUser()
         {
@@ -209,6 +219,43 @@ namespace API.Controllers.Authentication
             return HandleOperationResult(result);
         }
         #endregion
+        #region forgot password
+        [HttpPost("forgot-password")]
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordRequest model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ApiResult<string>.Failed("Invalid input data."));
+            }
 
+            var result = await _authService.ForgotPasswordAsync(model.Email);
+
+            if (result.Success)
+            {
+                return Ok(ApiResult<string>.Successful(null, "Password reset email has been sent."));
+            }
+
+            return BadRequest(ApiResult<string>.Failed(result.Message));
+        }
+        #endregion
+        #region reset password
+        [HttpPost("ResetPassword")]
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ApiResult<string>.Failed("Invalid input data."));
+            }
+
+            var result = await _authService.ResetPasswordWithCodeAsync(model.Email, model.ResetCode, model.NewPassword);
+
+            if (result.Success)
+            {
+                return Ok(ApiResult<string>.Successful(null, "Password has been reset successfully."));
+            }
+
+            return BadRequest(ApiResult<string>.Failed(result.Message));
+        }
+        #endregion
     }
 }

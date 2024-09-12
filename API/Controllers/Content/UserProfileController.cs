@@ -34,6 +34,7 @@ namespace API.Controllers.Content
         }
         #endregion
         #region getbyuserid
+
         [HttpGet("me")]
         public async Task<ActionResult<ApiResult<UserProfileDto>>> GetUserPrifilebyid()
         {
@@ -44,10 +45,10 @@ namespace API.Controllers.Content
         }
         #endregion
 
-        #region create profile
+        #region update profile
         [HttpPut("me")]
-        public async Task<ActionResult<ApiResult<UserProfileDto>>> UpdateProfile([FromBody]  UserProfileDto u)
-        {
+        public async Task<ActionResult<ApiResult<UserProfileDto>>> UpdateProfile([FromBody] UserProfileDto u)
+     {
             var orgin = Request.Headers["origin"];
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)

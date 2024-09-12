@@ -26,5 +26,8 @@ namespace Application.Interfaces.Authentication
         Task<ApiResult<string>> Signout();
         Task<ApiResult<string>> DeleteAllUserAsync();
         Task<ApiResult<string>> ValidateEmailandUsernameAsync(ValidateEmailandUsernameDTO  validateEmailandUsernameDTO);
+        Task<ApiResult<string>> ForgotPasswordAsync(string email);
+        Task<ApiResult<string>> ResetPasswordWithCodeAsync(string email, string code, string newPassword);
+
     }
 }
