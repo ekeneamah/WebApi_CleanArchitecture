@@ -44,11 +44,7 @@ namespace API.Controllers.Authentication
         #region SignUp Endpoint
 
         [HttpPost("signUp")]
-<<<<<<< HEAD
-        public async Task<ActionResult<ApiResult<AuthResponse>>> SignUpAsync([FromBody] SignUp model)
-=======
         public async Task<ActionResult<ApiResult<AuthResponse>>> SignUpAsync([FromBody]SignUp model)
->>>>>>> cf7f3af2edc921d835f7596f50d2d758a7afeaab
         {
             var orgin = Request.Headers["origin"];
             var result = await _authService.SignUpAsync(model, orgin);
@@ -87,11 +83,7 @@ namespace API.Controllers.Authentication
 /// </summary>
 /// <param name="model"></param>
 /// <returns></returns>
-<<<<<<< HEAD
-        [HttpPost("addRole")]
-=======
         [HttpPost("role")]
->>>>>>> cf7f3af2edc921d835f7596f50d2d758a7afeaab
         public async Task<ActionResult<ApiResult<AssignRolesDto>>> AddRoleAsync([FromBody] AssignRolesDto model)
         {
             var result = await _authService.AssignRolesAsync(model);
