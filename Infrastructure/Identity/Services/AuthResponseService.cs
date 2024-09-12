@@ -19,6 +19,11 @@ using Application.Common;
 using Application.Interfaces.Email;
 using static System.Net.WebRequestMethods;
 using NuGet.Protocol.Core.Types;
+using Humanizer;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Configuration;
 
 namespace Infrastructure.Identity.Services
 {
@@ -29,7 +34,9 @@ namespace Infrastructure.Identity.Services
         private readonly SignInManager<AppUser> _signInManager;
         private readonly RoleManager<IdentityRole> _roleManager;
         private readonly IEmailService _emailSender;
+        private readonly ILogger<AuthResponseService> _logger;
         private readonly JWT _Jwt;
+        private readonly IConfiguration _configuration;
 
 
         public AuthResponseService(
@@ -37,13 +44,17 @@ namespace Infrastructure.Identity.Services
             SignInManager<AppUser> signInManager,
             UserManager<AppUser> userManager,
             RoleManager<IdentityRole> roleManager, IOptions<JWT> jwt,
-            IEmailService emailSender)
+            IEmailService emailSender,
+            ILogger<AuthResponseService> logger, IConfiguration configuration)
         {
             _userManager = userManager;
             _roleManager = roleManager;
             _Jwt = jwt.Value;
             _emailSender = emailSender;
             _signInManager = signInManager;
+            _logger = logger;
+            _configuration = configuration;
+
             _appIdentityContext = appIdentityContext;
         }
 
@@ -123,9 +134,9 @@ namespace Infrastructure.Identity.Services
             //checking the Email and username
             if (userEmail is not null)
                 return ApiResult<AuthResponse>.Failed("Email is Already used ! ");
-            
 
-            if (userName is not null) 
+
+            if (userName is not null)
                 return ApiResult<AuthResponse>.Failed("Username is Already used ! ");
 
 
@@ -139,8 +150,8 @@ namespace Infrastructure.Identity.Services
                 OTP = GenerateAndStoreOTP(),
                 OtpTimestamp = DateTime.Now.AddHours(1),
                 IsActivated = false
-               
-                
+
+
             };
 
             var result = await _userManager.CreateAsync(user, model.Password);
@@ -212,14 +223,14 @@ namespace Infrastructure.Identity.Services
         </html>"
             });
 
-       
+
 
             #endregion SendVerificationEmail
 
             var jwtSecurityToken = await CreateJwtAsync(user);
 
             auth.Email = user.Email;
-           // auth.UserId = user.Id;
+            // auth.UserId = user.Id;
             auth.Roles = new List<string> { "User" };
             auth.IsAuthenticated = true;
             auth.UserName = user.UserName;
@@ -237,7 +248,7 @@ namespace Infrastructure.Identity.Services
 
             user.RefreshTokens.Add(newRefreshToken);
             await _userManager.UpdateAsync(user);
-            
+
             return ApiResult<AuthResponse>.Successful(auth);
 
         }
@@ -420,14 +431,14 @@ namespace Infrastructure.Identity.Services
             // var code = await _userManager.GenerateTwoFactorTokenAsync(user);
             var otp = GenerateAndStoreOTP();
 
-           // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+            // code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
             var route = "api/Auth/confirm-email/";
 
-           // var _enpointUri = new Uri(string.Concat($"{origin}/", route));
-           // var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "UserId", user.Id);
-           // verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
+            // var _enpointUri = new Uri(string.Concat($"{origin}/", route));
+            // var verificationUri = QueryHelpers.AddQueryString(_enpointUri.ToString(), "UserId", user.Id);
+            // verificationUri = QueryHelpers.AddQueryString(verificationUri, "code", code);
             //Email Service Call Here
-            return  otp;
+            return otp;
         }
         #endregion SendVerificationEmail
         #region generate otp 
@@ -439,10 +450,10 @@ namespace Infrastructure.Identity.Services
 
             // Store OTP and timestamp in user-specific storage (e.g., database)
             //user.Otp = otp.ToString();
-           // user.OtpTimestamp = DateTime.UtcNow;
+            // user.OtpTimestamp = DateTime.UtcNow;
 
             // Save changes to the database
-           // await _userManager.UpdateAsync(user);
+            // await _userManager.UpdateAsync(user);
 
             return otp.ToString();
         }
@@ -471,10 +482,10 @@ namespace Infrastructure.Identity.Services
             }
             user.IsActivated = true;
             await _userManager.UpdateAsync(user);
-            
+
 
             // Mark the email as confirmed
-           // code = Encoding.UTF8.GetString(code);
+            // code = Encoding.UTF8.GetString(code);
             await _userManager.ConfirmEmailAsync(user, model.Token);
             return ApiResult<string>.Successful("Email verified successfully. You can now login.");
         }
@@ -497,7 +508,7 @@ namespace Infrastructure.Identity.Services
             await _emailSender.SendEmailAsync(new EmailRequest()
             {
                 ToEmail = user.Email,
-               FromEmail = "Transcape",
+                FromEmail = "Transcape",
                 Body = $@"
         <html>
         <head>
@@ -564,21 +575,123 @@ namespace Infrastructure.Identity.Services
 
             var userEmail = await _userManager.FindByEmailAsync(validateEmailandUsernameDTO.Email);
             var userName = await _userManager.FindByNameAsync(validateEmailandUsernameDTO.UserName);
-            if (userEmail !=null)
+            if (userEmail != null)
             {
                 return ApiResult<string>.Failed("Email already exists.");
             }
 
-            if (userName !=null)
+            if (userName != null)
             {
                 return ApiResult<string>.Failed("Username already exists.");
             }
 
             return ApiResult<string>.Successful("Email and Username are available.");
+        }
+
+        #endregion
+
+        #region Forgot password
+        public async Task<ApiResult<string>> ForgotPasswordAsync(string email)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null || !(await _userManager.IsEmailConfirmedAsync(user)))
+            {
+                _logger.LogWarning($"Password reset request: User with email {email} does not exist or email is not confirmed.");
+                return ApiResult<string>.NotFound("User does not exist or email not confirmed.");
+            }
+
+            // Generate a 6-digit code
+            var code = new Random().Next(100000, 999999).ToString();
+
+           
+
+            var expirationTime = DateTime.UtcNow.AddMinutes(30);
+            var token = $"{code}|{expirationTime:o}";
+            await _userManager.SetAuthenticationTokenAsync(user, "Default", "ResetPasswordCode", token);
+
+
+            // Send the code via email
+            try
+            {
+                
+                var emailBody = System.IO.File.ReadAllText("Templates/PasswordResetTemplate.html");
+                emailBody = emailBody.Replace("{{ResetCode}}", code)
+                            .Replace("{{CompanyName}}", "Transcape")
+                            .Replace("{{CurrentYear}}", DateTime.Now.Year.ToString());
+                var emailRequest = new EmailRequest
+                {
+                    ToEmail = email,
+                    Subject = "Password Reset Code",
+                    Body = emailBody  // Email content
+                };
+                await _emailSender.SendEmailAsync(emailRequest);
+                _logger.LogInformation($"Password reset code sent to {email}");
+                return ApiResult<string>.Successful(null, "Password reset code sent successfully.");
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError($"Error sending password reset code: {ex.Message}");
+                return ApiResult<string>.Failed("Failed to send password reset code.");
             }
         }
         #endregion
 
+        #region Reset password
+        public async Task<ApiResult<string>> ResetPasswordWithCodeAsync(string email, string code, string newPassword)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                _logger.LogWarning($"Reset password request: User with email {email} does not exist.");
+                return ApiResult<string>.NotFound("User does not exist.");
+            }
 
+            var storedToken = await _userManager.GetAuthenticationTokenAsync(user, "Default", "ResetPasswordCode");
+            if (storedToken == null)
+            {
+                _logger.LogWarning($"No reset token found for email {email}.");
+                return ApiResult<string>.Failed("Invalid reset token.");
+            }
+
+            var tokenParts = storedToken.Split('|');
+            if (tokenParts.Length != 2)
+            {
+                _logger.LogError($"Invalid token format for user {email}.");
+                return ApiResult<string>.Failed("Invalid reset token.");
+            }
+
+            var storedCode = tokenParts[0];
+            if (!DateTime.TryParse(tokenParts[1], out var expirationTime))
+            {
+                _logger.LogError($"Invalid expiration format in token for user {email}.");
+                return ApiResult<string>.Failed("Invalid reset token.");
+            }
+
+            // Check if the token has expired
+            if (DateTime.UtcNow > expirationTime)
+            {
+                _logger.LogWarning($"Reset token for email {email} has expired.");
+                return ApiResult<string>.Failed("Reset token has expired.");
+            }
+
+            // Check if the provided code matches the stored code
+            if (storedCode != code)
+            {
+                _logger.LogWarning($"Invalid reset code for email {email}.");
+                return ApiResult<string>.Failed("Invalid reset code.");
+            }
+
+            // Proceed to reset the password
+            var result = await _userManager.ResetPasswordAsync(user, await _userManager.GeneratePasswordResetTokenAsync(user), newPassword);
+            if (result.Succeeded)
+            {
+                await _userManager.RemoveAuthenticationTokenAsync(user, "Default", "ResetPasswordCode");
+                return ApiResult<string>.Successful(null, "Password has been reset successfully.");
+            }
+
+            return ApiResult<string>.Failed("Failed to reset the password.");
+        }
+
+        #endregion
     }
-
+}

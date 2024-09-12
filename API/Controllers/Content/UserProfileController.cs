@@ -35,7 +35,7 @@ namespace API.Controllers.Content
         }
         #endregion
         #region getbyuserid
-        [HttpGet("GetUserid")]
+        [HttpGet("get-user-profile")]
         public async Task<ActionResult<ApiResult<UserProfileDto>>> GetUserPrifilebyid()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
@@ -45,9 +45,9 @@ namespace API.Controllers.Content
         }
         #endregion
 
-        #region create profile
+        #region update profile
         [HttpPut]
-        public async Task<ActionResult<ApiResult<UserProfileDto>>> UpdateProfile( UserProfileDto u)
+        public async Task<ActionResult<ApiResult<UserProfileDto>>> UpdateProfile([FromBody] UserProfileDto u)
         {
             if(!ModelState.IsValid)
                 return BadRequest(ModelState);

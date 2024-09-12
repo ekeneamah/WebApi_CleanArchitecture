@@ -52,7 +52,7 @@ namespace Infrastructure.Content.Services
             };
             if (user != null)
             {
-                _userManager.UpdateAsync(au);
+                await _userManager.UpdateAsync(au);
                 await _context.SaveChangesAsync();
             } 
            
