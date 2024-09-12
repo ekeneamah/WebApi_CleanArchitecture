@@ -127,7 +127,7 @@ namespace API.Controllers.Authentication
         #endregion
 
         #region ConfirmOTP
-        [HttpPost("confirmOtp")]
+        [HttpPost("confirm-otp")]
         [Authorize]
         public async Task<ActionResult<ApiResult<string>>> ConfirmOTPAsync([FromBody] OtpDto otp)
         {
@@ -166,7 +166,7 @@ namespace API.Controllers.Authentication
         #endregion
 
         #region Resend OTP
-        [HttpPost("resendotp")]
+        [HttpPost("resend-otp")]
         [Authorize]
         public async Task<ActionResult<ApiResult<string>>> ResendOTPAsync()
         {
