@@ -231,7 +231,7 @@ namespace API.Controllers.Authentication
         }
         #endregion
         #region reset password
-        [HttpPost("ResetPassword")]
+        [HttpPost("reset-password")]
         public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest model)
         {
             if (!ModelState.IsValid)
