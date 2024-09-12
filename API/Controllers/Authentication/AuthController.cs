@@ -234,8 +234,6 @@ namespace API.Controllers.Authentication
         [HttpPost("reset-password")]
         public async Task<ActionResult<ApiResult<string>>> ResetPassword([FromBody] ResetPasswordRequest model)
         {
-           
-
             var result = await _authService.ResetPasswordWithCodeAsync(model.Email, model.ResetCode, model.NewPassword);
             
             return HandleOperationResult(result);
