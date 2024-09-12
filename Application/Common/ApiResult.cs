@@ -25,11 +25,25 @@ public class ApiResult<T>
     }
 
     public static ApiResult<T> Failed(string? message = null)
- {
-        var response = new ApiResult<T> { Success = false, Message  = message ?? ResponseMessage.BadRequest, ErrorCode = ErrorCode.ValidationFailed };
+    {
+        var response = new ApiResult<T>
+        {
+            Success = false, Message = message ?? ResponseMessage.BadRequest, ErrorCode = ErrorCode.ValidationFailed
+        };
 
         return response;
     }
+
+    public static ApiResult<T> InternalError(string? message = null)
+    {
+        var response = new ApiResult<T>
+        {
+            Success = false, Message = message ?? ResponseMessage.ErrorOccurred, ErrorCode = ErrorCode.InternalError
+        };
+
+        return response;
+    }
+
     public static ApiResult<T> UnAuthorized(string? message = null)
  {
         var response = new ApiResult<T> { Success = false, Message  = message ?? ResponseMessage.Unauthorized, ErrorCode = ErrorCode.UnauthorizedAccess };

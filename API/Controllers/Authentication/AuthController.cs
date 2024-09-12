@@ -232,21 +232,13 @@ namespace API.Controllers.Authentication
         #endregion
         #region reset password
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordRequest model)
+        public async Task<ActionResult<ApiResult<string>>> ResetPassword([FromBody] ResetPasswordRequest model)
         {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ApiResult<string>.Failed("Invalid input data."));
-            }
+           
 
             var result = await _authService.ResetPasswordWithCodeAsync(model.Email, model.ResetCode, model.NewPassword);
-
-            if (result.Success)
-            {
-                return Ok(ApiResult<string>.Successful(null, "Password has been reset successfully."));
-            }
-
-            return BadRequest(ApiResult<string>.Failed(result.Message));
+            
+            return HandleOperationResult(result);
         }
         #endregion
     }

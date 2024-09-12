@@ -20,6 +20,7 @@ using Application.Interfaces.Email;
 using static System.Net.WebRequestMethods;
 using NuGet.Protocol.Core.Types;
 using Humanizer;
+using Infrastructure.Common;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore.Metadata.Internal;
 using Microsoft.Extensions.Logging;
@@ -609,8 +610,8 @@ namespace Infrastructure.Identity.Services
                 return ApiResult<string>.NotFound("User does not exist or email not confirmed.");
             }
 
-            // Generate a 6-digit code
-            var code = new Random().Next(100000, 999999).ToString();
+            // Generate a 5-digit code
+            var code = new Random().Next(10000, 99999).ToString();
 
            
 
@@ -622,8 +623,8 @@ namespace Infrastructure.Identity.Services
             // Send the code via email
             try
             {
-                
-                var emailBody = System.IO.File.ReadAllText("Templates/PasswordResetTemplate.html");
+                var emailBody = EmailTemplateHelper.GetTemplate("PasswordResetTemplate");
+                // var emailBody = System.IO.File.ReadAllText("Templates/PasswordResetTemplate.html");
                 emailBody = emailBody.Replace("{{ResetCode}}", code)
                             .Replace("{{CompanyName}}", "Transcape")
                             .Replace("{{CurrentYear}}", DateTime.Now.Year.ToString());
@@ -640,7 +641,7 @@ namespace Infrastructure.Identity.Services
             catch (Exception ex)
             {
                 _logger.LogError($"Error sending password reset code: {ex.Message}");
-                return ApiResult<string>.Failed("Failed to send password reset code.");
+                return ApiResult<string>.InternalError("Failed to send password reset code.");
             }
         }
         #endregion
