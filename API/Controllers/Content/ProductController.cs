@@ -13,7 +13,7 @@ using Domain.Entities;
 
 namespace API.Controllers.Content
 {
-    [Route("api/[controller]")]
+    [Route("api/products")]
     [ApiController]
   
     public class ProductController : BaseController
@@ -28,7 +28,7 @@ namespace API.Controllers.Content
 
         #region GetAllProducts Endpoint
         // GET: api/Products
-        [HttpGet("GetAll")]
+        [HttpGet]
         public async Task<ActionResult<ApiResult<List<ProductDtoDetails>>>> GetProducts(int pageNumber = 1, int pageSize = 10)
         {
             var products = await _productServcie.GetAll(pageNumber, pageSize);
@@ -40,10 +40,10 @@ namespace API.Controllers.Content
 
         #region GetAllProducts Endpoint
         // GET: api/Products
-        [HttpGet("GetAllProductsByGroup")]
-        public async Task<ActionResult<ApiResult<List<ProductDtoDetails>>>> GetProductsByGroup(string group_name,int pageNumber = 1, int pageSize = 10)
+        [HttpGet("by-group")]
+        public async Task<ActionResult<ApiResult<List<ProductDtoDetails>>>> GetProductsByGroup(string groupName,int pageNumber = 1, int pageSize = 10)
         {
-            var products = await _productServcie.GetAllProductsByGroup(pageNumber, pageSize,group_name);
+            var products = await _productServcie.GetAllProductsByGroup(pageNumber, pageSize,groupName);
             //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
 
             return HandleOperationResult(products);
@@ -52,10 +52,10 @@ namespace API.Controllers.Content
 
         #region GetAllProducts by category id Endpoint
         // GET: api/Products
-        [HttpGet("GetProductsByCategoryId")]
-        public async Task<ActionResult<ApiResult<List<ProductDtoDetails>>>> GetProductsByCategoryId(int product_categoryId, int pageNumber = 1, int pageSize = 10)
+        [HttpGet("by-category-id/{categoryId}")]
+        public async Task<ActionResult<ApiResult<List<ProductDtoDetails>>>> GetProductsByCategoryId(int categoryId, int pageNumber = 1, int pageSize = 10)
         {
-            var products = await _productServcie.GetAllProductsByCategory( pageNumber, pageSize, product_categoryId);
+            var products = await _productServcie.GetAllProductsByCategory( pageNumber, pageSize, categoryId);
             //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
 
             return HandleOperationResult(products);
@@ -63,10 +63,10 @@ namespace API.Controllers.Content
         #endregion
         #region GetAllProducts by insurance id Endpoint
         // GET: api/Products
-        [HttpGet("GetProductsByInsuranceCoyId")]
-        public async Task<ActionResult<ApiResult<List<Product>>>> GetProductsByInsuranceCoyId(int insuranceCoyId, int pageNumber = 1, int pageSize = 10)
+        [HttpGet("by-insurance-coy/{coyId}")]
+        public async Task<ActionResult<ApiResult<List<Product>>>> GetProductsByInsuranceCoyId(int coyId, int pageNumber = 1, int pageSize = 10)
         {
-            var products = await _productServcie.GetProductsByInsuranceCoyId(pageNumber, pageSize, insuranceCoyId);
+            var products = await _productServcie.GetProductsByInsuranceCoyId(pageNumber, pageSize, coyId);
             //var paginatedProducts = PaginatedList<ProductDtoDetails>.Create(products, pageNumber, pageSize);
 
             return HandleOperationResult(products);
@@ -74,7 +74,7 @@ namespace API.Controllers.Content
         #endregion
         #region Get Recommended Products Endpoint
         // GET: api/Products
-        [HttpGet("GetRecommendedProducts")]
+        [HttpGet("recommended")]
         public async Task<ActionResult<ApiResult<List<Product>>>> GetRecommendedProducts(int pageNumber = 1, int pageSize = 10)
         {
             var products = await _productServcie.GetRecommendedProducts(pageNumber, pageSize);
@@ -86,7 +86,7 @@ namespace API.Controllers.Content
         #region get product details
 
         // GET: api/Products/5
-        [HttpGet("{code}")]
+        [HttpGet("by-code/{code}")]
         public async Task<ActionResult<ApiResult<ProductDtoDetails>>> GetProduct(string code)
         {
             
@@ -97,12 +97,11 @@ namespace API.Controllers.Content
 
         #region get product details
 
-        // GET: api/Products/5
-        [HttpGet("GetProductDetailById")]
-        public async Task<ActionResult<ApiResult<ProductDtoDetails>>> GetProductDetailById(int product_id)
+        [HttpGet("{id}")]
+        public async Task<ActionResult<ApiResult<ProductDtoDetails>>> GetProductDetailById(int id)
         {
 
-            var product = await _productServcie.GetDetailsById(product_id);
+            var product = await _productServcie.GetDetailsById(id);
 
             return HandleOperationResult(product);
         }
@@ -113,14 +112,14 @@ namespace API.Controllers.Content
         // POST: api/Products
         [HttpPost]
         [Authorize]
-        public async Task<ActionResult<int>> PostProduct( CreateProductDto model)
+        public async Task<ActionResult<ApiResult<Product>>> PostProduct([FromBody] CreateProductDto model)
         {
 
             var isExist = await _productServcie.ProductIsExist(model.ProductCode);
 
             if (isExist)
             {
-                return BadRequest("ProductEntity Code already exists");
+                return HandleOperationResult(ApiResult<Product>.Failed("Code already exist"));
 
             }
             else
@@ -128,7 +127,7 @@ namespace API.Controllers.Content
                 var product = new Product
                 {
                     ProductName = model.ProductName,
-                    CoyId = model.InsuranceCoyId,
+                    CoyId = model.CoyId,
                     CategoryId = model.CategoryId,
                     ProductPrice = model.ProductPrice,
                     ProductQuantity = model.ProductQuantity,
@@ -139,8 +138,8 @@ namespace API.Controllers.Content
                     CoyProductId = model.CoyProductId
                     
                 };
+                return HandleOperationResult(ApiResult<Product>.Successful(await _productServcie.Add(product)));
 
-               return Ok( await _productServcie.Add(product));
             }
            
             //return Ok();
@@ -149,8 +148,8 @@ namespace API.Controllers.Content
 
         #region Update Product Endpoint
         // PUT: api/Products/5
-        [HttpPut("update")]
-        public async Task<ActionResult<ApiResult<Product>>> UpdateProduct([FromQuery] int id, CreateProductDto model)
+        [HttpPut("{id}")]
+        public async Task<ActionResult<ApiResult<Product>>> UpdateProduct([FromQuery] int id, [FromBody] CreateProductDto model)
         {
             var product = await _productServcie.GetById(id);
 
@@ -160,7 +159,7 @@ namespace API.Controllers.Content
             }
 
             product.ProductName = model.ProductName;
-            product.CoyId = model.InsuranceCoyId;
+            product.CoyId = model.CoyId;
             product.ProductPrice = model.ProductPrice;
             product.ProductQuantity = model.ProductQuantity;
             product.ProductDescription = model.ProductDescription;
@@ -196,7 +195,7 @@ namespace API.Controllers.Content
 
         #region Withdraw Product Endpoint
         [HttpPut("WithDraw")]
-        public async Task<ActionResult<ApiResult<CreateProductDto>>> WithDrawProduct(WithDrawProducts dto)
+        public async Task<ActionResult<ApiResult<CreateProductDto>>> WithDrawProduct([FromQuery] WithDrawProducts dto)
         {
             var exist = await _productServcie.GetProductByCode(dto.ProductCode);
             

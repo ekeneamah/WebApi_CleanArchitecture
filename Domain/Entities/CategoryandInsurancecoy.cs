@@ -10,7 +10,7 @@ namespace Domain.Entities
         public int Id { get; set; } 
         public int CategoryId { get; set; }
         public string CategoryName { get; set; }
-        public int InsuranceCoyId { get; set; }
+        public int CoyId { get; set; }
         public string CoyName { get;set; }
     }
 }

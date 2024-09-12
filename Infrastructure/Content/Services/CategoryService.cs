@@ -68,6 +68,11 @@ namespace Infrastructure.Content.Services
         #region AddCategory
         public async Task<ApiResult<CreateCategoryDto>> AddCategory(CreateCategoryDto item)
         {
+            if (await CategoryIsExist(item.CategoryName))
+            {
+                return ApiResult<CreateCategoryDto>.Failed("Category already exist");
+            }
+
 
             Category model = new()
             {
@@ -79,10 +84,14 @@ namespace Infrastructure.Content.Services
             _context.Categories.Add(model);
 
             await _context.SaveChangesAsync();
-            foreach (CategoryBenefit c in item.CategoryBenefits) {
+            foreach (CategoryBenefit c in item?.CategoryBenefits)
+            {
                 c.BenefitCategoryId = model.CategoryId;
+                c.BenefitsTitle = model.CategoryDescription;
+                c.BenefitId = null;
+                
                 _context.CategoryBenefits.Add(c);
-               await _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
 
             return ApiResult<CreateCategoryDto>.Successful(item);

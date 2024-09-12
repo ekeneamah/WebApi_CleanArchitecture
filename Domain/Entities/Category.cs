@@ -28,7 +28,7 @@ namespace Domain.Entities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int BenefitId { get; set; }
+        public int? BenefitId { get; set; }
 
 
         [Required]

@@ -19,7 +19,7 @@ namespace API.Controllers.Content
     using System.Threading.Tasks;
 
         
-        [Route("api/[controller]")]
+        [Route("api/claims")]
         [ApiController]
         [Authorize]
         public class ClaimController : BaseController
@@ -45,12 +45,12 @@ namespace API.Controllers.Content
                 return HandleOperationResult(claims);
             }
         #region Get All my claims
-        [HttpGet("GetAllMyClaims")]
+        [HttpGet("me")]
         public async Task<ActionResult<ApiResult<List<ClaimDetailDto>>>> GetAllMyClaims()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<List<ClaimDetailDto>>.Failed("Invalid User"));
 
             var claims = await _claimService.GetAllMyClaims(user.Id);
             return HandleOperationResult(claims);
@@ -67,7 +67,7 @@ namespace API.Controllers.Content
 #endregion
        
         #region create claim 
-        [HttpPost("CreateClaim")]
+        [HttpPost]
         
         public async Task<IActionResult> PostClaims([FromBody] ClaimsDto claimsDto)
         {
@@ -136,7 +136,7 @@ namespace API.Controllers.Content
         #endregion
 
         #region get notifcation 
-        [HttpGet("GetNotification/{id}")]
+        [HttpGet("notifications/{id}")]
         public async Task<IActionResult> GetNotification(int notificationNo)
         {
             // Your authorization logic can go here
@@ -218,7 +218,7 @@ namespace API.Controllers.Content
         #region update claim
 
         [HttpPut("{claimId}")]
-            public async Task<ActionResult<ApiResult<ClaimsDto>>> UpdateClaim(string claimId, ClaimsDto model)
+            public async Task<ActionResult<ApiResult<ClaimsDto>>> UpdateClaim(string claimId,[FromBody]  ClaimsDto model)
             {
                 if (claimId != model.ClaimId.ToString())
                 {
@@ -227,7 +227,7 @@ namespace API.Controllers.Content
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<ClaimsDto>.Failed("Invalid User"));
             }
             model.UserId = user?.Id;
             var updatedClaim = await _claimService.UpdateClaims(model);

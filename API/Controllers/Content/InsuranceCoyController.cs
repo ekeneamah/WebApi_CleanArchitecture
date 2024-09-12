@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Content
 {
-    [Route("api/[controller]")]
+    [Route("api/insurance-coys")]
     [ApiController]
     
     public class InsuranceCoyController : BaseController
@@ -56,7 +56,8 @@ namespace API.Controllers.Content
         {
             if (await _insuranceCoyService.CoyIsExist(insuranceCoy.CoyName))
             {
-                return BadRequest($"InsuranceCompany name: {insuranceCoy.CoyName} is already registered");
+                return HandleOperationResult( ApiResult<InsuranceCoyDto>.Failed($"InsuranceCompany name: {insuranceCoy.CoyName} is already registered"));
+
             }
             // Save logo image file to wwwroot/Images folder
             string wwwrootPath = webHostEnvironment.WebRootPath;
@@ -93,16 +94,13 @@ namespace API.Controllers.Content
         #region Update Insurance Coy
         // PUT: api/InsuranceCompany/5
         [HttpPut("{id}")]
-        public async Task<ActionResult<ApiResult<InsuranceCoyDto>>> UpdateInsuranceCoy(int id, InsuranceCoy model)
+        public async Task<ActionResult<ApiResult<InsuranceCoyDto>>> UpdateInsuranceCoy(int id,[FromForm]  InsuranceCoy model)
         {
             var insuranceCoy = await _insuranceCoyService.GetByInsuranceCoyId(id);
-
-            if (insuranceCoy == null)
-                return NotFound($"insuranceCoy: {model.CoyName} was not found");
+            
 
             if (await _insuranceCoyService.CoyIsExist(model.CoyName))
-                return BadRequest(" this InsuranceCompany name is already registred");
-
+                return HandleOperationResult( ApiResult<InsuranceCoyDto>.Failed($"Insurance Company name: {insuranceCoy.CoyName} is already registered"));
 
             insuranceCoy.CoyName = model.CoyName;
             await _insuranceCoyService.Update_Coy(insuranceCoy);
@@ -112,7 +110,7 @@ namespace API.Controllers.Content
         #endregion
         #region update only logo
         [HttpPut("{id}/logo")]
-        public async Task<IActionResult> UpdateLogoImage(int id, IFormFile logoImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
+        public async Task<IActionResult> UpdateLogoImage(int id, [FromForm]IFormFile logoImageFile, [FromServices] IWebHostEnvironment webHostEnvironment)
         {
             var insuranceCoy = (await _insuranceCoyService.GetByInsuranceCoyId(id));
             if (insuranceCoy == null)

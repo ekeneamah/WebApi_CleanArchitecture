@@ -50,8 +50,7 @@ namespace Infrastructure.Content.Services
                 result.Add(pd);
             }
 
-            return ApiResult<List<ProductDtoDetails>>.Successful(null);
-            return ApiResult<List<ProductDtoDetails>>.Successful(null);
+            return ApiResult<List<ProductDtoDetails>>.Successful(result);
 
         }
 
@@ -92,7 +91,7 @@ namespace Infrastructure.Content.Services
             var product = await _context.Products.FirstOrDefaultAsync(p => p.ProductCode == code);
             CreateProductDto pd = new CreateProductDto()
             {
-                InsuranceCoyId = product.CoyId,
+                CoyId = product.CoyId,
                 ProductName = product.ProductName,
                 ProductCode = product.ProductCode,
                 CategoryId = product.CategoryId,
@@ -283,9 +282,9 @@ namespace Infrastructure.Content.Services
         #region get products by insurance coy id
 
         public async Task<ApiResult<List<Product>>> GetProductsByInsuranceCoyId(int pageNumber, int pageSize,
-            int insuranceCoyId)
+            int coyId)
         {
-          var result =   await _context.Products.Where(g => g.CoyId == insuranceCoyId)
+          var result =   await _context.Products.Where(g => g.CoyId == coyId)
 
                   .Skip((pageNumber - 1) * pageSize)
                   .Take(pageSize)
@@ -298,9 +297,9 @@ namespace Infrastructure.Content.Services
         #endregion
 
         #region Get Product For Insurance Coy Detail
-       public async Task<List<ProductForInsuranceCoyDetailsDto>> ProductForInsuranceCoyDetails(int insuranceCoyId)
+       public async Task<List<ProductForInsuranceCoyDetailsDto>> ProductForInsuranceCoyDetails(int coyId)
         {
-            List<Product> result = await _context.Products.Where(g => g.CoyId == insuranceCoyId).ToListAsync();
+            List<Product> result = await _context.Products.Where(g => g.CoyId == coyId).ToListAsync();
             List<ProductForInsuranceCoyDetailsDto> p = new List<ProductForInsuranceCoyDetailsDto>();
             foreach (Product product in result)
             {

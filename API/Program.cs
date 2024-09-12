@@ -36,6 +36,8 @@ var builder = WebApplication.CreateBuilder(args);
 //var connectionString2 = builder.Configuration.GetConnectionString("IdentityConnection");
 builder.Configuration.AddEnvironmentVariables();
 var ev = Environment.GetEnvironmentVariable("SQLCONNSTR_TranscapeMVP");
+//var ev = Environment.GetEnvironmentVariable("conn2");
+
 var connectionString = ev != null ? ev.Replace("\"", "").Replace("\\\\", "\\") : "environment is null";// builder.Configuration.GetConnectionString("DefaultConnection");
 
 

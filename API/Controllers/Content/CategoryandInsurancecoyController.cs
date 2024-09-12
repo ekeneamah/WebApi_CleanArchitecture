@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace API.Controllers.Content
 {
-    [Route("api/[controller]")]
+    [Route("api/category-and-insurancecoys")]
     [ApiController]
     public class CategoryandInsurancecoyController : BaseController
     {
@@ -41,18 +41,18 @@ namespace API.Controllers.Content
 
 
         // GET: api/CategoryandInsurancecoy/ByCategoryId/5
-        [HttpGet("ByCategoryId/{categoryId}")]
-        public async Task<ActionResult<ApiResult<List<CategoryandInsurancecoyDto>>>> GetByCategoryId(int categoryId)
+        [HttpGet("by-category-id/{categoryId}")]
+        public async Task<ActionResult<ApiResult<List<CategoryandInsurancecoyDto>>>> GetByCategoryId([FromRoute] int categoryId)
         {
            var response = await _service.GetByCategoryId(categoryId);
             return HandleOperationResult(response);
         }
 
         // GET: api/CategoryandInsurancecoy/ByInsuranceCoyId/5
-        [HttpGet("ByInsuranceCoyId/{insuranceCoyId}")]
-        public async Task<ActionResult<ApiResult<List<CategoryandInsurancecoyDto>>>> GetByInsuranceCoyId(int insuranceCoyId)
+        [HttpGet("by-insurance-coy/{coyId}")]
+        public async Task<ActionResult<ApiResult<List<CategoryandInsurancecoyDto>>>> GetByInsuranceCoyId([FromRoute] int coyId)
         {
-            var response = await _service.GetByInsuranceCoyId(insuranceCoyId);
+            var response = await _service.GetByInsuranceCoyId(coyId);
             return HandleOperationResult(response);
 
         }

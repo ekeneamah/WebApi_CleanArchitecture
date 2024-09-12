@@ -10,11 +10,10 @@ using NuGet.Protocol;
 using System.Text;
 using System.Text.Json;
 using Application.Common;
-using TransactionDto = Application.Dtos.TransactionDto;
 
 namespace API.Controllers.Content
 {
-    [Route("api/[controller]")]
+    [Route("api/policies")]
     [ApiController]
     [Authorize]
     public class PolicyController : BaseController
@@ -31,30 +30,20 @@ namespace API.Controllers.Content
         }
         #region create policy
         [HttpPost]
-        public ActionResult<int> Create(TransactionDto policyDTO)
+        public ActionResult<int> Create([FromBody] CreatePolicyDto policyDTO)
         {
             return Ok(_policyService.AddPolicy(policyDTO));
         }
         #endregion
 
         #region get my policies
-        [HttpGet("GetMyPolicies")]
+        [HttpGet("me")]
         public async Task<ActionResult<ApiResult<List<PolicyDetailDto>>>> GetMyPolicies()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<List<PolicyDetailDto>>.Failed("Invalid User"));
             return HandleOperationResult(await _policyService.GetAllPolicyByUserId(user.Id));
-        }
-        #endregion
-        #region get policy by customer name
-        [HttpGet("GetByUserName")]
-        public async Task<ActionResult<ApiResult<List<PolicyDetailDto>>>> GetByUserName()
-        {
-            var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
-            if (user == null)
-                return BadRequest("Invalid User");
-            return HandleOperationResult(await _policyService.GetByUserName(user.Id));
         }
         #endregion
         #region get policy number from insurance
@@ -64,26 +53,29 @@ namespace API.Controllers.Content
         /// </summary>
         /// <param name="generatePolicyDTO"></param>
         /// <returns></returns>
-        [HttpPost("GenPolicyNo")]
-        public async Task<ActionResult<string>> GenPolicyNo(GeneratePolicyDto generatePolicyDTO)
+        [HttpPost("generate-policy-number")]
+        public async Task<ActionResult<ApiResult<string>>> GenPolicyNo([FromBody] GeneratePolicyDto generatePolicyDTO)
         {
             string token = await AuthenticateAndGetToken();
             if (string.IsNullOrEmpty(token))
             {
-                return Unauthorized("Failed to obtain authentication token.");
+                return HandleOperationResult( ApiResult<string>.UnAuthorized("Failed to obtain authentication token."));
             }
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<string>.Failed("Invalid User"));
             generatePolicyDTO.Userid = user.Id;
             generatePolicyDTO.Token = token;
-            return await _policyService.GeneratePolicyNumber(generatePolicyDTO);
+            var res = await _policyService.GeneratePolicyNumber(generatePolicyDTO);                
+            return HandleOperationResult(res);
+
+            
             
         }
         #endregion
         #region Update policy
-        [HttpPut("Update")]
-        public async Task<ActionResult> UpdatePolicies(TransactionDto policy)
+        [HttpPut]
+        public async Task<ActionResult> UpdatePolicies([FromBody] CreatePolicyDto policy)
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -93,7 +85,7 @@ namespace API.Controllers.Content
         }
         #endregion
         #region fetch certifcate
-        [HttpGet("FetchCertificate")]
+        [HttpGet("certificate")]
         public async Task<IActionResult> FetchCertificate(string policyNo, string email)
         {
             // Authenticate to obtain token

@@ -44,10 +44,12 @@ namespace API.Controllers.Authentication
         #region SignUp Endpoint
 
         [HttpPost("signUp")]
+<<<<<<< HEAD
         public async Task<ActionResult<ApiResult<AuthResponse>>> SignUpAsync([FromBody] SignUp model)
+=======
+        public async Task<ActionResult<ApiResult<AuthResponse>>> SignUpAsync([FromBody]SignUp model)
+>>>>>>> cf7f3af2edc921d835f7596f50d2d758a7afeaab
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
             var orgin = Request.Headers["origin"];
             var result = await _authService.SignUpAsync(model, orgin);
             if (result.Success)
@@ -64,11 +66,8 @@ namespace API.Controllers.Authentication
         #region Login Endpoint
 
         [HttpPost("login")]
-        public async Task<ActionResult<ApiResult<AuthResponse>>> LoginAsync([FromForm] Login model)
+        public async Task<ActionResult<ApiResult<AuthResponse>>> LoginAsync([FromBody] Login model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var result = await _authService.LoginAsync(model);
 
             if (result.Success && result.Data?.RefreshToken != null)
@@ -88,12 +87,13 @@ namespace API.Controllers.Authentication
 /// </summary>
 /// <param name="model"></param>
 /// <returns></returns>
+<<<<<<< HEAD
         [HttpPost("addRole")]
+=======
+        [HttpPost("role")]
+>>>>>>> cf7f3af2edc921d835f7596f50d2d758a7afeaab
         public async Task<ActionResult<ApiResult<AssignRolesDto>>> AddRoleAsync([FromBody] AssignRolesDto model)
         {
-            if (!ModelState.IsValid)
-                return BadRequest(ModelState);
-
             var result = await _authService.AssignRolesAsync(model);
 
             if (!string.IsNullOrEmpty(result))
@@ -106,7 +106,7 @@ namespace API.Controllers.Authentication
 
         #region RefreshTokenCheck Endpoint
 
-        [HttpGet("refreshToken")]
+        [HttpGet("refresh-token")]
         public async Task<ActionResult<ApiResult<AuthResponse>>> RefreshTokenCheckAsync()
         {
             var refreshToken = Request.Cookies["refreshTokenKey"];
@@ -119,7 +119,7 @@ namespace API.Controllers.Authentication
 
         #region RevokeTokenAsync
 
-        [HttpPost("revokeToken")]
+        [HttpPost("revoke-token")]
         public async Task<ActionResult<ApiResult<bool>>> RevokeTokenAsync(RevokeToken model)
         {
             var refreshToken = model.Token ?? Request.Cookies["refreshTokenKey"];
@@ -137,7 +137,7 @@ namespace API.Controllers.Authentication
         #region ConfirmOTP
         [HttpPost("confirmOtp")]
         [Authorize]
-        public async Task<ActionResult<ApiResult<string>>> ConfirmOTPAsync(OtpDto otp)
+        public async Task<ActionResult<ApiResult<string>>> ConfirmOTPAsync([FromBody] OtpDto otp)
         {
             try
             {
@@ -181,7 +181,7 @@ namespace API.Controllers.Authentication
 
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<string>.Failed("Invalid User"));
 
             VerifyOtpDto model = new()
             {
@@ -191,7 +191,7 @@ namespace API.Controllers.Authentication
             };
 
 
-            return HandleOperationResult(await _authService.ConfirmOTPAsync(model));
+            return HandleOperationResult(await _authService.ResendOTPAsync(model));
         }
         #endregion
 
@@ -203,7 +203,8 @@ namespace API.Controllers.Authentication
         }
         #endregion
         #region signout
-        [HttpDelete("deletealluser")]
+
+        [HttpDelete("users")]
         public async Task<ActionResult<ApiResult<string>>> DeleteAllUser()
         {
             return HandleOperationResult(await _authService.DeleteAllUserAsync());

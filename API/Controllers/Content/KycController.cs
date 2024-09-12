@@ -9,7 +9,7 @@ using Application.Common;
 
 namespace API.Controllers.Content
 {
-    [Route("api/[controller]")]
+    [Route("api/kycs")]
 [ApiController]
 public class KYCController : BaseController
 {
@@ -24,37 +24,12 @@ public class KYCController : BaseController
 
 
     [HttpPost]
-    public async Task<ActionResult<ApiResult<Kycdto>>> CreateKYC(Kycdto kycDto)
+    public async Task<ActionResult<ApiResult<Kycdto>>> CreateKYC([FromBody]Kycdto kycDto)
         {
-            if (kycDto.IdentityType != "NIN")
-            {
-
-
-                // Check if expiry date is greater than issued date
-                if (kycDto.FromExpiryDate > kycDto.ToExpiryDate)
-                {
-                    return BadRequest("Expiry date must be greater than issued date.");
-                }
-
-                // Check if expiry date has not passed
-                if (DateTime.Today > kycDto.ToExpiryDate)
-                {
-                    return BadRequest("Identity has expired.");
-                }
-                // Check if expiry date has not passed
-                if (DateTime.Today < kycDto.FromExpiryDate)
-                {
-                    return BadRequest("Identity has expired.");
-                }
-            }
-            else // Check if expiry date has not passed
-                    if (DateTime.Today < kycDto.FromExpiryDate)
-            {
-                return BadRequest("Date is invalid.");
-            }
+        
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<Kycdto>.Failed("Invalid User"));
             kycDto.UserId = user.Id;
             var createdKYC = await _kycService.CreateKYC(kycDto);
         return HandleOperationResult(createdKYC);
@@ -68,12 +43,12 @@ public class KYCController : BaseController
         return HandleOperationResult(kycDto);
     }
 
-        [HttpGet("GetKycByUserId")]
+        [HttpGet("me")]
         public async Task<ActionResult<ApiResult<List<Kycdto>>>> GetKYCByUserId()
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult( ApiResult<List<Kycdto>>.Failed("Invalid User"));
             var kycDto = await _kycService.GetKYCByUserId(user.Id);
 
             return HandleOperationResult(kycDto);
@@ -87,37 +62,12 @@ public class KYCController : BaseController
     }
 
     [HttpPut("{id}")]
-    public async Task<ActionResult<ApiResult<Kycdto>>> UpdateKYC(int id, Kycdto kycDto)
+    public async Task<ActionResult<ApiResult<Kycdto>>> UpdateKYC(int id, [FromBody] Kycdto kycDto)
     {
-        if (id != kycDto.Id)
-        {
-            return BadRequest();
-        }
-            if (kycDto.IdentityType != "NIN")
-            {
-
-
-                // Check if expiry date is greater than issued date
-                if (kycDto.FromExpiryDate > kycDto.ToExpiryDate)
-                {
-                    return BadRequest("Expiry date must be greater than issued date.");
-                }
-
-                // Check if expiry date has not passed
-                if (DateTime.Today > kycDto.ToExpiryDate)
-                {
-                    return BadRequest("Identity has expired.");
-                }
-               
-            }
-            else // Check if expiry date has not passed
-                if (DateTime.Today < kycDto.FromExpiryDate)
-            {
-                return BadRequest("Date is invalid.");
-            }
+      
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
-                return BadRequest("Invalid User");
+                return HandleOperationResult(ApiResult<Kycdto>.Failed("Invalid User"));
             kycDto.UserId = user.Id;
             var updatedKYC = await _kycService.UpdateKYC(id, kycDto);
             return HandleOperationResult(updatedKYC);

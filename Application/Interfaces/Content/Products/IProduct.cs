@@ -21,7 +21,7 @@ namespace Application.Interfaces.Content.Products
         Task<ApiResult<ProductDtoDetails>> GetDetailsById(int id);
         Task<ApiResult<ProductDtoDetails>> GetByCode(string code);
         Task<ApiResult<CreateProductDto>> GetProductByCode(string code);
-        Task<List<ProductForInsuranceCoyDetailsDto>> ProductForInsuranceCoyDetails(int insuranceCoyId);
+        Task<List<ProductForInsuranceCoyDetailsDto>> ProductForInsuranceCoyDetails(int coyId);
 
         Task<Product> Add(Product model);
 
@@ -32,7 +32,7 @@ namespace Application.Interfaces.Content.Products
         Task<bool> ProductIsExist(string code);
         Task<int> SaveChanges();
         void WithDraw(WithDrawProducts dto);
-        Task<ApiResult<List<Product>>> GetProductsByInsuranceCoyId(int pageNumber, int pageSize, int insuranceCoyId);
+        Task<ApiResult<List<Product>>> GetProductsByInsuranceCoyId(int pageNumber, int pageSize, int coyId);
         Task<ApiResult<List<Product>>> GetRecommendedProducts(int pageNumber, int pageSize);
     }
 }

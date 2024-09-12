@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers.Content
 {
     [ApiController]
-    [Route("api/[controller]")]
+    [Route("api/motor-claims")]
     [Authorize]
     public class MotorClaimsController : BaseController
     {
@@ -49,7 +49,7 @@ namespace API.Controllers.Content
         }
 
         [HttpPost]
-        public async Task<ActionResult<ApiResult<MotorClaim>>> Create(MotorClaim motorClaim)
+        public async Task<ActionResult<ApiResult<MotorClaim>>> Create([FromBody] MotorClaim motorClaim)
         {
             var user = await _userManager.FindByIdAsync(User.Claims.FirstOrDefault(t => t.Type == "UserId").Value);
             if (user == null)
@@ -96,7 +96,7 @@ namespace API.Controllers.Content
     
 
     [HttpPut("{id}")]
-        public async Task<IActionResult> Update(int id, MotorClaim motorClaim)
+        public async Task<IActionResult> Update(int id, [FromBody] MotorClaim motorClaim)
         {
             if (id != motorClaim.Id)
             {

@@ -30,6 +30,11 @@ public class ApiResult<T>
 
         return response;
     }
+    public static ApiResult<T> UnAuthorized(string? message = null)
+ {
+        var response = new ApiResult<T> { Success = false, Message  = message ?? ResponseMessage.Unauthorized, ErrorCode = ErrorCode.UnauthorizedAccess };
+        return response;
+    }
     // public static ApiResult<T> FailureResult(string errorMessage)
     // {
     //     return new ApiResult<T> { Success = false, ErrorMessage = errorMessage };
@@ -55,4 +60,5 @@ public static class ResponseMessage
     public const string ErrorOccurred = "An Error occurred";
     public const string NotFound = "Item with specified key not found";
     public const string BadRequest = "Bad Request";
+    public const string Unauthorized = "Unauthorized";
 }

@@ -17,18 +17,18 @@ namespace Application.Interfaces.Content.Policy
         Task<ApiResult<PolicyDetailDto>> GetById(int id);
         Task<ApiResult<List<PolicyDetailDto>>> GetAllPolicyByUserId(string userid);
         Task<ApiResult<List<PolicyDetailDto>>> GetByUserName(string username);
-        Task<string> GeneratePolicyNumber(GeneratePolicyDto ret );
+        Task<ApiResult<string>> GeneratePolicyNumber(GeneratePolicyDto ret );
 
 
-        Task<int> AddPolicy(Dtos.TransactionDto model);
-
-
-
-        PolicyDetailDto UpdatePolicy(Dtos.TransactionDto model);
+        Task<int> AddPolicy(Dtos.CreatePolicyDto model);
 
 
 
-        Dtos.TransactionDto DeletePolicy(Dtos.TransactionDto model);
+        PolicyDetailDto UpdatePolicy(Dtos.CreatePolicyDto model);
+
+
+
+        Dtos.CreatePolicyDto DeletePolicy(Dtos.CreatePolicyDto model);
 
 
 
