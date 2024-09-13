@@ -28,6 +28,7 @@ namespace Application.Interfaces.Authentication
         Task<ApiResult<string>> ValidateEmailandUsernameAsync(ValidateEmailandUsernameDTO  validateEmailandUsernameDTO);
         Task<ApiResult<string>> ForgotPasswordAsync(string email);
         Task<ApiResult<string>> ResetPasswordWithCodeAsync(string email, string code, string newPassword);
-
+        Task<ApiResult<string>> ValidateResetCode(string email, string code);
+        
     }
 }
