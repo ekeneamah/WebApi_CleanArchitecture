@@ -213,6 +213,7 @@ namespace Infrastructure.Identity.Services
             {
                 ToEmail = user.Email,
                 FromEmail = "Transcape",
+                Subject = "Transcape App - OTP",
                 Body = $@"
         <html>
         <head>
@@ -644,6 +645,56 @@ namespace Infrastructure.Identity.Services
                 return ApiResult<string>.InternalError("Failed to send password reset code.");
             }
         }
+        #endregion
+
+        #region validate Reset otp
+        public async Task<ApiResult<string>> ValidateResetCode(string email, string code)
+        {
+            var user = await _userManager.FindByEmailAsync(email);
+            if (user == null)
+            {
+                _logger.LogWarning($"Reset password request: User with email {email} does not exist.");
+                return ApiResult<string>.NotFound("User does not exist.");
+            }
+
+            var storedToken = await _userManager.GetAuthenticationTokenAsync(user, "Default", "ResetPasswordCode");
+            if (storedToken == null)
+            {
+                _logger.LogWarning($"No reset token found for email {email}.");
+                return ApiResult<string>.Failed("Invalid reset token.");
+            }
+
+            var tokenParts = storedToken.Split('|');
+            if (tokenParts.Length != 2)
+            {
+                _logger.LogError($"Invalid token format for user {email}.");
+                return ApiResult<string>.Failed("Invalid reset token.");
+            }
+
+            var storedCode = tokenParts[0];
+            if (!DateTime.TryParse(tokenParts[1], out var expirationTime))
+            {
+                _logger.LogError($"Invalid expiration format in token for user {email}.");
+                return ApiResult<string>.Failed("Invalid reset token.");
+            }
+
+            // Check if the token has expired
+            if (DateTime.UtcNow > expirationTime)
+            {
+                _logger.LogWarning($"Reset token for email {email} has expired.");
+                return ApiResult<string>.Failed("Reset token has expired.");
+            }
+
+            // Check if the provided code matches the stored code
+            if (storedCode != code)
+            {
+                _logger.LogWarning($"Invalid reset code for email {email}.");
+                return ApiResult<string>.Failed("Invalid reset code.");
+            }
+
+            return ApiResult<string>.Successful(null, "Code is valid");
+        }
+
         #endregion
 
         #region Reset password

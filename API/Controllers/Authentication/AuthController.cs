@@ -239,5 +239,17 @@ namespace API.Controllers.Authentication
             return HandleOperationResult(result);
         }
         #endregion
+        #region validate rest otp
+        [HttpPost("validate-reset-code")]
+        public async Task<ActionResult<ApiResult<string>>> ValidateResetCode([FromBody] ValidateCodeRequestDto request)
+        {
+            var isValid = _passwordService.ValidateResetCode(request.Email, request.Code);
+            if (!isValid)
+                return BadRequest(ApiResult<string>.ErrorResult("Invalid or expired code."));
+
+            return Ok(ApiResult<string>.SuccessResult(null, "Code validated successfully."));
+        }
+
+        #endregion
     }
 }
