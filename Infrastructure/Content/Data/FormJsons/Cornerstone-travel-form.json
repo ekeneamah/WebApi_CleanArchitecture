@@ -1,0 +1,428 @@
+﻿[
+  {
+    "FieldId": "001",
+    "FieldName": "product_id",
+    "DisplayName": "Product ID",
+    "InputType": "Number",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter Product ID",
+    "RegexValidationPattern": "^[0-9]+$",
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "18",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "002",
+    "FieldName": "title",
+    "DisplayName": "Title",
+    "InputType": "Dropdown",
+    "IsRequired": true,
+    "Options": [
+      {
+        "Value": "Mr",
+        "Label": "Mr"
+      },
+      {
+        "Value": "Mrs",
+        "Label": "Mrs"
+      },
+      {
+        "Value": "Miss",
+        "Label": "Miss"
+      }
+    ],
+    "AllowsMultiple": false,
+    "Placeholder": "Select Title",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "Mr",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "003",
+    "FieldName": "first_name",
+    "DisplayName": "First Name",
+    "InputType": "Text",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter First Name",
+    "RegexValidationPattern": "^[a-zA-Z]+$",
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "John",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "004",
+    "FieldName": "last_name",
+    "DisplayName": "Last Name",
+    "InputType": "Text",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter Last Name",
+    "RegexValidationPattern": "^[a-zA-Z]+$",
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "Doe",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "005",
+    "FieldName": "email",
+    "DisplayName": "Email",
+    "InputType": "Email",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter Email",
+    "RegexValidationPattern": "^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$",
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "abdur.techvill@gmail.com",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "006",
+    "FieldName": "mobile",
+    "DisplayName": "Mobile",
+    "InputType": "Text",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter Mobile Number",
+    "RegexValidationPattern": "^[0-9]{9,15}$",
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "123456789",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "007",
+    "FieldName": "travel_start_date",
+    "DisplayName": "Travel Start Date",
+    "InputType": "Date",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Select Start Date",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "2019-09-04",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "008",
+    "FieldName": "travel_end_date",
+    "DisplayName": "Travel End Date",
+    "InputType": "Date",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Select End Date",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "2019-09-06",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "009",
+    "FieldName": "other_name",
+    "DisplayName": "Other Name",
+    "InputType": "Text",
+    "IsRequired": false,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter Other Name",
+    "RegexValidationPattern": "^[a-zA-Z ]*$",
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "010",
+    "FieldName": "date_of_birth",
+    "DisplayName": "Date of Birth",
+    "InputType": "Date",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Select Date of Birth",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "1995-10-12",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "011",
+    "FieldName": "destination",
+    "DisplayName": "Destination",
+    "InputType": "Dropdown", // Destination options come from an API
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Select Destination",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": "/api/destinations", // API endpoint for dynamic options
+    "DependsOn": null,
+    "DefaultValue": null,
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "012",
+    "FieldName": "gender",
+    "DisplayName": "Gender",
+    "InputType": "Radio",
+    "IsRequired": true,
+    "Options": [
+      {
+        "Value": "Male",
+        "Label": "Male"
+      },
+      {
+        "Value": "Female",
+        "Label": "Female"
+      }
+    ],
+    "AllowsMultiple": false,
+    "Placeholder": null,
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "Male",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "013",
+    "FieldName": "passport_number",
+    "DisplayName": "Passport Number",
+    "InputType": "Text",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter Passport Number",
+    "RegexValidationPattern": "^[A-Z0-9]+$",
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "123456789",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "014",
+    "FieldName": "nationality",
+    "DisplayName": "Nationality",
+    "InputType": "Dropdown",
+    "IsRequired": true,
+    "Options": [
+      {
+        "Value": "Nigerian",
+        "Label": "Nigerian"
+      },
+      {
+        "Value": "Other",
+        "Label": "Other"
+      }
+    ],
+    "AllowsMultiple": false,
+    "Placeholder": "Select Nationality",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": "/api/nationalities",
+    "DependsOn": null,
+    "DefaultValue": "Nigerian",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "015",
+    "FieldName": "verify_token",
+    "DisplayName": "Verification Token",
+    "InputType": "Text",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter Verification Token",
+    "RegexValidationPattern": "^[a-zA-Z0-9]+$",
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "J0GyFppwYIv2zV6x",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "016",
+    "FieldName": "payment_type_id",
+    "DisplayName": "Payment Type",
+    "InputType": "Dropdown",
+    "IsRequired": true,
+    "Options": [
+      {
+        "Value": "1",
+        "Label": "Credit Card"
+      },
+      {
+        "Value": "2",
+        "Label": "Bank Transfer"
+      }
+    ],
+    "AllowsMultiple": false,
+    "Placeholder": "Select Payment Type",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": "/api/payment-types",
+    "DependsOn": null,
+    "DefaultValue": "2",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "017",
+    "FieldName": "bank_id",
+    "DisplayName": "Bank",
+    "InputType": "Dropdown",
+    "IsRequired": true,
+    "Options": [
+      {
+        "Value": "1",
+        "Label": "Bank A"
+      },
+      {
+        "Value": "2",
+        "Label": "Bank B"
+      }
+    ],
+    "AllowsMultiple": false,
+    "Placeholder": "Select Bank",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": "/api/banks",
+    "DependsOn": null,
+    "DefaultValue": "2",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "018",
+    "FieldName": "referred_by",
+    "DisplayName": "Referred By",
+    "InputType": "Text",
+    "IsRequired": false,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter Referrer",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "TV",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "019",
+    "FieldName": "referrer_details",
+    "DisplayName": "Referrer Details",
+    "InputType": "Text",
+    "IsRequired": false,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter Referrer Details",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "Name: Sani Jadesola, Address: 4, Edochie Street, Isashi Oluwakemi",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "020",
+    "FieldName": "name_payee",
+    "DisplayName": "Payee Name",
+    "InputType": "Text",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter Payee Name",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "Jackson Martinez",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "021",
+    "FieldName": "kin_info",
+    "DisplayName": "Next of Kin Information",
+    "InputType": "Text",
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Enter Kin Information",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "Name: Jeff Kemi, Address: 4th Floor, Centage Plaza, Allen Avenue",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "022",
+    "FieldName": "pep_category",
+    "DisplayName": "PEP Category",
+    "InputType": "Dropdown",
+    "IsRequired": true,
+    "Options": [
+      {
+        "Value": "1",
+        "Label": "Category 1"
+      },
+      {
+        "Value": "2",
+        "Label": "Category 2"
+      }
+    ],
+    "AllowsMultiple": false,
+    "Placeholder": "Select PEP Category",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": null,
+    "DependsOn": null,
+    "DefaultValue": "2",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  },
+  {
+    "FieldId": "023",
+    "FieldName": "occupation",
+    "DisplayName": "Occupation",
+    "InputType": "Dropdown", // Occupation options come from an API
+    "IsRequired": true,
+    "Options": [],
+    "AllowsMultiple": false,
+    "Placeholder": "Select Occupation",
+    "RegexValidationPattern": null,
+    "OptionsApiEndpoint": "/api/occupations", // API endpoint for dynamic options
+    "DependsOn": null,
+    "DefaultValue": "2",
+    "MaxFileSize": null,
+    "AllowedFileTypes": []
+  }
+]

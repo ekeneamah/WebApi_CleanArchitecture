@@ -74,6 +74,7 @@ public class FormField
     public string? RegexValidationPattern { get; set; }
     public string? OptionsApiEndpoint { get; set; }
     public string? DependsOn { get; set; }
+    public string? DefaultValue { get; set; }
 
     // Properties specific to file upload
     public long? MaxFileSize { get; set; }

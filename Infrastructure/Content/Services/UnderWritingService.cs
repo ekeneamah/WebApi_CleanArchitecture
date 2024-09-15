@@ -39,8 +39,8 @@ public class UnderWritingService : IUnderWritingService
         if (user == null)
             return ApiResult<FormSubmission>.Failed("Invalid User");
 
-        if (model.UserId != tokenUserId)
-            return ApiResult<FormSubmission>.Failed("UserId Mismatch");
+       /* if (model.UserId != tokenUserId)
+            return ApiResult<FormSubmission>.Failed("UserId Mismatch");*/
 
         var validationErrors = ValidateAnswer(model, underWritingForm.GlobalFields, underWritingForm.Sections ?? new List<FormSection>());
         if (validationErrors.Count > 0)
