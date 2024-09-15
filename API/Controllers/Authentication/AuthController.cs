@@ -243,11 +243,11 @@ namespace API.Controllers.Authentication
         [HttpPost("validate-reset-code")]
         public async Task<ActionResult<ApiResult<string>>> ValidateResetCode([FromBody] ValidateCodeRequestDto request)
         {
-            var isValid = _passwordService.ValidateResetCode(request.Email, request.Code);
-            if (!isValid)
-                return BadRequest(ApiResult<string>.ErrorResult("Invalid or expired code."));
+            var isValid = await _authService.ValidateResetCode(request.Email, request.Code);
+            if (!isValid.Success)
+                return BadRequest(ApiResult<string>.Failed("Invalid or expired code."));
 
-            return Ok(ApiResult<string>.SuccessResult(null, "Code validated successfully."));
+            return Ok(ApiResult<string>.Successful(null, "Code validated successfully."));
         }
 
         #endregion
